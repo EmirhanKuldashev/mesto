@@ -5,6 +5,7 @@ from decimal import Decimal
 
 from geoalchemy2 import Geometry
 from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, JSON, Numeric, String, Text, func
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db import Base
@@ -61,6 +62,14 @@ class District(IdMixin, SourceFields, Base):
     __tablename__ = "districts"
     name: Mapped[str] = mapped_column(String(150), index=True)
     boundary: Mapped[str | None] = mapped_column(Geometry("MULTIPOLYGON", srid=4326))
+    slug: Mapped[str | None] = mapped_column(String(150), unique=True)
+    geometry: Mapped[str | None] = mapped_column(Geometry("MULTIPOLYGON", srid=4326))
+    centroid: Mapped[str | None] = mapped_column(Geometry("POINT", srid=4326))
+    population: Mapped[int | None] = mapped_column(Integer)
+    area_km2: Mapped[Decimal | None] = mapped_column(Numeric(10, 2))
+    density: Mapped[Decimal | None] = mapped_column(Numeric(12, 2))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
 
 class DistrictMetrics(IdMixin, SourceFields, Base):
@@ -77,6 +86,11 @@ class POI(IdMixin, SourceFields, Base):
     name: Mapped[str] = mapped_column(String(200))
     category: Mapped[str] = mapped_column(String(80), index=True)
     location: Mapped[str] = mapped_column(Geometry("POINT", srid=4326))
+    geometry: Mapped[str | None] = mapped_column(Geometry("POINT", srid=4326))
+    external_id: Mapped[str | None] = mapped_column(String(120))
+    subcategory: Mapped[str | None] = mapped_column(String(80))
+    district_id: Mapped[int | None] = mapped_column(ForeignKey("districts.id"), index=True)
+    metadata_json: Mapped[dict] = mapped_column("metadata", JSONB, default=dict)
 
 
 class ResidentialComplex(IdMixin, SourceFields, Base):
@@ -85,6 +99,12 @@ class ResidentialComplex(IdMixin, SourceFields, Base):
     district_id: Mapped[int | None] = mapped_column(ForeignKey("districts.id"))
     location: Mapped[str | None] = mapped_column(Geometry("POINT", srid=4326))
     delivery_date: Mapped[date | None] = mapped_column(Date)
+    developer: Mapped[str | None] = mapped_column(String(200))
+    building_class: Mapped[str | None] = mapped_column(String(80))
+    price_from: Mapped[Decimal | None] = mapped_column(Numeric(14, 2))
+    price_per_sqm: Mapped[Decimal | None] = mapped_column(Numeric(14, 2))
+    available_units: Mapped[int | None] = mapped_column(Integer)
+    layouts: Mapped[list] = mapped_column(JSONB, default=list)
 
 
 class PropertyOffer(IdMixin, SourceFields, Base):
@@ -95,6 +115,9 @@ class PropertyOffer(IdMixin, SourceFields, Base):
     area_sqm: Mapped[Decimal] = mapped_column(Numeric(10, 2))
     rooms: Mapped[int | None] = mapped_column(Integer)
     external_id: Mapped[str | None] = mapped_column(String(120))
+    floor: Mapped[int | None] = mapped_column(Integer)
+    address: Mapped[str | None] = mapped_column(String(250))
+    location: Mapped[str | None] = mapped_column(Geometry("POINT", srid=4326))
 
 
 class RentListing(IdMixin, SourceFields, Base):
@@ -105,6 +128,7 @@ class RentListing(IdMixin, SourceFields, Base):
     rooms: Mapped[int | None] = mapped_column(Integer)
     location: Mapped[str | None] = mapped_column(Geometry("POINT", srid=4326))
     external_id: Mapped[str | None] = mapped_column(String(120))
+    address: Mapped[str | None] = mapped_column(String(250))
 
 
 class MortgageProgram(IdMixin, SourceFields, Base):
@@ -114,15 +138,26 @@ class MortgageProgram(IdMixin, SourceFields, Base):
     down_payment_percent: Mapped[Decimal] = mapped_column(Numeric(6, 3))
     max_loan: Mapped[Decimal | None] = mapped_column(Numeric(14, 2))
     eligibility: Mapped[dict] = mapped_column(JSON, default=dict)
+    provider: Mapped[str | None] = mapped_column(String(200))
+    requirements: Mapped[dict] = mapped_column(JSONB, default=dict)
+    region: Mapped[str | None] = mapped_column(String(100))
+    official_url: Mapped[str | None] = mapped_column(Text)
 
 
 class FutureObject(IdMixin, SourceFields, Base):
     __tablename__ = "future_objects"
     name: Mapped[str] = mapped_column(String(200))
     category: Mapped[str] = mapped_column(String(80))
+    district_id: Mapped[int | None] = mapped_column(ForeignKey("districts.id"), index=True)
     location: Mapped[str | None] = mapped_column(Geometry("POINT", srid=4326))
+    geometry: Mapped[str | None] = mapped_column(Geometry("POINT", srid=4326))
     expected_date: Mapped[date | None] = mapped_column(Date)
     status: Mapped[str] = mapped_column(String(50), default="planned")
+    planned_year: Mapped[int | None] = mapped_column(Integer)
+    confidence: Mapped[Decimal | None] = mapped_column(Numeric(5, 4))
+    source: Mapped[str | None] = mapped_column(String(200))
+    source_document: Mapped[str | None] = mapped_column(Text)
+    source_date: Mapped[date | None] = mapped_column(Date)
 
 
 class DataSource(IdMixin, Base):
@@ -133,6 +168,7 @@ class DataSource(IdMixin, Base):
     url: Mapped[str | None] = mapped_column(Text)
     license: Mapped[str | None] = mapped_column(String(200))
     is_synthetic: Mapped[bool] = mapped_column(Boolean, default=False)
+    organization: Mapped[str | None] = mapped_column(String(200))
 
 
 class SourceVersion(IdMixin, Base):
@@ -143,6 +179,7 @@ class SourceVersion(IdMixin, Base):
     valid_from: Mapped[date | None] = mapped_column(Date)
     valid_to: Mapped[date | None] = mapped_column(Date)
     checksum: Mapped[str | None] = mapped_column(String(128))
+    record_count: Mapped[int | None] = mapped_column(Integer)
 
 
 class DataQuality(IdMixin, Base):
@@ -152,6 +189,12 @@ class DataQuality(IdMixin, Base):
     completeness: Mapped[Decimal] = mapped_column(Numeric(5, 4))
     checked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     warnings: Mapped[list] = mapped_column(JSON, default=list)
+    entity_type: Mapped[str | None] = mapped_column(String(80))
+    entity_id: Mapped[int | None] = mapped_column(Integer)
+    freshness: Mapped[Decimal | None] = mapped_column(Numeric(5, 4))
+    confidence: Mapped[Decimal | None] = mapped_column(Numeric(5, 4))
+    forecast_share: Mapped[Decimal | None] = mapped_column(Numeric(5, 4))
+    limitations: Mapped[list] = mapped_column(JSONB, default=list)
 
 
 class AnalysisSession(IdMixin, Base):

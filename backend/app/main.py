@@ -5,8 +5,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 
 from app.db import create_session_factory
+from app.api import router
 
 app = FastAPI(title="МЕСТО API", version="0.1.0")
+app.include_router(router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[os.getenv("FRONTEND_ORIGIN", "http://localhost:3000")],
