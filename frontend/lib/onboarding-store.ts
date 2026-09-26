@@ -29,6 +29,7 @@ export type OnboardingDraft = {
   adults_count: number;
   children: { age: number }[];
   housing_goal: "buy" | "rent" | "compare";
+  commute_minutes: number | null;
   purchase_budget: number;
   initial_payment: number;
   comfortable_monthly_payment: number;
@@ -49,7 +50,7 @@ const preferences = Object.fromEntries([...weightNames, "quiet_active", "green_u
 
 export const initialDraft: OnboardingDraft = {
   name: "", household_type: "single", adults_count: 1, children: [], housing_goal: "compare",
-  purchase_budget: 0, initial_payment: 0, comfortable_monthly_payment: 0, rent_budget: 0,
+  commute_minutes: null, purchase_budget: 0, initial_payment: 0, comfortable_monthly_payment: 0, rent_budget: 0,
   planning_horizon: "3_5_years", car_availability: false,
   transport_preferences: ["public_transport"], preferences,
   future_changes: [],
@@ -61,11 +62,11 @@ export const initialDraft: OnboardingDraft = {
 export const demoDraft: OnboardingDraft = {
   ...initialDraft,
   name: "Максим", household_type: "couple", adults_count: 2, children: [{ age: 7 }],
-  housing_goal: "compare", purchase_budget: 12000000, initial_payment: 3000000,
+  housing_goal: "compare", commute_minutes: 30, purchase_budget: 12000000, initial_payment: 3000000,
   comfortable_monthly_payment: 75000, rent_budget: 55000, planning_horizon: "3_5_years",
   car_availability: true, transport_preferences: ["car", "public_transport"],
   preferences: { ...preferences, transport_weight: answeredPreference(90, "user"), housing_price_weight: answeredPreference(85, "user"),
-    safety_weight: answeredPreference(85, "user"), education_weight: answeredPreference(90, "user"), parks_weight: answeredPreference(85, "user"), ecology_weight: answeredPreference(85, "user") },
+    education_weight: answeredPreference(90, "user"), parks_weight: answeredPreference(85, "user"), ecology_weight: answeredPreference(85, "user") },
   partner: { name: "Анна", work_point: { latitude: 56.044, longitude: 93.005 },
     transport_preferences: ["public_transport"],
     preferences: { education_weight: answeredPreference(95, "partner"), parks_weight: answeredPreference(90, "partner"), ecology_weight: answeredPreference(90, "partner") },

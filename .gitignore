@@ -23,3 +23,4 @@ data/synthetic/*
 !data/synthetic/.gitkeep
 *.log
 .DS_Store
+tsconfig.tsbuildinfo

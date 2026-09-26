@@ -2,7 +2,7 @@
 
 «Не выбираем квартиру. Моделируем жизнь вокруг неё».
 
-МЕСТО — персональный геоаналитический сервис для выбора жилья и жизненного сценария в Красноярске. Работают инфраструктура, слой демонстрационных данных и диалоговая анкета жизненного сценария. Scoring engine, реальные импортеры и Life Report ещё не реализованы.
+МЕСТО — персональный геоаналитический сервис для выбора жилья и жизненного сценария в Красноярске. Работают инфраструктура, слой демонстрационных данных и новый frontend-концепт: landing, 10-шаговая анкета, экран анализа, демонстрационный результат и карта района. Scoring engine, реальные импортеры и Life Report ещё не реализованы.
 
 ## Архитектура
 
@@ -12,7 +12,7 @@
 
 ## Стек
 
-- Frontend: Next.js, TypeScript, App Router, Tailwind CSS, Radix/shadcn зависимости, Lucide, Recharts, MapLibre, Zustand.
+- Frontend: Next.js, TypeScript, App Router, Tailwind CSS, Radix/shadcn зависимости, Lucide, Recharts, MapLibre, Zustand, Framer Motion.
 - Backend: Python 3.12+, FastAPI, Pydantic, SQLAlchemy, Alembic.
 - Данные: PostgreSQL 16, PostGIS.
 - Запуск: Docker Compose.
@@ -25,7 +25,7 @@
 docker compose up --build
 ```
 
-Страница: http://localhost:3000. Анкета: http://localhost:3000/onboarding. API: http://localhost:8000/health. Документация API: http://localhost:8000/docs. При старте backend применяет миграции, создаёт расширение PostGIS и таблицы, затем добавляет synthetic данные без дублирования. Главная страница запрашивает `/health` через внутреннюю сеть Compose; зелёное состояние означает, что запрос дошёл до PostgreSQL.
+Страница: http://localhost:3000. Анкета: http://localhost:3000/onboarding. Демо-результат: http://localhost:3000/results. Карта: http://localhost:3000/district. API: http://localhost:8000/health. Документация API: http://localhost:8000/docs. При старте backend применяет миграции, создаёт расширение PostGIS и таблицы, затем добавляет synthetic данные без дублирования. Анкета сохраняется в браузере. С согласия пользователя она отправляется в существующий API; без backend или согласия открывается демонстрационный результат. Числа, POI, контур района и сценарии на экранах результата и карты иллюстративны.
 
 Для локальной разработки без Docker задайте `DATABASE_URL`, установите зависимости из `backend/pyproject.toml`, затем в `backend` выполните `alembic upgrade head`, `python -m app.etl.seed` и `uvicorn app.main:app --reload`. Во `frontend` выполните `npm install` и `npm run dev`.
 
@@ -37,7 +37,7 @@ cd frontend && npm install && npm run lint && npm run build
 docker compose config
 ```
 
-После `docker compose up --build` откройте главную страницу и убедитесь, что она показывает «API и база данных доступны». API возвращает `503`, если база недоступна.
+После `docker compose up --build` откройте главную страницу и пройдите анкету либо выберите «Посмотреть демо». API возвращает `503`, если база недоступна.
 
 ## Данные и будущий ETL
 
