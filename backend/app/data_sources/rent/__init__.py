@@ -1,0 +1,1 @@
+"""Rental listings adapter placeholder."""

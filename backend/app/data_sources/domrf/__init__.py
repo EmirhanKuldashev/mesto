@@ -1,0 +1,1 @@
+"""DOM.RF adapter placeholder."""

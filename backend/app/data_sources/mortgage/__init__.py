@@ -1,0 +1,1 @@
+"""Mortgage program adapter placeholder."""
