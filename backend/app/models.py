@@ -5,7 +5,7 @@ from decimal import Decimal
 from uuid import UUID
 
 from geoalchemy2 import Geometry
-from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, JSON, Numeric, String, Text, func, text
+from sqlalchemy import Boolean, CheckConstraint, Date, DateTime, ForeignKey, Integer, JSON, Numeric, String, Text, func, text
 from sqlalchemy.dialects.postgresql import JSONB, UUID as PG_UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -45,9 +45,9 @@ class UserProfile(IdMixin, Base):
     future_changes: Mapped[list] = mapped_column(JSONB, server_default=text("'[]'::jsonb"))
     home_values: Mapped[list] = mapped_column(JSONB, server_default=text("'[]'::jsonb"))
     good_home_text: Mapped[str | None] = mapped_column(Text)
-    price_vs_time: Mapped[int] = mapped_column(Integer, server_default="50")
-    today_vs_future: Mapped[int] = mapped_column(Integer, server_default="50")
-    car_dependency: Mapped[int] = mapped_column(Integer, server_default="50")
+    price_vs_time: Mapped[int | None] = mapped_column(Integer)
+    today_vs_future: Mapped[int | None] = mapped_column(Integer)
+    car_dependency: Mapped[int | None] = mapped_column(Integer)
     data_processing_consent: Mapped[bool] = mapped_column(Boolean, server_default=text("false"))
     consent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     household_size: Mapped[int] = mapped_column(Integer, default=1)
@@ -68,7 +68,11 @@ class PartnerProfile(IdMixin, Base):
 
 class LifePoint(IdMixin, Base):
     __tablename__ = "life_points"
+    __table_args__ = (CheckConstraint("(owner_type = 'primary_user' AND primary_user_id IS NOT NULL AND partner_profile_id IS NULL) OR (owner_type = 'partner' AND primary_user_id IS NULL AND partner_profile_id IS NOT NULL)", name="ck_life_points_owner"),)
     user_profile_id: Mapped[int] = mapped_column(ForeignKey("user_profiles.id"), index=True)
+    owner_type: Mapped[str] = mapped_column(String(20), nullable=False)
+    primary_user_id: Mapped[int | None] = mapped_column(ForeignKey("user_profiles.id"), index=True)
+    partner_profile_id: Mapped[int | None] = mapped_column(ForeignKey("partner_profiles.id"), index=True)
     label: Mapped[str] = mapped_column(String(120))
     kind: Mapped[str] = mapped_column(String(50))
     location: Mapped[str] = mapped_column(Geometry("POINT", srid=4326))
@@ -83,20 +87,21 @@ class UserPreferences(IdMixin, Base):
     budget_max: Mapped[Decimal | None] = mapped_column(Numeric(14, 2))
     purchase_mode: Mapped[str] = mapped_column(String(20), default="either")
     weights: Mapped[dict] = mapped_column(JSON, default=dict)
-    education_weight: Mapped[int] = mapped_column(Integer, server_default="50")
-    kindergarten_weight: Mapped[int] = mapped_column(Integer, server_default="50")
-    healthcare_weight: Mapped[int] = mapped_column(Integer, server_default="50")
-    transport_weight: Mapped[int] = mapped_column(Integer, server_default="50")
-    ecology_weight: Mapped[int] = mapped_column(Integer, server_default="50")
-    safety_weight: Mapped[int] = mapped_column(Integer, server_default="50")
-    parks_weight: Mapped[int] = mapped_column(Integer, server_default="50")
-    shopping_weight: Mapped[int] = mapped_column(Integer, server_default="50")
-    entertainment_weight: Mapped[int] = mapped_column(Integer, server_default="50")
-    housing_price_weight: Mapped[int] = mapped_column(Integer, server_default="50")
-    future_growth_weight: Mapped[int] = mapped_column(Integer, server_default="50")
-    quiet_active: Mapped[int] = mapped_column(Integer, server_default="50")
-    green_urban: Mapped[int] = mapped_column(Integer, server_default="50")
-    center_calm: Mapped[int] = mapped_column(Integer, server_default="50")
+    preference_values: Mapped[dict] = mapped_column(JSONB, server_default=text("'{}'::jsonb"))
+    education_weight: Mapped[int | None] = mapped_column(Integer)
+    kindergarten_weight: Mapped[int | None] = mapped_column(Integer)
+    healthcare_weight: Mapped[int | None] = mapped_column(Integer)
+    transport_weight: Mapped[int | None] = mapped_column(Integer)
+    ecology_weight: Mapped[int | None] = mapped_column(Integer)
+    safety_weight: Mapped[int | None] = mapped_column(Integer)
+    parks_weight: Mapped[int | None] = mapped_column(Integer)
+    shopping_weight: Mapped[int | None] = mapped_column(Integer)
+    entertainment_weight: Mapped[int | None] = mapped_column(Integer)
+    housing_price_weight: Mapped[int | None] = mapped_column(Integer)
+    future_growth_weight: Mapped[int | None] = mapped_column(Integer)
+    quiet_active: Mapped[int | None] = mapped_column(Integer)
+    green_urban: Mapped[int | None] = mapped_column(Integer)
+    center_calm: Mapped[int | None] = mapped_column(Integer)
 
 
 class AnalysisRequest(IdMixin, Base):
@@ -104,6 +109,11 @@ class AnalysisRequest(IdMixin, Base):
     user_profile_id: Mapped[int] = mapped_column(ForeignKey("user_profiles.id"), index=True)
     status: Mapped[str] = mapped_column(String(30), server_default="pending")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    profile_snapshot: Mapped[dict] = mapped_column(JSONB, nullable=False, server_default=text("'{}'::jsonb"))
+    partner_snapshot: Mapped[dict] = mapped_column(JSONB, nullable=False, server_default=text("'{}'::jsonb"))
+    life_points_snapshot: Mapped[list] = mapped_column(JSONB, nullable=False, server_default=text("'[]'::jsonb"))
+    preferences_snapshot: Mapped[dict] = mapped_column(JSONB, nullable=False, server_default=text("'{}'::jsonb"))
+    data_version_snapshot: Mapped[dict] = mapped_column(JSONB, nullable=False, server_default=text("'{}'::jsonb"))
     user_score: Mapped[Decimal | None] = mapped_column(Numeric(6, 2))
     partner_score: Mapped[Decimal | None] = mapped_column(Numeric(6, 2))
     family_score: Mapped[Decimal | None] = mapped_column(Numeric(6, 2))

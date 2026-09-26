@@ -4,8 +4,8 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, MapPin, RotateCcw } from "lucide-react";
 import { useEffect, useState } from "react";
-import { type Coordinates, type LifePoint, type OnboardingDraft,
-  type WeightName, useOnboarding, weightNames } from "@/lib/onboarding-store";
+import { answeredPreference, unansweredPreference, type Coordinates, type LifePoint,
+  type OnboardingDraft, type PreferenceValue, type WeightName, useOnboarding, weightNames } from "@/lib/onboarding-store";
 
 const LifePointMap = dynamic(() => import("@/components/life-point-map"), { ssr: false });
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
@@ -61,13 +61,16 @@ function NumberField({ label, value, onChange, min = 0, max, step = 1 }: { label
   </label>;
 }
 
-function Slider({ label, value, onChange, left, right }: { label: string; value: number; onChange: (value: number) => void; left?: string; right?: string }) {
-  return <label className="block rounded-xl border border-slate-200 bg-white p-4">
-    <span className="flex justify-between gap-3 text-sm font-semibold"><span>{label}</span><span>{value}/100</span></span>
-    <input aria-label={label} type="range" min="0" max="100" value={value}
+function PreferenceSlider({ label, preference, onChange, left, right }: { label: string; preference: PreferenceValue | undefined; onChange: (value: number | null) => void; left?: string; right?: string }) {
+  const answered = preference?.is_answered && preference.value !== null;
+  return <div className="rounded-xl border border-slate-200 bg-white p-4">
+    <div className="flex justify-between gap-3 text-sm font-semibold"><span>{label}</span><span>{answered ? `${preference.value}/100` : "Не указано"}</span></div>
+    {answered ? <><input aria-label={label} type="range" min="0" max="100" value={preference.value ?? 0}
       onChange={(event) => onChange(Number(event.target.value))} className="mt-3 w-full accent-teal-600" />
-    {(left || right) && <span className="flex justify-between text-xs text-slate-500"><span>{left}</span><span>{right}</span></span>}
-  </label>;
+      <button type="button" onClick={() => onChange(null)} className="mt-2 text-xs text-slate-600 underline">Сбросить</button></>
+      : <button type="button" onClick={() => onChange(50)} className="mt-3 rounded-lg border border-teal-600 px-3 py-2 text-sm font-medium text-teal-800">Указать значение</button>}
+    {(left || right) && <div className="flex justify-between text-xs text-slate-500"><span>{left}</span><span>{right}</span></div>}
+  </div>;
 }
 
 function toggle<T>(values: T[], value: T): T[] {
@@ -75,7 +78,7 @@ function toggle<T>(values: T[], value: T): T[] {
 }
 
 function payloadFromDraft(draft: OnboardingDraft) {
-  const partnerWork = draft.life_points.find((point) => point.type === "partner_work");
+  const partnerWork = draft.life_points.find((point) => point.type === "partner_work" && point.owner_type === "partner");
   return {
     ...draft,
     name: draft.name.trim() || null,
@@ -99,6 +102,7 @@ export default function OnboardingPage() {
   const [requestStatus, setRequestStatus] = useState("");
   const [pointId, setPointId] = useState<string | null>(null);
   const [pointType, setPointType] = useState<LifePoint["type"]>("work");
+  const [pointOwner, setPointOwner] = useState<LifePoint["owner_type"]>("primary_user");
   const [pointName, setPointName] = useState("");
   const [pointCoords, setPointCoords] = useState<Coordinates | null>(null);
   const [pointImportance, setPointImportance] = useState(5);
@@ -108,18 +112,19 @@ export default function OnboardingPage() {
   useEffect(() => { setRequestStatus(""); }, [draft]);
 
   function resetPointForm() {
-    setPointId(null); setPointType("work"); setPointName(""); setPointCoords(null);
+    setPointId(null); setPointType("work"); setPointOwner("primary_user"); setPointName(""); setPointCoords(null);
     setPointImportance(5); setPointFrequency(5);
   }
 
   function editPoint(point: LifePoint) {
-    setPointId(point.localId); setPointType(point.type); setPointName(point.name);
+    setPointId(point.localId); setPointType(point.type); setPointOwner(point.owner_type); setPointName(point.name);
     setPointCoords({ longitude: point.longitude, latitude: point.latitude });
     setPointImportance(point.importance); setPointFrequency(point.frequency_per_week);
     setError("");
   }
 
   function savePoint() {
+    if (pointOwner === "partner" && !draft.partner.name.trim()) { setError("Укажите имя партнёра для его точки."); return; }
     if (!pointName.trim() || !pointCoords) { setError("Укажите название и точку на карте."); return; }
     if (pointCoords.latitude < -90 || pointCoords.latitude > 90 || pointCoords.longitude < -180 || pointCoords.longitude > 180) {
       setError("Координаты должны быть в диапазоне широта −90…90, долгота −180…180."); return;
@@ -127,7 +132,7 @@ export default function OnboardingPage() {
     if (pointImportance < 1 || pointImportance > 10 || pointFrequency < 0 || pointFrequency > 7) {
       setError("Важность: 1–10, поездок в неделю: 0–7."); return;
     }
-    upsertPoint({ localId: pointId ?? crypto.randomUUID(), type: pointType, name: pointName.trim(),
+    upsertPoint({ localId: pointId ?? crypto.randomUUID(), owner_type: pointOwner, type: pointType, name: pointName.trim(),
       ...pointCoords, importance: pointImportance, frequency_per_week: pointFrequency });
     resetPointForm(); setError("");
   }
@@ -241,6 +246,10 @@ export default function OnboardingPage() {
         {step === 4 && <div className="space-y-6">
           <p className="text-sm text-slate-600">Поставьте точку на карте или перетащите маркер. Координаты можно уточнить вручную.</p>
           <div className="grid gap-5 sm:grid-cols-2">
+            <label className="block text-sm font-medium">Владелец точки<select value={pointOwner} onChange={(event) => setPointOwner(event.target.value as LifePoint["owner_type"])} className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3">
+              <option value="primary_user">Основной пользователь</option>
+              {draft.partner.name.trim() && <option value="partner">Партнёр</option>}
+            </select></label>
             <label className="block text-sm font-medium">Тип места<select value={pointType} onChange={(event) => setPointType(event.target.value as LifePoint["type"])} className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-4 py-3">{pointTypes.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></label>
             <label className="block text-sm font-medium">Название<input value={pointName} onChange={(event) => setPointName(event.target.value)} maxLength={120} placeholder="Например, работа Максима" className="mt-2 w-full rounded-xl border border-slate-300 px-4 py-3" /></label>
           </div>
@@ -256,24 +265,24 @@ export default function OnboardingPage() {
           <div className="flex flex-wrap gap-3"><button type="button" onClick={savePoint} className="rounded-xl bg-teal-700 px-5 py-3 font-semibold text-white hover:bg-teal-800">{pointId ? "Сохранить изменения" : "Добавить место"}</button>
             {pointId && <button type="button" onClick={resetPointForm} className="rounded-xl border px-5 py-3">Отмена</button>}</div>
           <div className="space-y-2">{draft.life_points.map((point) => <div key={point.localId} className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-slate-50 p-3 text-sm">
-            <span><strong>{point.name}</strong> · {point.frequency_per_week} дней/неделю · важность {point.importance}/10</span>
+            <span><strong>{point.name}</strong> · {point.owner_type === "partner" ? "Партнёр" : "Основной пользователь"} · {point.frequency_per_week} дней/неделю · важность {point.importance}/10</span>
             <span className="flex gap-2"><button type="button" onClick={() => editPoint(point)} className="font-semibold text-teal-700">Изменить</button><button type="button" onClick={() => removePoint(point.localId)} className="text-rose-700">Удалить</button></span>
           </div>)}</div>
         </div>}
 
         {step === 5 && <div className="space-y-5">
           <p className="text-sm text-slate-600">Оцените каждый фактор от 0 до 100. Ваши предпочтения и предпочтения партнёра хранятся отдельно.</p>
-          <div className="grid gap-3 sm:grid-cols-2">{weightNames.map((name) => <Slider key={name} label={weightLabels[name]} value={draft.preferences[name]} onChange={(value) => setPreference(name, value)} />)}</div>
+          <div className="grid gap-3 sm:grid-cols-2">{weightNames.map((name) => <PreferenceSlider key={name} label={weightLabels[name]} preference={draft.preferences[name]} onChange={(value) => setPreference(name, value)} />)}</div>
           {draft.partner.name.trim() && <div className="rounded-2xl bg-teal-50 p-5"><h2 className="mb-4 text-lg font-bold">Что важно {draft.partner.name}?</h2>
             <div className="grid gap-3 sm:grid-cols-3">{(["education_weight", "parks_weight", "ecology_weight"] as const).map((name) =>
-              <Slider key={name} label={weightLabels[name]} value={draft.partner.preferences[name] ?? 50} onChange={(value) => patch({ partner: { ...draft.partner, preferences: { ...draft.partner.preferences, [name]: value } } })} />)}</div></div>}
+              <PreferenceSlider key={name} label={weightLabels[name]} preference={draft.partner.preferences[name]} onChange={(value) => patch({ partner: { ...draft.partner, preferences: { ...draft.partner.preferences, [name]: value === null ? unansweredPreference() : answeredPreference(value, "partner") } } })} />)}</div></div>}
         </div>}
 
         {step === 6 && <div className="space-y-6">
           <div className="grid gap-3 sm:grid-cols-3">
-            <Slider label="Ритм района" left="Тихий" right="Активный" value={draft.preferences.quiet_active} onChange={(value) => setPreference("quiet_active", value)} />
-            <Slider label="Среда" left="Зелёная" right="Городская" value={draft.preferences.green_urban} onChange={(value) => setPreference("green_urban", value)} />
-            <Slider label="Расположение" left="Центр" right="Спокойный район" value={draft.preferences.center_calm} onChange={(value) => setPreference("center_calm", value)} />
+            <PreferenceSlider label="Ритм района" left="Тихий" right="Активный" preference={draft.preferences.quiet_active} onChange={(value) => setPreference("quiet_active", value)} />
+            <PreferenceSlider label="Среда" left="Зелёная" right="Городская" preference={draft.preferences.green_urban} onChange={(value) => setPreference("green_urban", value)} />
+            <PreferenceSlider label="Расположение" left="Центр" right="Спокойный район" preference={draft.preferences.center_calm} onChange={(value) => setPreference("center_calm", value)} />
           </div>
           <label className="flex items-center gap-3 font-medium"><input type="checkbox" checked={draft.car_availability} onChange={(event) => patch({ car_availability: event.target.checked })} className="h-5 w-5 accent-teal-700" />У меня есть автомобиль</label>
           <div><p className="mb-3 font-semibold">Как вы передвигаетесь?</p><div className="grid gap-2 sm:grid-cols-2">{transportOptions.map(([value, label]) => <Choice key={value} selected={draft.transport_preferences.includes(value)} onClick={() => patch({ transport_preferences: toggle(draft.transport_preferences, value) })}>{label}</Choice>)}</div></div>
@@ -281,9 +290,9 @@ export default function OnboardingPage() {
         </div>}
 
         {step === 7 && <div className="grid gap-4">
-          <Slider label="Цена или время в пути" left="Ниже цена" right="Короче дорога" value={draft.price_vs_time} onChange={(price_vs_time) => patch({ price_vs_time })} />
-          <Slider label="Сегодня или будущее района" left="Удобно сейчас" right="Потенциал развития" value={draft.today_vs_future} onChange={(today_vs_future) => patch({ today_vs_future })} />
-          <Slider label="Зависимость от автомобиля" left="Можно без машины" right="Машина нужна" value={draft.car_dependency} onChange={(car_dependency) => patch({ car_dependency })} />
+          <PreferenceSlider label="Цена или время в пути" left="Ниже цена" right="Короче дорога" preference={draft.preferences.price_vs_time} onChange={(value) => setPreference("price_vs_time", value)} />
+          <PreferenceSlider label="Сегодня или будущее района" left="Удобно сейчас" right="Потенциал развития" preference={draft.preferences.today_vs_future} onChange={(value) => setPreference("today_vs_future", value)} />
+          <PreferenceSlider label="Зависимость от автомобиля" left="Можно без машины" right="Машина нужна" preference={draft.preferences.car_dependency} onChange={(value) => setPreference("car_dependency", value)} />
         </div>}
 
         {step === 8 && <div className="grid gap-3 sm:grid-cols-2">{futureOptions.map(([value, label]) => <Choice key={value} selected={draft.future_changes.includes(value)} onClick={() => patch({ future_changes: toggle(draft.future_changes, value) })}>{label}</Choice>)}</div>}

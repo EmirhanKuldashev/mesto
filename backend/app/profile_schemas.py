@@ -16,6 +16,34 @@ HomeValue = Literal[
     "district_growth", "nearby_infrastructure", "personal_space",
 ]
 PlanningHorizon = Literal["1_2_years", "3_5_years", "5_10_years", "long_term"]
+LifePointOwner = Literal["primary_user", "partner"]
+PreferenceName = Literal[
+    "education_weight", "kindergarten_weight", "healthcare_weight", "transport_weight",
+    "ecology_weight", "safety_weight", "parks_weight", "shopping_weight",
+    "entertainment_weight", "housing_price_weight", "future_growth_weight",
+    "quiet_active", "green_urban", "center_calm",
+    "price_vs_time", "today_vs_future", "car_dependency",
+]
+
+
+class PreferenceValue(BaseModel):
+    value: int | None = Field(default=None, ge=0, le=100)
+    is_answered: bool = False
+    source: Literal["user", "partner", "default"] = "default"
+    confidence: float = Field(default=0, ge=0, le=1)
+
+    @model_validator(mode="after")
+    def check_answer(self):
+        if self.is_answered:
+            if self.value is None or self.source == "default" or self.confidence <= 0:
+                raise ValueError("Answered preferences need a value, respondent source and positive confidence")
+        elif self.value is not None or self.confidence != 0 or self.source != "default":
+            raise ValueError("Unanswered preferences must have null value, default source and zero confidence")
+        return self
+
+
+def unanswered_preference() -> PreferenceValue:
+    return PreferenceValue()
 
 
 class Child(BaseModel):
@@ -28,6 +56,7 @@ class Coordinates(BaseModel):
 
 
 class LifePointInput(Coordinates):
+    owner_type: LifePointOwner
     type: LifePointType
     name: str = Field(min_length=1, max_length=120)
     importance: int = Field(default=5, ge=1, le=10)
@@ -43,31 +72,40 @@ class PartnerInput(BaseModel):
     name: str = Field(min_length=1, max_length=120)
     work_point: Coordinates | None = None
     transport_preferences: list[Transport] = Field(default_factory=list)
-    preferences: dict[str, int] = Field(default_factory=dict)
+    preferences: dict[PreferenceName, PreferenceValue] = Field(default_factory=dict)
     life_goals: list[str] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def check_preferences(self):
-        if any(not 0 <= value <= 100 for value in self.preferences.values()):
-            raise ValueError("Partner preference weights must be between 0 and 100")
+        if any(value.is_answered and value.source != "partner" for value in self.preferences.values()):
+            raise ValueError("Answered partner preferences must have partner source")
         return self
 
 
 class PreferencesInput(BaseModel):
-    education_weight: int = Field(default=50, ge=0, le=100)
-    kindergarten_weight: int = Field(default=50, ge=0, le=100)
-    healthcare_weight: int = Field(default=50, ge=0, le=100)
-    transport_weight: int = Field(default=50, ge=0, le=100)
-    ecology_weight: int = Field(default=50, ge=0, le=100)
-    safety_weight: int = Field(default=50, ge=0, le=100)
-    parks_weight: int = Field(default=50, ge=0, le=100)
-    shopping_weight: int = Field(default=50, ge=0, le=100)
-    entertainment_weight: int = Field(default=50, ge=0, le=100)
-    housing_price_weight: int = Field(default=50, ge=0, le=100)
-    future_growth_weight: int = Field(default=50, ge=0, le=100)
-    quiet_active: int = Field(default=50, ge=0, le=100)
-    green_urban: int = Field(default=50, ge=0, le=100)
-    center_calm: int = Field(default=50, ge=0, le=100)
+    education_weight: PreferenceValue = Field(default_factory=unanswered_preference)
+    kindergarten_weight: PreferenceValue = Field(default_factory=unanswered_preference)
+    healthcare_weight: PreferenceValue = Field(default_factory=unanswered_preference)
+    transport_weight: PreferenceValue = Field(default_factory=unanswered_preference)
+    ecology_weight: PreferenceValue = Field(default_factory=unanswered_preference)
+    safety_weight: PreferenceValue = Field(default_factory=unanswered_preference)
+    parks_weight: PreferenceValue = Field(default_factory=unanswered_preference)
+    shopping_weight: PreferenceValue = Field(default_factory=unanswered_preference)
+    entertainment_weight: PreferenceValue = Field(default_factory=unanswered_preference)
+    housing_price_weight: PreferenceValue = Field(default_factory=unanswered_preference)
+    future_growth_weight: PreferenceValue = Field(default_factory=unanswered_preference)
+    quiet_active: PreferenceValue = Field(default_factory=unanswered_preference)
+    green_urban: PreferenceValue = Field(default_factory=unanswered_preference)
+    center_calm: PreferenceValue = Field(default_factory=unanswered_preference)
+    price_vs_time: PreferenceValue = Field(default_factory=unanswered_preference)
+    today_vs_future: PreferenceValue = Field(default_factory=unanswered_preference)
+    car_dependency: PreferenceValue = Field(default_factory=unanswered_preference)
+
+    @model_validator(mode="after")
+    def check_sources(self):
+        if any(value.is_answered and value.source != "user" for value in self.__dict__.values()):
+            raise ValueError("Answered user preferences must have user source")
+        return self
 
 
 class ProfileCreate(BaseModel):
@@ -85,9 +123,6 @@ class ProfileCreate(BaseModel):
     car_availability: bool = False
     transport_preferences: list[Transport] = Field(default_factory=lambda: ["public_transport"])
     preferences: PreferencesInput = Field(default_factory=PreferencesInput)
-    price_vs_time: int = Field(default=50, ge=0, le=100)
-    today_vs_future: int = Field(default=50, ge=0, le=100)
-    car_dependency: int = Field(default=50, ge=0, le=100)
     future_changes: list[FutureChange] = Field(default_factory=list)
     home_values: list[HomeValue] = Field(default_factory=list, max_length=3)
     good_home_text: str | None = Field(default=None, max_length=2000)
@@ -113,6 +148,8 @@ class ProfileCreate(BaseModel):
             raise ValueError("Choose unique transport preferences")
         if len(set(self.home_values)) != len(self.home_values):
             raise ValueError("Choose unique home values")
+        if any(point.owner_type == "partner" for point in self.life_points) and self.partner is None:
+            raise ValueError("Partner life points require a partner profile")
         return self
 
 
