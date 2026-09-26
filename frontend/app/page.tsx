@@ -39,7 +39,7 @@ export default async function Home() {
           <p className="mb-5 inline-flex rounded-full bg-teal-50 px-4 py-2 text-sm font-semibold text-teal-700">Новый взгляд на выбор жилья</p>
           <h1 className="max-w-3xl text-5xl font-bold leading-[1.08] tracking-tight md:text-7xl">Найди место, которое сможешь назвать <span className="text-turquoise">домом.</span></h1>
           <p className="mt-7 max-w-2xl text-lg leading-relaxed text-slate-600">Расскажи немного о своей жизни — мы сравним районы, дорогу, инфраструктуру и финансовые сценарии.</p>
-          <Button asChild className="mt-9 shadow-lg shadow-slate-300"><a href="#how-it-works">Начать подбор <ArrowRight size={19} /></a></Button>
+          <Button asChild className="mt-9 shadow-lg shadow-slate-300"><Link href="/onboarding">Начать подбор <ArrowRight size={19} /></Link></Button>
           <p className="mt-5 text-sm text-slate-500">Персональный подбор появится на следующем этапе.</p>
         </div>
 

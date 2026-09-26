@@ -2,13 +2,13 @@
 
 «Не выбираем квартиру. Моделируем жизнь вокруг неё».
 
-МЕСТО — персональный геоаналитический сервис для выбора жилья и жизненного сценария в Красноярске. На этом этапе создана основа платформы: интерфейс, API, схема данных и контракты источников. Персональный подбор, реальные импортеры и Life Report ещё не реализованы.
+МЕСТО — персональный геоаналитический сервис для выбора жилья и жизненного сценария в Красноярске. Работают инфраструктура, слой демонстрационных данных и диалоговая анкета жизненного сценария. Scoring engine, реальные импортеры и Life Report ещё не реализованы.
 
 ## Архитектура
 
 `Источники → адаптеры/ETL → проверка → PostgreSQL/PostGIS → аналитика → FastAPI → Next.js → Life Report`.
 
-Подробности: [docs/architecture.md](docs/architecture.md). Код конкретного источника живёт в `backend/app/data_sources`, единые схемы — в `backend/app/schemas.py`, таблицы — в `backend/app/models.py`. Бизнес логика будет работать с едиными моделями, без привязки к сайту или парсеру.
+Подробности: [архитектура](docs/architecture.md), [модель данных](docs/data-model.md), [ETL](docs/etl.md), [анкета](docs/onboarding.md). Код конкретного источника живёт в `backend/app/data_sources`, единые схемы — в `backend/app/schemas.py`, таблицы — в `backend/app/models.py`. Бизнес логика будет работать с едиными моделями, без привязки к сайту или парсеру.
 
 ## Стек
 
@@ -25,9 +25,9 @@
 docker compose up --build
 ```
 
-Страница: http://localhost:3000. API: http://localhost:8000/health. Документация API: http://localhost:8000/docs. При старте backend применяет миграцию, создаёт расширение PostGIS и таблицы. Главная страница запрашивает `/health` через внутреннюю сеть Compose; зелёное состояние означает, что запрос дошёл до PostgreSQL.
+Страница: http://localhost:3000. Анкета: http://localhost:3000/onboarding. API: http://localhost:8000/health. Документация API: http://localhost:8000/docs. При старте backend применяет миграции, создаёт расширение PostGIS и таблицы, затем добавляет synthetic данные без дублирования. Главная страница запрашивает `/health` через внутреннюю сеть Compose; зелёное состояние означает, что запрос дошёл до PostgreSQL.
 
-Для локальной разработки без Docker задайте `DATABASE_URL`, установите зависимости из `backend/pyproject.toml`, затем в `backend` выполните `alembic upgrade head` и `uvicorn app.main:app --reload`. Во `frontend` выполните `npm install` и `npm run dev`.
+Для локальной разработки без Docker задайте `DATABASE_URL`, установите зависимости из `backend/pyproject.toml`, затем в `backend` выполните `alembic upgrade head`, `python -m app.etl.seed` и `uvicorn app.main:app --reload`. Во `frontend` выполните `npm install` и `npm run dev`.
 
 ## Проверка
 

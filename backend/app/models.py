@@ -2,10 +2,11 @@
 
 from datetime import date, datetime
 from decimal import Decimal
+from uuid import UUID
 
 from geoalchemy2 import Geometry
-from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, JSON, Numeric, String, Text, func
-from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy import Boolean, Date, DateTime, ForeignKey, Integer, JSON, Numeric, String, Text, func, text
+from sqlalchemy.dialects.postgresql import JSONB, UUID as PG_UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db import Base
@@ -27,7 +28,28 @@ class SourceFields:
 
 class UserProfile(IdMixin, Base):
     __tablename__ = "user_profiles"
-    name: Mapped[str] = mapped_column(String(120))
+    name: Mapped[str | None] = mapped_column(String(120))
+    public_id: Mapped[UUID] = mapped_column(PG_UUID(as_uuid=True), unique=True, server_default=text("gen_random_uuid()"))
+    household_type: Mapped[str] = mapped_column(String(40), server_default="single")
+    adults_count: Mapped[int] = mapped_column(Integer, server_default="1")
+    children_count: Mapped[int] = mapped_column(Integer, server_default="0")
+    children: Mapped[list] = mapped_column(JSONB, server_default=text("'[]'::jsonb"))
+    housing_goal: Mapped[str] = mapped_column(String(20), server_default="compare")
+    purchase_budget: Mapped[Decimal | None] = mapped_column(Numeric(14, 2))
+    initial_payment: Mapped[Decimal | None] = mapped_column(Numeric(14, 2))
+    comfortable_monthly_payment: Mapped[Decimal | None] = mapped_column(Numeric(14, 2))
+    rent_budget: Mapped[Decimal | None] = mapped_column(Numeric(14, 2))
+    planning_horizon: Mapped[str | None] = mapped_column(String(30))
+    car_availability: Mapped[bool] = mapped_column(Boolean, server_default=text("false"))
+    transport_preferences: Mapped[list] = mapped_column(JSONB, server_default=text("'[]'::jsonb"))
+    future_changes: Mapped[list] = mapped_column(JSONB, server_default=text("'[]'::jsonb"))
+    home_values: Mapped[list] = mapped_column(JSONB, server_default=text("'[]'::jsonb"))
+    good_home_text: Mapped[str | None] = mapped_column(Text)
+    price_vs_time: Mapped[int] = mapped_column(Integer, server_default="50")
+    today_vs_future: Mapped[int] = mapped_column(Integer, server_default="50")
+    car_dependency: Mapped[int] = mapped_column(Integer, server_default="50")
+    data_processing_consent: Mapped[bool] = mapped_column(Boolean, server_default=text("false"))
+    consent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     household_size: Mapped[int] = mapped_column(Integer, default=1)
     monthly_income: Mapped[Decimal | None] = mapped_column(Numeric(14, 2))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
@@ -38,6 +60,10 @@ class PartnerProfile(IdMixin, Base):
     user_profile_id: Mapped[int] = mapped_column(ForeignKey("user_profiles.id"), index=True)
     name: Mapped[str] = mapped_column(String(120))
     monthly_income: Mapped[Decimal | None] = mapped_column(Numeric(14, 2))
+    work_location: Mapped[str | None] = mapped_column(Geometry("POINT", srid=4326))
+    transport_preferences: Mapped[list] = mapped_column(JSONB, server_default=text("'[]'::jsonb"))
+    preferences: Mapped[dict] = mapped_column(JSONB, server_default=text("'{}'::jsonb"))
+    life_goals: Mapped[list] = mapped_column(JSONB, server_default=text("'[]'::jsonb"))
 
 
 class LifePoint(IdMixin, Base):
@@ -47,6 +73,7 @@ class LifePoint(IdMixin, Base):
     kind: Mapped[str] = mapped_column(String(50))
     location: Mapped[str] = mapped_column(Geometry("POINT", srid=4326))
     visits_per_week: Mapped[int] = mapped_column(Integer, default=1)
+    importance: Mapped[int] = mapped_column(Integer, server_default="5")
 
 
 class UserPreferences(IdMixin, Base):
@@ -56,6 +83,30 @@ class UserPreferences(IdMixin, Base):
     budget_max: Mapped[Decimal | None] = mapped_column(Numeric(14, 2))
     purchase_mode: Mapped[str] = mapped_column(String(20), default="either")
     weights: Mapped[dict] = mapped_column(JSON, default=dict)
+    education_weight: Mapped[int] = mapped_column(Integer, server_default="50")
+    kindergarten_weight: Mapped[int] = mapped_column(Integer, server_default="50")
+    healthcare_weight: Mapped[int] = mapped_column(Integer, server_default="50")
+    transport_weight: Mapped[int] = mapped_column(Integer, server_default="50")
+    ecology_weight: Mapped[int] = mapped_column(Integer, server_default="50")
+    safety_weight: Mapped[int] = mapped_column(Integer, server_default="50")
+    parks_weight: Mapped[int] = mapped_column(Integer, server_default="50")
+    shopping_weight: Mapped[int] = mapped_column(Integer, server_default="50")
+    entertainment_weight: Mapped[int] = mapped_column(Integer, server_default="50")
+    housing_price_weight: Mapped[int] = mapped_column(Integer, server_default="50")
+    future_growth_weight: Mapped[int] = mapped_column(Integer, server_default="50")
+    quiet_active: Mapped[int] = mapped_column(Integer, server_default="50")
+    green_urban: Mapped[int] = mapped_column(Integer, server_default="50")
+    center_calm: Mapped[int] = mapped_column(Integer, server_default="50")
+
+
+class AnalysisRequest(IdMixin, Base):
+    __tablename__ = "analysis_requests"
+    user_profile_id: Mapped[int] = mapped_column(ForeignKey("user_profiles.id"), index=True)
+    status: Mapped[str] = mapped_column(String(30), server_default="pending")
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    user_score: Mapped[Decimal | None] = mapped_column(Numeric(6, 2))
+    partner_score: Mapped[Decimal | None] = mapped_column(Numeric(6, 2))
+    family_score: Mapped[Decimal | None] = mapped_column(Numeric(6, 2))
 
 
 class District(IdMixin, SourceFields, Base):
