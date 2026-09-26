@@ -26,3 +26,4 @@ include = ["app*", "data*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = ["integration: requires a migrated PostGIS test database"]
