@@ -17,7 +17,7 @@ const steps = [
 
 const signals = [
   { title: "Среда рядом", body: "Школы, парки, сервисы и то, что происходит каждый день.", icon: Trees, color: "from-[#9ef0d0]/20" },
-  { title: "Время в пути", body: "Работа и важные точки складываются в реальный маршрут.", icon: Route, color: "from-[#99bfff]/20" },
+  { title: "Ежедневные места", body: "Важные точки влияют на подбор; время в пути пока не моделируется.", icon: Route, color: "from-[#99bfff]/20" },
   { title: "Рынок жилья", body: "Стоимость в контексте удобства, а не отдельная цифра.", icon: Building2, color: "from-[#b8a9ff]/20" },
   { title: "Будущее района", body: "Запланированные изменения с честной пометкой о неопределённости.", icon: Layers3, color: "from-[#ffd6a8]/20" },
 ];
@@ -56,7 +56,7 @@ export default function Home() {
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7, delay: .18 }} className="mt-8 max-w-[580px] text-base leading-[1.8] text-[#aec7ca] sm:text-lg">МЕСТО анализирует районы, инфраструктуру, дорогу, развитие территории и ваши жизненные сценарии — чтобы показать, где действительно удобно жить.</motion.p>
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7, delay: .28 }} className="mt-10 flex flex-wrap items-center gap-3">
               <Link href="/onboarding" className="primary-button">Начать подбор <ArrowRight size={18} /></Link>
-              <Link href="/results" className="secondary-button">Смотреть объявления <MoveUpRight size={17} /></Link>
+              <a href="#how" className="secondary-button">Как это работает <MoveUpRight size={17} /></a>
             </motion.div>
             <div className="mt-12 flex flex-wrap items-center gap-x-7 gap-y-3 text-xs text-[#8daeb0]"><span className="flex items-center gap-2"><Check size={14} className="text-[#91efd1]" />Меньше полей — больше смысла</span><span className="flex items-center gap-2"><Check size={14} className="text-[#91efd1]" />Сценарий за несколько минут</span></div>
           </div>
@@ -87,9 +87,9 @@ export default function Home() {
 
     <section id="value" className="relative overflow-hidden bg-[#0c2634] py-24 sm:py-32">
       <div className="content-shell grid items-center gap-14 lg:grid-cols-[.9fr_1.1fr]">
-        <Reveal><p className="eyebrow">Что вы получаете</p><h2 className="section-title mt-5">Реальные объявления <span className="gradient-text">без вымышленных оценок.</span></h2><p className="mt-6 max-w-lg text-base leading-[1.8] text-[#a5c0c1]">Сейчас доступны квартиры, которые мы собрали через Playwright и загрузили в базу. Цена, площадь и адрес показаны так, как они сохранены в источнике.</p>
+        <Reveal><p className="eyebrow">Что вы получаете</p><h2 className="section-title mt-5">Рекомендации районов <span className="gradient-text">с объяснением.</span></h2><p className="mt-6 max-w-lg text-base leading-[1.8] text-[#a5c0c1]">После создания сценария вы увидите подходящие районы, MESTO Score, будущие изменения и только загруженные в базу предложения жилья.</p>
           <div className="mt-8 space-y-4 text-sm text-[#d3e7e6]"><p className="flex items-start gap-3"><ShieldCheck size={19} className="shrink-0 text-[#9ef1d8]" />Ссылка на исходное объявление у каждой квартиры.</p><p className="flex items-start gap-3"><Layers3 size={19} className="shrink-0 text-[#9ef1d8]" />Сравнение цен только по загруженным объявлениям.</p><p className="flex items-start gap-3"><Compass size={19} className="shrink-0 text-[#9ef1d8]" />Карта ваших точек жизни без вымышленных маркеров жилья.</p></div>
-          <Link href="/results" className="primary-button mt-10">Открыть объявления <ArrowRight size={17} /></Link>
+          <Link href="/onboarding" className="primary-button mt-10">Создать сценарий <ArrowRight size={17} /></Link>
         </Reveal>
         <Reveal delay={.15} className="relative"><HeroPreview /></Reveal>
       </div>
@@ -100,7 +100,7 @@ export default function Home() {
         <div><p className="eyebrow">Почему это полезно</p><h2 className="mt-4 max-w-2xl text-3xl font-semibold tracking-[-.06em] sm:text-5xl">Выбирайте жизнь, которая складывается каждый день.</h2><p className="mt-4 text-sm text-[#a8c8c8]">Попробуйте сценарий в своём темпе. Пример результата доступен без регистрации.</p></div>
         <Link href="/onboarding" className="primary-button shrink-0">Начать подбор <ArrowRight size={18} /></Link>
       </Reveal>
-      <footer className="mt-14 flex flex-col justify-between gap-5 border-t border-white/10 pt-8 text-xs text-[#789ba2] sm:flex-row sm:items-center"><Brand /><p>МЕСТО · объявления ЦИАН из локальной базы. Персональные оценки пока не рассчитываются.</p></footer></div>
+      <footer className="mt-14 flex flex-col justify-between gap-5 border-t border-white/10 pt-8 text-xs text-[#789ba2] sm:flex-row sm:items-center"><Brand /><p>МЕСТО · персональные рекомендации и оценки районов по доступным данным.</p></footer></div>
     </section>
   </main>;
 }

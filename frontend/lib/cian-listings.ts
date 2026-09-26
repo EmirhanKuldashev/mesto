@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 export type CianListing = {
   id: number;
+  district_id: number | null;
   external_id: string;
   source_id: "cian";
   title: string | null;
@@ -21,7 +22,8 @@ function isCianListing(value: unknown): value is CianListing {
   if (typeof value !== "object" || value === null) return false;
   const item = value as Record<string, unknown>;
   return item.source_id === "cian" && item.is_synthetic === false &&
-    typeof item.id === "number" && typeof item.external_id === "string" &&
+    typeof item.id === "number" && (item.district_id === null || typeof item.district_id === "number") &&
+    typeof item.external_id === "string" &&
     typeof item.url === "string" && /^https:\/\/([a-z0-9-]+\.)?cian\.ru\/sale\/flat\/\d+\/?$/.test(item.url) &&
     typeof item.price === "number" && Number.isFinite(item.price) &&
     typeof item.area_sqm === "number" && item.area_sqm > 0 &&

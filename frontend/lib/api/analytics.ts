@@ -24,7 +24,8 @@ function isScore(value: unknown): value is DistrictScoreResponse {
     ["score", "current_score", "future_score", "future_growth_score"].every(
       (key) => item[key] === null || typeof item[key] === "number") &&
     typeof item.confidence === "number" && Array.isArray(item.reasons) &&
-    Array.isArray(item.warnings) && Array.isArray(item.future_factors);
+    Array.isArray(item.warnings) && Array.isArray(item.future_factors) &&
+    Array.isArray(item.external_signal_impacts);
 }
 
 export async function getDistrictIds(onStage?: (stage: "districts") => void): Promise<number[]> {

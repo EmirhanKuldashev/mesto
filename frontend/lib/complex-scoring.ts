@@ -11,7 +11,8 @@ export type Complex = {
   source_id: string;
   is_synthetic: boolean;
 };
-export type Poi = { id: number; category: string; location: GeoPoint; source_id: string; is_synthetic: boolean };
+export type Poi = { id: number; name: string; category: string; district_id: number | null; location: GeoPoint; source_id: string; is_synthetic: boolean };
+export type FutureObject = { id: number; name: string; category: string; district_id: number | null; location: GeoPoint | null; status: string; planned_year: number | null; source_id: string; is_synthetic: boolean };
 export type Score = { value: number | null; coverage: number; reasons: string[] };
 export type ScoredComplex = Complex & { score: Score };
 export type District = { id: number; name: string; geometry: { type: "MultiPolygon"; coordinates: number[][][][] }; centroid: GeoPoint | null; source_id: string; is_synthetic: boolean };

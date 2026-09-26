@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { AlertTriangle, ArrowUpRight, Check, Sparkles } from "lucide-react";
 import type { CategoryScores, DistrictScoreResponse } from "@/types/analytics";
+import { SignalPanel } from "@/components/signal-panel";
 
 const categories: { key: keyof CategoryScores; title: string; description: string }[] = [
   { key: "infrastructure", title: "Инфраструктура", description: "Школы, медицина, парки и повседневные места" },
@@ -63,7 +64,8 @@ export function AnalyticsScore({ score }: { score: DistrictScoreResponse }) {
       {score.future_factors.length ? <div className="mt-6 grid gap-3 sm:grid-cols-2">{score.future_factors.map((factor, index) =>
         <motion.div key={`${factor.object_id}-${index}`} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: .15 + index * .08 }}
           className="rounded-[20px] border border-white/10 bg-white/[.07] p-5"><div className="flex justify-between gap-3"><h3 className="font-semibold">{factor.name}</h3><span className="text-[#a5ead4]">{factor.year ?? "Срок неизвестен"}</span></div><p className="mt-2 text-sm text-[#adc9c8]">{factor.reason}</p></motion.div>)}</div>
-        : <p className="mt-5 text-sm text-[#abc7c6]">Подтверждённых будущих факторов пока нет.</p>}
+        : <p className="mt-5 text-sm text-[#abc7c6]">{score.external_signal_impacts.length ? "Потенциал основан на внешних сигналах ниже; будущих объектов пока нет." : "Подтверждённых будущих факторов пока нет."}</p>}
     </section>
+    <SignalPanel districtId={score.district.id} />
   </div>;
 }

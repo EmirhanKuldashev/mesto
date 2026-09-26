@@ -1,12 +1,12 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import Link from "next/link";
+
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, Baby, Bike, BriefcaseBusiness, Bus, CarFront, Check, Clock3, Heart, Home, Leaf, MapPin, RotateCcw, ShieldCheck, Sparkles, Trees, Users, UserRound, Wallet, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Brand, DemoBadge, SelectionCard } from "@/components/concept-ui";
+import { Brand, SelectionCard } from "@/components/concept-ui";
 import { useAnalytics } from "@/lib/analytics-store";
 import { type Coordinates, type LifePoint, type OnboardingDraft, type PreferenceName, useOnboarding } from "@/lib/onboarding-store";
 
@@ -129,8 +129,10 @@ export default function OnboardingPage() {
         const result = await saved.json();
         if (typeof result.id !== "string") throw new Error("Invalid profile response");
         setProfileId(result.id);
-        const request = await fetch(`${API_URL}/api/analysis/request`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ profile_id: result.id }) });
-        if (!request.ok) sessionStorage.setItem("mesto-save-status", `Запрос анализа не создан (HTTP ${request.status}). Выполняем расчёт оценки.`);
+        try {
+          const request = await fetch(`${API_URL}/api/analysis/request`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ profile_id: result.id }) });
+          if (!request.ok) sessionStorage.setItem("mesto-save-status", `Запрос анализа не создан (HTTP ${request.status}). Выполняем расчёт оценки.`);
+        } catch { sessionStorage.setItem("mesto-save-status", "Запрос анализа не создан. Выполняем расчёт оценки для сохранённого профиля."); }
       } catch { sessionStorage.setItem("mesto-save-status", "Не удалось сохранить профиль. Показан демонстрационный пример."); }
     }
     router.push("/analysis");
@@ -138,7 +140,7 @@ export default function OnboardingPage() {
   if (!ready) return <main className="page-shell grid place-items-center">Загрузка анкеты…</main>;
   const selectedPriorities = priorities.filter((item) => draft.preferences[item.id].is_answered).length;
   return <main className="page-shell min-h-screen bg-[#edf5f2] text-[#15323e]">
-    <div className="bg-[#071b2a] text-white"><div className="content-shell flex h-20 items-center justify-between"><Brand /><div className="flex items-center gap-3"><span className="hidden text-xs text-[#9bb7ba] sm:inline">Красноярск · черновик сохраняется</span><DemoBadge /></div></div></div>
+    <div className="bg-[#071b2a] text-white"><div className="content-shell flex h-20 items-center justify-between"><Brand /><div className="flex items-center gap-3"><span className="hidden text-xs text-[#9bb7ba] sm:inline">Красноярск · черновик сохраняется</span><span className="text-xs text-[#9bb7ba]">Создание сценария жизни</span></div></div></div>
     <div className="content-shell max-w-[1120px] pb-24 pt-8 sm:pt-12">
       <div className="mb-7 flex items-center justify-between gap-3 text-xs font-bold uppercase tracking-[.15em] text-[#507b7d]"><span>Ваш сценарий / {String(step + 1).padStart(2, "0")}</span><span>{Math.round((step + 1) * 10)}%</span></div>
       <div role="progressbar" aria-valuemin={1} aria-valuemax={10} aria-valuenow={step + 1} aria-label="Прогресс анкеты" className="mb-10 h-1.5 overflow-hidden rounded-full bg-[#d1e3dc]"><motion.div animate={{ width: `${(step + 1) * 10}%` }} transition={{ duration: .45 }} className="h-full rounded-full bg-[#22b493]" /></div>
@@ -162,8 +164,8 @@ export default function OnboardingPage() {
         </motion.section></AnimatePresence>
         {error && <p role="alert" className="mt-5 rounded-2xl bg-[#fff0ec] p-4 text-sm font-semibold text-[#ad4d37]">{error}</p>}
         <div className="mt-9 flex items-center justify-between gap-3 border-t border-[#d5e5df] pt-6"><button type="button" disabled={step === 0} onClick={() => { setError(""); setStep(step - 1); }} className="inline-flex min-h-12 items-center gap-2 rounded-full px-4 text-sm font-semibold text-[#436a70] disabled:opacity-30"><ArrowLeft size={17} /> Назад</button>{step < 9 ? <button type="button" onClick={next} className="inline-flex min-h-14 items-center gap-2 rounded-full bg-[#0f3543] px-7 text-sm font-bold text-white transition hover:bg-[#18685f]">Продолжить <ArrowRight size={17} /></button> : <button type="button" onClick={finish} disabled={saving} className="inline-flex min-h-14 items-center gap-2 rounded-full bg-[#0f9c7d] px-7 text-sm font-bold text-white disabled:opacity-60">{saving ? "Сохраняем…" : "Показать моё место"} <ArrowRight size={17} /></button>}</div>
-      </div><aside className="hidden lg:block"><div className="sticky top-8 rounded-[27px] bg-[#0b2c3a] p-6 text-white"><span className="text-xs font-bold uppercase tracking-[.2em] text-[#9eebd5]">Ваш маршрут</span><div className="mt-7 space-y-2">{steps.map((item, index) => <button key={item.title} type="button" onClick={() => { setError(""); setStep(index); }} disabled={index > step} className={`flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-xs transition ${index === step ? "bg-white/10 text-white" : "text-[#83a8ad] hover:bg-white/5 disabled:cursor-default disabled:hover:bg-transparent"}`}><span className={`grid h-6 w-6 shrink-0 place-items-center rounded-full ${index < step ? "bg-[#9cebd4] text-[#0c3440]" : "border border-white/20"}`}>{index < step ? <Check size={13} /> : index + 1}</span>{item.title}</button>)}</div><button type="button" onClick={() => { fillDemo(); setError(""); }} className="mt-7 block text-sm font-semibold text-[#9fe9d5] underline underline-offset-4">Заполнить демо</button><Link href="/results" className="mt-3 block text-sm font-semibold text-[#9fe9d5] underline underline-offset-4">Сразу к объявлениям</Link></div><button type="button" onClick={() => { reset(); setError(""); }} className="mt-4 flex items-center gap-2 text-xs font-medium text-[#718f92]"><RotateCcw size={14} /> Начать заново</button></aside></div>
-      <div className="mt-8 flex justify-center gap-5 text-xs lg:hidden"><button type="button" onClick={() => { fillDemo(); setError(""); }} className="text-[#5c8586] underline">Заполнить демо</button><Link href="/results" className="text-[#168d79] underline">Пропустить к объявлениям</Link></div>
+      </div><aside className="hidden lg:block"><div className="sticky top-8 rounded-[27px] bg-[#0b2c3a] p-6 text-white"><span className="text-xs font-bold uppercase tracking-[.2em] text-[#9eebd5]">Ваш маршрут</span><div className="mt-7 space-y-2">{steps.map((item, index) => <button key={item.title} type="button" onClick={() => { setError(""); setStep(index); }} disabled={index > step} className={`flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left text-xs transition ${index === step ? "bg-white/10 text-white" : "text-[#83a8ad] hover:bg-white/5 disabled:cursor-default disabled:hover:bg-transparent"}`}><span className={`grid h-6 w-6 shrink-0 place-items-center rounded-full ${index < step ? "bg-[#9cebd4] text-[#0c3440]" : "border border-white/20"}`}>{index < step ? <Check size={13} /> : index + 1}</span>{item.title}</button>)}</div><button type="button" onClick={() => { fillDemo(); setError(""); }} className="mt-7 block text-sm font-semibold text-[#9fe9d5] underline underline-offset-4">Заполнить демо</button></div><button type="button" onClick={() => { reset(); setError(""); }} className="mt-4 flex items-center gap-2 text-xs font-medium text-[#718f92]"><RotateCcw size={14} /> Начать заново</button></aside></div>
+      <div className="mt-8 flex justify-center gap-5 text-xs lg:hidden"><button type="button" onClick={() => { fillDemo(); setError(""); }} className="text-[#5c8586] underline">Заполнить демо</button></div>
     </div>
   </main>;
 }
