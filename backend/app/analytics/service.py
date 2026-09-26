@@ -1,5 +1,6 @@
 """Read existing records, calculate a score, and persist an auditable snapshot."""
 
+from dataclasses import asdict
 from uuid import UUID
 
 from fastapi import HTTPException
@@ -16,6 +17,7 @@ from app.analytics.scoring.calculators import (
 )
 from app.analytics.scoring.engine import ScoringEngine
 from app.analytics.scoring.weights import CALCULATION_VERSION
+from app.intelligence.schemas import SignalImpactResponse
 
 
 class AnalyticsService:
@@ -62,6 +64,7 @@ class AnalyticsService:
             facts = self._facts(district)
             future_result = self.future.calculate(district)
             facts.synthetic |= any(factor.is_synthetic for factor in future_result.factors)
+            facts.synthetic |= any(signal.is_demo for signal in future_result.signal_impacts)
             categories = {
                 "infrastructure": self.infrastructure.calculate(facts),
                 "transport": self.transport.calculate(facts),
@@ -81,7 +84,9 @@ class AnalyticsService:
             row = models.DistrictScore(
                 profile_id=profile.id, district_id=district_id, total_score=score,
                 current_score=current_score, future_score=future_score,
-                future_factors=[factor.model_dump(mode="json") for factor in future_result.factors],
+                future_factors=[factor.model_dump(mode="json") for factor in future_result.factors]
+                    + [{"kind": "external_signal", **asdict(signal)}
+                       for signal in future_result.signal_impacts],
                 lifestyle_score=lifestyle, infrastructure_score=categories["infrastructure"],
                 transport_score=categories["transport"], future_growth_score=categories["future_growth"],
                 market_score=categories["market"], confidence=confidence,
@@ -95,6 +100,8 @@ class AnalyticsService:
                 score=score, current_score=current_score, future_score=future_score,
                 future_growth_score=future_result.score, future_factors=future_result.factors,
                 future_impacts=future_result.category_impacts,
+                external_signal_impacts=[SignalImpactResponse(**asdict(signal))
+                                         for signal in future_result.signal_impacts],
                 categories=CategoryScores(**categories),
                 confidence=confidence, reasons=reasons, warnings=warnings,
                 is_synthetic=facts.synthetic, calculation_version=CALCULATION_VERSION,

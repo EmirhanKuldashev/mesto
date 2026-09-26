@@ -8,7 +8,7 @@ export const demoScores: DistrictScoreResponse[] = [{
   future_factors: [{ object_id: 0, name: "Новая школа (пример)", type: "school", year: 2028,
     status: "planned", impact: { education: 8, family: 5, infrastructure: 5 },
     reason: "Новый объект образования", distance_km: 1, confidence: .7, is_synthetic: true }],
-  future_impacts: { education: 8, family: 5, infrastructure: 5 }, confidence: .5,
+  future_impacts: { education: 8, family: 5, infrastructure: 5 }, external_signal_impacts: [], confidence: .5,
   reasons: ["Пример: рядом находятся образовательные объекты"],
   warnings: ["Демонстрационные значения не относятся к реальному району"],
   is_synthetic: true, calculation_version: "demo", created_at: new Date(0).toISOString(),

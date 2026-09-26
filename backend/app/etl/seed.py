@@ -7,6 +7,7 @@ from sqlalchemy import select
 
 from app import models
 from app.db import create_session_factory
+from app.intelligence.sources import seed_demo_signals
 from app.etl.synthetic import (
     DISTRICTS, SyntheticDistrictAdapter, SyntheticFutureAdapter,
     SyntheticMortgageAdapter, SyntheticPOIAdapter, SyntheticRealEstateAdapter,
@@ -58,6 +59,7 @@ def seed(session) -> dict[str, int]:
                 models.District.source_id == adapter.source_id)).all()}
             context["district_ids"] = [by_name[name] for name, _, _, _ in DISTRICTS]
     session.flush()
+    seed_demo_signals(session, context["district_ids"])
     return counts
 
 

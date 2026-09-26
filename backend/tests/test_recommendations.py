@@ -25,7 +25,7 @@ def score(district_id: int, name: str, *, infrastructure: float,
         categories=CategoryScores(lifestyle=70, infrastructure=infrastructure,
                                   transport=transport, future_growth=future_growth, market=70),
         confidence=.8, reasons=[], warnings=[], is_synthetic=False,
-        calculation_version="future-v2", created_at=datetime.now(timezone.utc),
+        calculation_version="future-signals-v3", created_at=datetime.now(timezone.utc),
     )
 
 

@@ -1,3 +1,5 @@
+import type { ExternalSignalImpact } from "@/types/intelligence";
+
 export type CategoryScores = {
   lifestyle: number | null;
   infrastructure: number | null;
@@ -28,6 +30,7 @@ export type DistrictScoreResponse = {
   future_growth_score: number | null;
   future_factors: FutureFactor[];
   future_impacts: Record<string, number>;
+  external_signal_impacts: ExternalSignalImpact[];
   categories: CategoryScores;
   confidence: number;
   reasons: string[];

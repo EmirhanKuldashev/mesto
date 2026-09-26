@@ -9,6 +9,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.dialects.postgresql import JSONB
 
 from app.analytics.future_growth.models import FutureFactor
+from app.intelligence.schemas import SignalImpactResponse
 
 from app.db import Base
 
@@ -73,6 +74,7 @@ class DistrictScoreResponse(BaseModel):
     future_growth_score: float | None
     future_factors: list[FutureFactor]
     future_impacts: dict[str, float]
+    external_signal_impacts: list[SignalImpactResponse] = Field(default_factory=list)
     categories: CategoryScores
     confidence: float
     reasons: list[str]

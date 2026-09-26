@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from app import models
 from app.analytics.future_growth.calculator import FutureGrowthCalculator
 from app.analytics.future_growth.models import FutureGrowthResult, FutureObjectEvidence
+from app.intelligence.service import as_evidence
 
 
 class FutureGrowthService:
@@ -33,4 +34,7 @@ class FutureGrowthService:
             distance_km=float(distance) if distance is not None else None,
             is_synthetic=bool(item.is_synthetic),
         ) for item, distance in self.session.execute(query)]
-        return self.calculator.calculate(district.id, evidence)
+        signals = [as_evidence(row) for row in self.session.scalars(
+            select(models.ExternalSignal).where(models.ExternalSignal.district_id == district.id)
+            .order_by(models.ExternalSignal.id))]
+        return self.calculator.calculate(district.id, evidence, signals=signals)

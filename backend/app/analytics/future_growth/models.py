@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from datetime import date
 
 from pydantic import BaseModel, Field
+from app.intelligence.impact import SignalImpact
 
 
 @dataclass(frozen=True)
@@ -39,3 +40,4 @@ class FutureGrowthResult:
     factors: list[FutureFactor] = field(default_factory=list)
     category_impacts: dict[str, float] = field(default_factory=dict)
     warnings: list[str] = field(default_factory=list)
+    signal_impacts: list[SignalImpact] = field(default_factory=list)

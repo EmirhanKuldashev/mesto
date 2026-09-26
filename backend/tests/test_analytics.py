@@ -9,6 +9,7 @@ from fastapi.testclient import TestClient
 from app.analytics.api import get_analytics_service
 from app.analytics.models import DistrictScoreResponse
 from app.analytics.future_growth.models import FutureFactor, FutureGrowthResult
+from app.intelligence.impact import SignalImpact
 from app.analytics.scoring.calculators import (
     DistrictFacts, InfrastructureCalculator, MarketCalculator,
     TransportCalculator, lifestyle_score,
@@ -76,7 +77,7 @@ def test_score_api_response_schema_and_input_validation():
                             "future_growth": 80, "market": 85}, confidence=.4,
                 reasons=["В районе учтены остановки общественного транспорта"],
                 warnings=["Нет данных для категорий: future_growth"],
-                is_synthetic=True, calculation_version="future-v2",
+                is_synthetic=True, calculation_version="future-signals-v3",
                 created_at=datetime.now(timezone.utc))]
 
     app.dependency_overrides[get_analytics_service] = lambda: FakeService()
@@ -121,7 +122,7 @@ def test_score_api_persists_snapshot_with_postgis(monkeypatch):
 
     app.dependency_overrides[get_session] = override_session
     try:
-        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "0010_future_growth_intelligence"
+        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "0011_external_signals"
         with Session(bind=connection, join_transaction_mode="create_savepoint") as session:
             seed(session)
             session.commit()
@@ -149,7 +150,7 @@ def test_score_api_persists_snapshot_with_postgis(monkeypatch):
         stored = connection.execute(text("SELECT total_score, calculation_version FROM district_scores WHERE id=:id"),
                                     {"id": result["id"]}).one()
         assert float(stored.total_score) == result["score"]
-        assert stored.calculation_version == "future-v2"
+        assert stored.calculation_version == "future-signals-v3"
     finally:
         app.dependency_overrides.clear()
         transaction.rollback()
@@ -192,7 +193,10 @@ def test_service_calculates_and_saves_a_versioned_snapshot(monkeypatch):
         score=50, factors=[FutureFactor(object_id=2, name="School", type="education", year=2028,
             status="planned", impact={"education": 5}, reason="New school",
             distance_km=0, confidence=.5, is_synthetic=True)],
-        category_impacts={"education": 5}))
+        category_impacts={"education": 5},
+        signal_impacts=[SignalImpact(signal_id=3, source_type="government_plan",
+            title="Plan", category="education", future_growth_impact=10,
+            confidence=.5, is_demo=True)]))
     result = service.score(public_id, [7])[0]
     assert result.id == 42 and result.district.id == 7
     assert result.current_score == 97.06
@@ -200,9 +204,12 @@ def test_service_calculates_and_saves_a_versioned_snapshot(monkeypatch):
     assert result.score == 100 and result.future_factors
     assert result.categories.market == 75
     assert result.categories.future_growth == 50
+    assert result.external_signal_impacts[0].future_growth_impact == 10
     assert result.confidence == .5
     assert result.is_synthetic and any("синтетические" in warning for warning in result.warnings)
     saved = session.add.call_args.args[0]
     assert isinstance(saved, models.DistrictScore)
-    assert saved.profile_id == 4 and saved.calculation_version == "future-v2"
+    assert saved.profile_id == 4 and saved.calculation_version == "future-signals-v3"
+    assert saved.future_factors[-1]["kind"] == "external_signal"
+    assert saved.future_factors[-1]["future_growth_impact"] == 10
     session.commit.assert_called_once()

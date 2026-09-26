@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 
 CATEGORIES = ("lifestyle", "infrastructure", "transport", "future_growth", "market")
-CALCULATION_VERSION = "future-v2"
+CALCULATION_VERSION = "future-signals-v3"
 
 
 @dataclass(frozen=True)

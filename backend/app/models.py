@@ -294,3 +294,4 @@ class Report(IdMixin, Base):
 
 # Register the analytics table alongside existing SQLAlchemy models.
 from app.analytics.models import DistrictScore  # noqa: E402,F401
+from app.intelligence.models import ExternalSignal  # noqa: E402,F401
