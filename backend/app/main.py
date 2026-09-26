@@ -8,11 +8,13 @@ from app.db import create_session_factory
 from app.api import router
 from app.profile_api import router as profile_router
 from app.analytics.api import router as analytics_router
+from app.recommendations.api import router as recommendations_router
 
 app = FastAPI(title="МЕСТО API", version="0.1.0")
 app.include_router(router)
 app.include_router(profile_router)
 app.include_router(analytics_router)
+app.include_router(recommendations_router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[os.getenv("FRONTEND_ORIGIN", "http://localhost:3000")],

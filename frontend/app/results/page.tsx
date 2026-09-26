@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Compass } from "lucide-react";
 import { AnalyticsScore } from "@/components/analytics-score";
+import { RecommendationPanel } from "@/components/recommendation-panel";
 import { Brand, EmptyState } from "@/components/concept-ui";
 import { CianListingCard } from "@/components/cian-listing-card";
 import { useAnalytics } from "@/lib/analytics-store";
@@ -37,6 +38,7 @@ export default function ResultsPage() {
       {(status === "ready" || status === "demo") && selected && <>
         {scores.length > 1 && <div className="mb-6 flex flex-wrap gap-2" aria-label="Выбор района">{scores.map((item) => <button key={item.district.id} type="button" onClick={() => setSelectedId(item.district.id)} aria-pressed={selected.district.id === item.district.id} className={`rounded-full px-5 py-3 text-sm font-semibold transition ${selected.district.id === item.district.id ? "bg-[#0d766c] text-white" : "bg-white text-[#41686a] hover:bg-[#e1f0e8]"}`}>{item.district.name} · {item.score === null ? "—" : Math.round(item.score)}</button>)}</div>}
         <AnalyticsScore score={selected} />
+        {status === "ready" && profileId && <RecommendationPanel key={profileId} profileId={profileId} />}
         {status === "ready" && <Link href={`/district?districtId=${selected.district.id}`} className="mt-7 inline-flex items-center gap-2 font-semibold text-[#0a786d]">Посмотреть район на карте <Compass size={17} /></Link>}
       </>}
     </div></section>
