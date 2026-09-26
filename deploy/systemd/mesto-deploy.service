@@ -1,0 +1,13 @@
+[Unit]
+Description=Deploy MESTO after successful GitHub Actions CI
+Wants=network-online.target docker.service
+After=network-online.target docker.service
+
+[Service]
+Type=oneshot
+User=mesto-deploy
+Group=mesto-deploy
+SupplementaryGroups=docker
+WorkingDirectory=/opt/mesto
+ExecStart=/usr/bin/bash /opt/mesto/deploy/mesto-deploy.sh
+TimeoutStartSec=45min

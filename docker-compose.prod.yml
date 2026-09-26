@@ -1,0 +1,18 @@
+services:
+  db:
+    ports: !override []
+
+  backend:
+    ports: !override
+      - "127.0.0.1:8000:8000"
+    environment:
+      FRONTEND_ORIGIN: https://mesto.sbs
+
+  frontend:
+    build:
+      args:
+        NEXT_PUBLIC_API_URL: https://mesto.sbs
+    environment:
+      NEXT_PUBLIC_API_URL: https://mesto.sbs
+    ports: !override
+      - "127.0.0.1:3000:3000"
