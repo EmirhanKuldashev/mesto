@@ -17,6 +17,8 @@ coverage/
 .coverage
 data/raw/*
 !data/raw/.gitkeep
+backend/data/raw/*
+!backend/data/raw/.gitkeep
 data/processed/*
 !data/processed/.gitkeep
 data/synthetic/*

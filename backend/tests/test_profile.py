@@ -130,7 +130,7 @@ def test_single_family_couple_and_life_points(client):
     assert request.status_code == 202, request.text
     assert request.json()["status"] == "pending"
     assert request.json()["life_points_snapshot"][2]["longitude"] == pytest.approx(92.91)
-    assert len(request.json()["data_version_snapshot"]["sources"]) == 5
+    assert len(request.json()["data_version_snapshot"]["sources"]) >= 5
     assert request.json()["preferences_snapshot"]["parks_weight"]["value"] == 85
     assert all(request.json()[name] is None for name in ("user_score", "partner_score", "family_score"))
 

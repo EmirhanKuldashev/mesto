@@ -35,7 +35,7 @@ def database(monkeypatch):
 def test_migration_seed_geometry_and_metadata(database):
     factory, engine = database
     with engine.connect() as connection:
-        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "0006_compromise_preferences"
+        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "0007_cian_offer_loader"
         assert connection.scalar(text("SELECT PostGIS_Version()"))
     with factory.begin() as session:
         first = seed(session)
@@ -48,13 +48,13 @@ def test_migration_seed_geometry_and_metadata(database):
                              (models.ResidentialComplex, 12), (models.PropertyOffer, 60),
                              (models.RentListing, 80), (models.FutureObject, 20),
                              (models.MortgageProgram, 8)):
-            assert session.scalar(select(func.count()).select_from(model)) == count
+            assert session.scalar(select(func.count()).select_from(model).where(model.is_synthetic.is_(True))) == count
         assert session.scalar(select(func.ST_IsValid(models.District.geometry)).limit(1)) is True
         assert session.scalar(select(func.ST_SRID(models.POI.location)).limit(1)) == 4326
         assert session.scalar(select(func.ST_SRID(models.POI.geometry)).limit(1)) == 4326
         assert session.scalar(select(func.count()).select_from(models.DataQuality)) == 437
-        assert all(source.is_synthetic and source.source_type == "synthetic"
-                   for source in session.scalars(select(models.DataSource)))
+        assert sum(source.is_synthetic and source.source_type == "synthetic"
+                   for source in session.scalars(select(models.DataSource))) == 5
         assert all(version.record_count for version in session.scalars(select(models.SourceVersion)))
 
 
@@ -66,7 +66,10 @@ def test_catalogue_api_and_filters(database):
     for path, count in counts.items():
         response = client.get(f"/api/{path}")
         assert response.status_code == 200, response.text
-        assert len(response.json()) == count
+        if path in ("properties", "data-sources"):
+            assert len(response.json()) >= count
+        else:
+            assert len(response.json()) == count
     district = client.get("/api/districts").json()[0]
     assert client.get(f"/api/districts/{district['id']}").json()["id"] == district["id"]
     assert len(client.get("/api/poi", params={"category": "park"}).json()) > 0

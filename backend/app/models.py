@@ -5,7 +5,7 @@ from decimal import Decimal
 from uuid import UUID
 
 from geoalchemy2 import Geometry
-from sqlalchemy import Boolean, CheckConstraint, Date, DateTime, ForeignKey, Integer, JSON, Numeric, String, Text, func, text
+from sqlalchemy import Boolean, CheckConstraint, Date, DateTime, ForeignKey, Integer, JSON, Numeric, String, Text, UniqueConstraint, func, text
 from sqlalchemy.dialects.postgresql import JSONB, UUID as PG_UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -170,6 +170,8 @@ class ResidentialComplex(IdMixin, SourceFields, Base):
 
 class PropertyOffer(IdMixin, SourceFields, Base):
     __tablename__ = "property_offers"
+    __table_args__ = (UniqueConstraint("source_id", "external_id", name="uq_property_offers_source_external"),)
+    source: Mapped[str] = mapped_column(String(100), default=lambda context: context.get_current_parameters()["source_id"])
     complex_id: Mapped[int | None] = mapped_column(ForeignKey("residential_complexes.id"))
     district_id: Mapped[int | None] = mapped_column(ForeignKey("districts.id"))
     price: Mapped[Decimal] = mapped_column(Numeric(14, 2))
@@ -178,7 +180,12 @@ class PropertyOffer(IdMixin, SourceFields, Base):
     external_id: Mapped[str | None] = mapped_column(String(120))
     floor: Mapped[int | None] = mapped_column(Integer)
     address: Mapped[str | None] = mapped_column(String(250))
+    url: Mapped[str | None] = mapped_column(Text)
+    title: Mapped[str | None] = mapped_column(Text)
+    city: Mapped[str | None] = mapped_column(String(120))
     location: Mapped[str | None] = mapped_column(Geometry("POINT", srid=4326))
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
 
 class RentListing(IdMixin, SourceFields, Base):

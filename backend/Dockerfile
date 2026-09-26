@@ -2,6 +2,8 @@ FROM python:3.12-slim
 WORKDIR /app
 COPY pyproject.toml ./
 COPY app ./app
+COPY data/__init__.py ./data/__init__.py
+COPY data/loaders ./data/loaders
 COPY alembic.ini ./
 COPY migrations ./migrations
 RUN pip install --no-cache-dir .
