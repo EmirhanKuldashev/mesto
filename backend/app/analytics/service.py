@@ -8,10 +8,11 @@ from sqlalchemy.orm import Session
 
 from app import models
 from app.analytics.explanation.generator import ExplanationGenerator
+from app.analytics.future_growth.service import FutureGrowthService
 from app.analytics.models import CategoryScores, DistrictReference, DistrictScoreResponse
 from app.analytics.scoring.calculators import (
-    DistrictFacts, FutureGrowthCalculator, InfrastructureCalculator,
-    MarketCalculator, TransportCalculator, lifestyle_score,
+    DistrictFacts, InfrastructureCalculator, MarketCalculator,
+    TransportCalculator, lifestyle_score,
 )
 from app.analytics.scoring.engine import ScoringEngine
 from app.analytics.scoring.weights import CALCULATION_VERSION
@@ -24,7 +25,7 @@ class AnalyticsService:
         self.infrastructure = InfrastructureCalculator()
         self.transport = TransportCalculator()
         self.market = MarketCalculator()
-        self.future = FutureGrowthCalculator()
+        self.future = FutureGrowthService(session)
         self.explanations = ExplanationGenerator()
 
     def _facts(self, district: models.District) -> DistrictFacts:
@@ -40,10 +41,6 @@ class AnalyticsService:
             if rent.monthly_rent and rent.monthly_rent > 0:
                 facts.rent_prices.append(float(rent.monthly_rent))
             facts.synthetic |= bool(rent.is_synthetic)
-        for future in self.session.scalars(select(models.FutureObject).where(models.FutureObject.district_id == district.id)):
-            if future.status in ("planned", "approved", "under_construction") and future.confidence is not None:
-                facts.future_confidences.append(max(0.0, min(1.0, float(future.confidence))))
-            facts.synthetic |= bool(future.is_synthetic)
         return facts
 
     def score(self, profile_id: UUID, district_ids: list[int]) -> list[DistrictScoreResponse]:
@@ -63,10 +60,12 @@ class AnalyticsService:
         for district_id in district_ids:
             district = districts[district_id]
             facts = self._facts(district)
+            future_result = self.future.calculate(district)
+            facts.synthetic |= any(factor.is_synthetic for factor in future_result.factors)
             categories = {
                 "infrastructure": self.infrastructure.calculate(facts),
                 "transport": self.transport.calculate(facts),
-                "future_growth": self.future.calculate(facts),
+                "future_growth": future_result.score,
                 "market": self.market.calculate(facts, goal=profile.housing_goal,
                                                 purchase_budget=float(profile.purchase_budget) if profile.purchase_budget else None,
                                                 rent_budget=float(profile.rent_budget) if profile.rent_budget else None),
@@ -74,11 +73,15 @@ class AnalyticsService:
             lifestyle, unsupported = lifestyle_score(preferences, categories)
             categories["lifestyle"] = lifestyle
             combined = self.engine.calculate(categories)
-            confidence = round(combined.coverage * (0.5 if facts.synthetic else 1.0), 3)
+            current_score, future_score = self.engine.calculate_outlook(categories)
+            score = future_score if future_score is not None else current_score
+            confidence = round(combined.coverage * (0.5 if facts.synthetic else 1.0), 3) if score is not None else 0
             reasons, warnings = self.explanations.generate(categories, facts,
-                                                           unsupported_preferences=unsupported)
+                                                           unsupported_preferences=unsupported, future_result=future_result)
             row = models.DistrictScore(
-                profile_id=profile.id, district_id=district_id, total_score=combined.total_score,
+                profile_id=profile.id, district_id=district_id, total_score=score,
+                current_score=current_score, future_score=future_score,
+                future_factors=[factor.model_dump(mode="json") for factor in future_result.factors],
                 lifestyle_score=lifestyle, infrastructure_score=categories["infrastructure"],
                 transport_score=categories["transport"], future_growth_score=categories["future_growth"],
                 market_score=categories["market"], confidence=confidence,
@@ -89,7 +92,10 @@ class AnalyticsService:
             results.append(DistrictScoreResponse(
                 id=row.id,
                 district=DistrictReference(id=district.id, name=district.name, slug=district.slug),
-                score=combined.total_score, categories=CategoryScores(**categories),
+                score=score, current_score=current_score, future_score=future_score,
+                future_growth_score=future_result.score, future_factors=future_result.factors,
+                future_impacts=future_result.category_impacts,
+                categories=CategoryScores(**categories),
                 confidence=confidence, reasons=reasons, warnings=warnings,
                 is_synthetic=facts.synthetic, calculation_version=CALCULATION_VERSION,
                 created_at=row.created_at,

@@ -11,7 +11,6 @@ class DistrictFacts:
     poi_counts: Counter[str] = field(default_factory=Counter)
     sale_prices: list[float] = field(default_factory=list)
     rent_prices: list[float] = field(default_factory=list)
-    future_confidences: list[float] = field(default_factory=list)
     synthetic: bool = False
 
     @property
@@ -69,19 +68,6 @@ class MarketCalculator:
         if goal in ("rent", "compare") and rent_budget and facts.rent_prices:
             candidates.append(min(100.0, 75 * rent_budget / median(facts.rent_prices)))
         return round(sum(candidates) / len(candidates), 2) if candidates else None
-
-
-class FutureGrowthCalculator:
-    """Planned-object density discounted by recorded source confidence."""
-
-    def calculate(self, facts: DistrictFacts) -> float | None:
-        if not facts.future_confidences:
-            return None
-        density = _saturation(len(facts.future_confidences), facts.population, 2)
-        if density is None:
-            return None
-        reliability = sum(facts.future_confidences) / len(facts.future_confidences)
-        return round(density * reliability, 2)
 
 
 def lifestyle_score(preferences: dict, categories: dict[str, float | None]) -> tuple[float | None, bool]:

@@ -27,3 +27,14 @@ class ScoringEngine:
             return ScoreResult(total_score=None, coverage=0)
         weighted = sum(self.weights[name] * value for name, value in categories.items() if value is not None)
         return ScoreResult(total_score=round(weighted / coverage, 2), coverage=round(coverage, 3))
+
+    def calculate_outlook(self, categories: Mapping[str, float | None]) -> tuple[float | None, float | None]:
+        """Today excludes plans; future is today's score plus a bounded weighted uplift."""
+        current_categories = dict(categories)
+        growth = current_categories["future_growth"]
+        current_categories["future_growth"] = None
+        current = self.calculate(current_categories).total_score
+        if current is None:
+            return None, None
+        future = None if growth is None else round(min(100.0, current + self.weights["future_growth"] * growth), 2)
+        return current, future

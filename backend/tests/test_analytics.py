@@ -8,9 +8,10 @@ from fastapi.testclient import TestClient
 
 from app.analytics.api import get_analytics_service
 from app.analytics.models import DistrictScoreResponse
+from app.analytics.future_growth.models import FutureFactor, FutureGrowthResult
 from app.analytics.scoring.calculators import (
-    DistrictFacts, FutureGrowthCalculator, InfrastructureCalculator,
-    MarketCalculator, TransportCalculator, lifestyle_score,
+    DistrictFacts, InfrastructureCalculator, MarketCalculator,
+    TransportCalculator, lifestyle_score,
 )
 from app.analytics.scoring.engine import ScoringEngine
 from app.analytics.scoring.weights import ScoringWeights
@@ -41,15 +42,12 @@ def test_calculators_use_recorded_facts_not_default_scores():
     facts = DistrictFacts(population=10000)
     assert InfrastructureCalculator().calculate(facts) is None
     assert TransportCalculator().calculate(facts) is None
-    assert FutureGrowthCalculator().calculate(facts) is None
     assert MarketCalculator().calculate(facts, goal="rent", purchase_budget=None, rent_budget=50000) is None
     facts.poi_counts.update({"education": 2, "healthcare": 3, "park": 1, "shop": 4,
                              "transport_stop": 3})
     facts.rent_prices.extend([40000, 60000])
-    facts.future_confidences.extend([.5, .5])
     assert InfrastructureCalculator().calculate(facts) == 100
     assert TransportCalculator().calculate(facts) == 100
-    assert FutureGrowthCalculator().calculate(facts) == 50
     assert MarketCalculator().calculate(facts, goal="rent", purchase_budget=None, rent_budget=50000) == 75
     categories = {"infrastructure": 100, "transport": 100, "future_growth": 50, "market": 75}
     lifestyle, unsupported = lifestyle_score({
@@ -69,11 +67,16 @@ def test_score_api_response_schema_and_input_validation():
             assert district_ids == [7]
             return [DistrictScoreResponse(
                 id=9, district={"id": 7, "name": "Советский", "slug": "sovetsky"}, score=82,
+                current_score=78, future_score=82, future_growth_score=80,
+                future_factors=[FutureFactor(object_id=2, name="School", type="education", year=2028,
+                    status="planned", impact={"education": 5}, reason="New school",
+                    distance_km=0, confidence=.5, is_synthetic=True)],
+                future_impacts={"education": 5},
                 categories={"lifestyle": 80, "infrastructure": 90, "transport": 70,
-                            "future_growth": None, "market": 85}, confidence=.4,
+                            "future_growth": 80, "market": 85}, confidence=.4,
                 reasons=["В районе учтены остановки общественного транспорта"],
                 warnings=["Нет данных для категорий: future_growth"],
-                is_synthetic=True, calculation_version="baseline-v1",
+                is_synthetic=True, calculation_version="future-v2",
                 created_at=datetime.now(timezone.utc))]
 
     app.dependency_overrides[get_analytics_service] = lambda: FakeService()
@@ -83,7 +86,9 @@ def test_score_api_response_schema_and_input_validation():
         assert response.status_code == 200, response.text
         data = response.json()[0]
         assert data["district"] == {"id": 7, "name": "Советский", "slug": "sovetsky"}
-        assert data["score"] == 82 and data["categories"]["future_growth"] is None
+        assert data["score"] == 82 and data["categories"]["future_growth"] == 80
+        assert data["future_score"] == 82 and data["current_score"] == 78
+        assert data["future_growth_score"] == 80 and data["future_factors"][0]["type"] == "education"
         assert data["confidence"] == .4 and data["is_synthetic"] is True
         assert data["reasons"] and data["warnings"] and data["id"] == 9
         assert client.post("/api/analytics/score", json={"profile_id": str(profile_id),
@@ -116,7 +121,7 @@ def test_score_api_persists_snapshot_with_postgis(monkeypatch):
 
     app.dependency_overrides[get_session] = override_session
     try:
-        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "0009_district_scores"
+        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "0010_future_growth_intelligence"
         with Session(bind=connection, join_transaction_mode="create_savepoint") as session:
             seed(session)
             session.commit()
@@ -137,12 +142,14 @@ def test_score_api_persists_snapshot_with_postgis(monkeypatch):
         result = response.json()[0]
         assert result["district"]["id"] == district_id
         assert result["score"] is not None
+        assert result["current_score"] is not None and result["future_score"] is not None
+        assert result["future_factors"]
         assert 0 <= result["score"] <= 100
         assert result["confidence"] <= .5 and result["is_synthetic"] is True
         stored = connection.execute(text("SELECT total_score, calculation_version FROM district_scores WHERE id=:id"),
                                     {"id": result["id"]}).one()
         assert float(stored.total_score) == result["score"]
-        assert stored.calculation_version == "baseline-v1"
+        assert stored.calculation_version == "future-v2"
     finally:
         app.dependency_overrides.clear()
         transaction.rollback()
@@ -169,7 +176,6 @@ def test_service_calculates_and_saves_a_versioned_snapshot(monkeypatch):
     facts.poi_counts.update({"education": 2, "healthcare": 3, "park": 1,
                              "shop": 4, "transport_stop": 3})
     facts.rent_prices.extend([40000, 60000])
-    facts.future_confidences.extend([.5, .5])
     session = Mock()
     session.scalar.side_effect = [profile, preferences]
     session.scalars.return_value = [district]
@@ -182,14 +188,21 @@ def test_service_calculates_and_saves_a_versioned_snapshot(monkeypatch):
     session.flush.side_effect = assign_generated_values
     service = AnalyticsService(session)
     monkeypatch.setattr(service, "_facts", lambda _: facts)
+    monkeypatch.setattr(service.future, "calculate", lambda _: FutureGrowthResult(
+        score=50, factors=[FutureFactor(object_id=2, name="School", type="education", year=2028,
+            status="planned", impact={"education": 5}, reason="New school",
+            distance_km=0, confidence=.5, is_synthetic=True)],
+        category_impacts={"education": 5}))
     result = service.score(public_id, [7])[0]
     assert result.id == 42 and result.district.id == 7
-    assert result.score == 87.5
+    assert result.current_score == 97.06
+    assert result.future_score == 100
+    assert result.score == 100 and result.future_factors
     assert result.categories.market == 75
     assert result.categories.future_growth == 50
     assert result.confidence == .5
     assert result.is_synthetic and any("синтетические" in warning for warning in result.warnings)
     saved = session.add.call_args.args[0]
     assert isinstance(saved, models.DistrictScore)
-    assert saved.profile_id == 4 and saved.calculation_version == "baseline-v1"
+    assert saved.profile_id == 4 and saved.calculation_version == "future-v2"
     session.commit.assert_called_once()

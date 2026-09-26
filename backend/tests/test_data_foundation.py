@@ -35,7 +35,7 @@ def database(monkeypatch):
 def test_migration_seed_geometry_and_metadata(database):
     factory, engine = database
     with engine.connect() as connection:
-        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "0009_district_scores"
+        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "0010_future_growth_intelligence"
         assert connection.scalar(text("SELECT PostGIS_Version()"))
     with factory.begin() as session:
         first = seed(session)

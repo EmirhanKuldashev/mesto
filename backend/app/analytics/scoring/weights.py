@@ -3,16 +3,16 @@
 from dataclasses import dataclass
 
 CATEGORIES = ("lifestyle", "infrastructure", "transport", "future_growth", "market")
-CALCULATION_VERSION = "baseline-v1"
+CALCULATION_VERSION = "future-v2"
 
 
 @dataclass(frozen=True)
 class ScoringWeights:
-    lifestyle: float = 0.20
+    lifestyle: float = 0.30
     infrastructure: float = 0.25
     transport: float = 0.20
     future_growth: float = 0.15
-    market: float = 0.20
+    market: float = 0.10
 
     def as_dict(self) -> dict[str, float]:
         values = {name: getattr(self, name) for name in CATEGORIES}
