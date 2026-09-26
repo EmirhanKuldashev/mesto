@@ -100,6 +100,9 @@ class POI(SourceMetadata):
 class ResidentialComplex(SourceMetadata):
     id: int | None = None
     name: str
+    external_id: str | None = None
+    url: str | None = None
+    address: str | None = None
     district_id: int | None = None
     location: GeoPoint | None = None
     delivery_date: date | None = None

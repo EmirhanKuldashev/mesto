@@ -156,7 +156,11 @@ class POI(IdMixin, SourceFields, Base):
 
 class ResidentialComplex(IdMixin, SourceFields, Base):
     __tablename__ = "residential_complexes"
+    __table_args__ = (UniqueConstraint("source_id", "external_id", name="uq_residential_complex_source_external"),)
     name: Mapped[str] = mapped_column(String(200))
+    external_id: Mapped[str | None] = mapped_column(String(120))
+    url: Mapped[str | None] = mapped_column(Text)
+    address: Mapped[str | None] = mapped_column(String(250))
     district_id: Mapped[int | None] = mapped_column(ForeignKey("districts.id"))
     location: Mapped[str | None] = mapped_column(Geometry("POINT", srid=4326))
     delivery_date: Mapped[date | None] = mapped_column(Date)

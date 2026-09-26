@@ -35,7 +35,7 @@ def database(monkeypatch):
 def test_migration_seed_geometry_and_metadata(database):
     factory, engine = database
     with engine.connect() as connection:
-        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "0007_cian_offer_loader"
+        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "0008_cian_complexes"
         assert connection.scalar(text("SELECT PostGIS_Version()"))
     with factory.begin() as session:
         first = seed(session)
@@ -51,7 +51,8 @@ def test_migration_seed_geometry_and_metadata(database):
             assert session.scalar(select(func.count()).select_from(model).where(model.is_synthetic.is_(True))) == count
         assert session.scalar(select(func.ST_IsValid(models.District.geometry)).limit(1)) is True
         assert session.scalar(select(func.ST_SRID(models.POI.location)).limit(1)) == 4326
-        assert session.scalar(select(func.ST_SRID(models.POI.geometry)).limit(1)) == 4326
+        assert session.scalar(select(func.ST_SRID(models.POI.geometry)).where(
+            models.POI.is_synthetic.is_(True)).limit(1)) == 4326
         assert session.scalar(select(func.count()).select_from(models.DataQuality)) == 437
         assert sum(source.is_synthetic and source.source_type == "synthetic"
                    for source in session.scalars(select(models.DataSource))) == 5
@@ -66,16 +67,24 @@ def test_catalogue_api_and_filters(database):
     for path, count in counts.items():
         response = client.get(f"/api/{path}")
         assert response.status_code == 200, response.text
-        if path in ("properties", "data-sources"):
+        if path in ("districts", "poi", "properties", "residential-complexes", "data-sources"):
             assert len(response.json()) >= count
         else:
             assert len(response.json()) == count
+    cian = client.get("/api/properties", params={"source_id": "cian"})
+    assert cian.status_code == 200
+    assert all(item["source_id"] == "cian" and not item["is_synthetic"] for item in cian.json())
     district = client.get("/api/districts").json()[0]
     assert client.get(f"/api/districts/{district['id']}").json()["id"] == district["id"]
+    osm_districts = client.get("/api/districts", params={"source_id": "osm"})
+    assert osm_districts.status_code == 200
+    assert len(osm_districts.json()) == 7
+    assert all(not item["is_synthetic"] and item["geometry"]["type"] == "MultiPolygon"
+               for item in osm_districts.json())
     assert len(client.get("/api/poi", params={"category": "park"}).json()) > 0
     assert len(client.get("/api/properties", params={"min_price": 100000000}).json()) == 0
     assert len(client.get("/api/poi", params={"bbox": "92.7,55.9,93.1,56.1"}).json()) > 0
     assert client.get("/api/poi", params={"bbox": "invalid"}).status_code == 422
     assert client.get("/api/districts/9999").status_code == 404
-    assert all(item["is_synthetic"] and item["source_type"] == "synthetic"
-               for item in client.get("/api/poi").json())
+    assert all(item["source_id"] == "osm" and not item["is_synthetic"]
+               for item in client.get("/api/poi", params={"source_id": "osm"}).json())

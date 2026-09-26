@@ -1,11 +1,10 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, Check, Compass, MapPin, Sparkles } from "lucide-react";
+import { Check, Compass, MapPin, Sparkles } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
-import { demoDistrict, demoScenarios } from "@/lib/demo-data";
 
 export function Brand({ compact = false }: { compact?: boolean }) {
   return <Link href="/" className="focus-outline inline-flex items-center gap-3 font-semibold tracking-[-0.06em] text-white" aria-label="МЕСТО — главная">
@@ -16,7 +15,7 @@ export function Brand({ compact = false }: { compact?: boolean }) {
 
 export function DemoBadge({ light = false }: { light?: boolean }) {
   return <span className={light ? "inline-flex items-center gap-1.5 rounded-full border border-[#bad9d3] bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.13em] text-[#376979]" : "demo-chip"}>
-    <Sparkles size={12} /> Демо-данные
+    <Sparkles size={12} /> Демо-анкета
   </span>;
 }
 
@@ -39,25 +38,6 @@ export function SelectionCard({ title, description, icon: Icon, selected, onClic
   </motion.button>;
 }
 
-export function ScoreRing({ value, size = "large", dark = false }: { value: number; size?: "large" | "small"; dark?: boolean }) {
-  const radius = 56;
-  const circumference = 2 * Math.PI * radius;
-  const small = size === "small";
-  return <div className={`relative shrink-0 ${small ? "h-32 w-32" : "h-48 w-48 sm:h-56 sm:w-56"}`}>
-    <svg className="h-full w-full -rotate-90" viewBox="0 0 140 140" aria-hidden="true">
-      <circle cx="70" cy="70" r={radius} fill="none" stroke={dark ? "rgba(24,77,84,.14)" : "rgba(255,255,255,.12)"} strokeWidth="8" />
-      <motion.circle cx="70" cy="70" r={radius} fill="none" stroke={dark ? "#0d9c80" : "#9cf2d6"} strokeWidth="8" strokeLinecap="round"
-        strokeDasharray={circumference} initial={{ strokeDashoffset: circumference }}
-        whileInView={{ strokeDashoffset: circumference * (1 - value / 100) }} viewport={{ once: true }}
-        transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1], delay: .2 }} />
-    </svg>
-    <div className={`absolute inset-0 flex flex-col items-center justify-center ${dark ? "text-[#123541]" : "text-white"}`}>
-      <span className={`${small ? "text-4xl" : "text-6xl"} font-semibold tracking-[-0.09em]`}>{value}</span>
-      <span className={`text-[10px] font-bold uppercase tracking-[0.2em] ${dark ? "text-[#6b9090]" : "text-[#a6d9d3]"}`}>из 100</span>
-    </div>
-  </div>;
-}
-
 export function MetricTile({ label, value, note, icon: Icon }: { label: string; value: string; note?: string; icon?: LucideIcon }) {
   return <div className="rounded-[20px] border border-[#dce9e6] bg-white p-5 shadow-[0_10px_25px_rgba(4,43,49,0.035)]">
     <div className="flex items-center justify-between gap-3 text-xs font-semibold uppercase tracking-[0.12em] text-[#7c9698]"><span>{label}</span>{Icon && <Icon size={17} className="text-[#3e9d91]" />}</div>
@@ -66,39 +46,11 @@ export function MetricTile({ label, value, note, icon: Icon }: { label: string; 
   </div>;
 }
 
-export function DistrictInsightCard({ compact = false }: { compact?: boolean }) {
-  return <article className="rounded-[26px] border border-[#dce9e5] bg-white p-6 text-[#173644] shadow-[0_24px_60px_rgba(4,39,49,0.08)] sm:p-7">
-    <div className="flex items-start justify-between gap-4">
-      <div><span className="text-[11px] font-bold uppercase tracking-[0.19em] text-[#358f80]">Инсайт района</span><h3 className="mt-2 text-2xl font-semibold tracking-[-0.055em]">{demoDistrict.name}</h3></div>
-      <span className="rounded-full bg-[#dff7ee] px-3 py-1.5 text-sm font-bold text-[#137d6d]">{demoDistrict.score} / 100</span>
-    </div>
-    <p className="mt-4 text-sm leading-relaxed text-[#658080]">Пример того, как район может подходить вашему сценарию.</p><div className="mt-4 space-y-2 text-xs leading-relaxed text-[#557a78]"><p>+ Инфраструктура, парки и транспорт рядом</p><p>+ Планируемые общественные пространства</p><p className="text-[#9c7864]">− Часть объектов только планируется; цены выше среднего</p></div>
-    {!compact && <div className="mt-6 space-y-3">{demoDistrict.categories.map((item) =>
-      <div key={item.label} className="grid grid-cols-[105px_1fr_28px] items-center gap-3 text-xs">
-        <span className="text-[#638080]">{item.label}</span><div className="h-1.5 overflow-hidden rounded-full bg-[#e8f0ed]"><motion.div initial={{ width: 0 }} whileInView={{ width: `${item.value}%` }} viewport={{ once: true }} transition={{ duration: .8 }} className="h-full rounded-full bg-[#34b69d]" /></div>
-        <span className="text-right font-semibold text-[#26535c]">{item.value}</span>
-      </div>)}</div>}
-    <Link href="/district" className="focus-outline mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#138d79] hover:text-[#0d685d]">Открыть карту района <ArrowUpRight size={16} /></Link>
-  </article>;
-}
-
-export function ScenarioCard({ scenario }: { scenario: (typeof demoScenarios)[number] }) {
-  return <motion.article whileHover={{ y: -5 }} className="group rounded-[26px] border border-white/10 bg-white/[0.065] p-6 transition-colors hover:border-[#a3f4db]/35 hover:bg-white/[0.085] sm:p-7">
-    <div className="flex items-start justify-between gap-4">
-      <div><span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#8bd9cc]">Сценарий</span><h3 className="mt-3 text-2xl font-semibold tracking-[-0.05em]">{scenario.title}</h3></div>
-      <span className="rounded-full border border-[#9af4d8]/25 bg-[#9af4d8]/10 px-3 py-1.5 text-sm font-bold text-[#a2f2d9]">{scenario.score}/100</span>
-    </div>
-    <p className="mt-2 text-sm text-[#a8c0c3]">{scenario.subtitle}</p>
-    <ul className="mt-7 space-y-3">{scenario.details.map((detail) => <li key={detail} className="flex items-start gap-2 text-sm text-[#d8e8e7]"><Check size={16} className="mt-0.5 shrink-0 text-[#91ebd1]" />{detail}</li>)}</ul>
-  </motion.article>;
-}
-
 export function EmptyState({ title, body }: { title: string; body: string }) {
   return <div className="flex min-h-48 flex-col items-center justify-center rounded-[24px] border border-dashed border-[#b8d1cc] bg-white/60 p-7 text-center text-[#1c4450]">
     <Compass className="text-[#65b6a6]" size={28} /><p className="mt-3 font-semibold">{title}</p><p className="mt-1 max-w-xs text-sm text-[#72918f]">{body}</p>
   </div>;
 }
-
 
 export function Skeleton({ className = "" }: { className?: string }) {
   return <div aria-hidden="true" className={`shimmer rounded-2xl ${className}`} />;

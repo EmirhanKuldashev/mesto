@@ -1,12 +1,14 @@
-"""Capture one Cian search page for inspection; no listing extraction."""
+"""Collect public Cian apartment listings and Krasnoyarsk residential complexes."""
 
+import argparse
 import json
 import logging
 import re
+import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from urllib.parse import urljoin, urlparse, urlunparse
+from urllib.parse import parse_qs, urljoin, urlparse, urlunparse
 
 from playwright.sync_api import Browser, Error as PlaywrightError, Page, Playwright
 from playwright.sync_api import TimeoutError as PlaywrightTimeoutError, sync_playwright
@@ -23,6 +25,8 @@ class SearchConfig:
 SEARCH = SearchConfig()
 RAW_DIR = Path(__file__).resolve().parents[1] / "data" / "raw" / "cian"
 LISTINGS_FILE = RAW_DIR / "listings.json"
+COMPLEXES_FILE = RAW_DIR / "complexes.json"
+COMPLEXES_URL = "https://krasnoyarsk.cian.ru/novostroyki/"
 NAVIGATION_TIMEOUT_MS = 30_000
 LOAD_TIMEOUT_MS = 10_000
 logger = logging.getLogger(__name__)
@@ -180,11 +184,180 @@ def save_raw_data(listings: list[dict], path: Path = LISTINGS_FILE) -> Path:
     return path
 
 
-def main() -> int:
+def collect_complexes(page: Page) -> list[dict]:
+    """Extract ЖК links visible on one city search page, without guessing locations."""
+    captured_at = datetime.now(timezone.utc).isoformat()
+    results = {}
+    anchors = page.locator('[data-name="OffersLayout"] a[href]').evaluate_all(
+        "nodes => nodes.map(node => ({href: node.href, name: node.textContent.trim(), title: node.title}))"
+    )
+    for anchor in anchors:
+        href = anchor["href"]
+        if not href:
+            continue
+        parsed = urlparse(urljoin(page.url, href))
+        host = parsed.hostname or ""
+        if parsed.scheme != "https" or not host.endswith(".cian.ru"):
+            continue
+        if not host.startswith("zhk-"):
+            continue
+        name = (anchor["name"] or anchor["title"] or "").strip()
+        if not name or not (name.startswith("ЖК ") or "жилой комплекс" in name.lower()):
+            continue
+        url = urlunparse((parsed.scheme, parsed.netloc, parsed.path or "/", "", "", ""))
+        external_id = host
+        results[external_id] = {
+            "complex_id": external_id, "source": "cian", "url": url, "name": name,
+            "city": SEARCH.city, "address": None,
+            "latitude": None, "longitude": None, "price_from": None,
+            "parsed_at": captured_at,
+        }
+    logger.info("Found %s ЖК links on %s", len(results), page.url)
+    return list(results.values())
+
+
+def collect_all_complexes(browser: Browser, *, max_pages: int = 20, delay_seconds: float = 2) -> list[dict]:
+    """Walk public search pagination; fail closed on blocks or incomplete traversal."""
+    if max_pages < 1 or delay_seconds < 0:
+        raise ValueError("Invalid crawl limits")
+    page = browser.new_page(viewport={"width": 1440, "height": 900})
+    seen_pages = set()
+    complexes = {}
+    next_url = COMPLEXES_URL
+    expected_count = None
+    try:
+        for index in range(max_pages):
+            parsed_url = urlparse(next_url)
+            if parsed_url.scheme != "https" or parsed_url.hostname != "krasnoyarsk.cian.ru" or parsed_url.path not in ("/novostroyki/", "/newobjects/list"):
+                raise ValueError(f"Unexpected pagination URL: {next_url}")
+            if parsed_url.path == "/newobjects/list":
+                query = parse_qs(parsed_url.query)
+                if query.get("region") != ["4827"] or query.get("offer_type") != ["newobject"] or query.get("p") != [str(index + 1)]:
+                    raise ValueError(f"Unexpected Cian ЖК pagination parameters: {next_url}")
+            if next_url in seen_pages:
+                raise ValueError("Cian pagination loop detected")
+            seen_pages.add(next_url)
+            response = page.goto(next_url, wait_until="domcontentloaded", timeout=NAVIGATION_TIMEOUT_MS)
+            if response is None or response.status != 200:
+                raise RuntimeError(f"Cian ЖК search unavailable: HTTP {response.status if response else 'no response'} at {next_url}")
+            title = page.title()
+            if SEARCH.city.lower() not in title.lower():
+                raise ValueError("Cian ЖК page is not the Krasnoyarsk search")
+            if expected_count is None:
+                match = re.search(r"(\d+)\s+жил", title)
+                expected_count = int(match.group(1)) if match else None
+            page_records = collect_complexes(page)
+            if not page_records:
+                raise ValueError(f"No ЖК cards found on {next_url}; refusing partial output")
+            complexes.update({record["complex_id"]: record for record in page_records})
+            links = page.locator('nav[data-name="Pagination"] a[href]').evaluate_all(
+                "nodes => nodes.map(node => node.href)"
+            )
+            next_page = next((url for url in links if parse_qs(urlparse(url).query).get("p") == [str(index + 2)]), None)
+            if not next_page:
+                if expected_count is not None and len(complexes) != expected_count:
+                    raise ValueError(f"Expected {expected_count} ЖК, found {len(complexes)}; refusing partial output")
+                logger.info("Reached final ЖК search page; collected %s unique complexes", len(complexes))
+                return list(complexes.values())
+            next_url = next_page
+            if index + 1 < max_pages:
+                time.sleep(delay_seconds)
+        raise ValueError(f"Reached max_pages={max_pages}; refusing partial ЖК output")
+    finally:
+        page.close()
+
+
+def save_complexes_raw(complexes: list[dict], path: Path = COMPLEXES_FILE) -> Path:
+    """Store a complete crawl without replacing the previous file on failure."""
+    if not complexes:
+        raise ValueError("No ЖК to save")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(".json.tmp")
+    temporary.write_text(json.dumps(complexes, ensure_ascii=False, indent=2), encoding="utf-8")
+    temporary.replace(path)
+    logger.info("Saved %s ЖК to %s", len(complexes), path)
+    return path
+
+
+def extract_complex_details(html: str) -> dict:
+    """Read coordinates and minimum price embedded in a ЖК detail page."""
+    location = re.search(
+        r"get-map-preview/\?latitude=([\d.]+)&(?:amp;)?longitude=([\d.]+)(?:&(?:amp;)?[^\"<> ]+)*?newbuildingId=\d+",
+        html,
+    )
+    price = re.search(r'"minPrice":"([\d.]+)"', html)
+    details = {"latitude": None, "longitude": None, "price_from": None}
+    if location:
+        latitude, longitude = map(float, location.groups())
+        if 55 <= latitude <= 57 and 91 <= longitude <= 95:
+            details.update(latitude=latitude, longitude=longitude)
+    if price:
+        details["price_from"] = float(price.group(1))
+    return details
+
+
+def enrich_complexes(
+    browser: Browser, complexes: list[dict], *, path: Path = COMPLEXES_FILE,
+    delay_seconds: float = 2,
+) -> tuple[int, int]:
+    """Visit listed ЖК pages sequentially; keep partial progress and stop on HTTP errors."""
+    if delay_seconds < 0:
+        raise ValueError("delay_seconds must be nonnegative")
+    page = browser.new_page(viewport={"width": 1440, "height": 900})
+    enriched = 0
+    failure = None
+    try:
+        for record in complexes:
+            if record.get("latitude") is not None and record.get("longitude") is not None:
+                continue
+            response = page.goto(record["url"], wait_until="domcontentloaded", timeout=NAVIGATION_TIMEOUT_MS)
+            if response is None or response.status != 200:
+                failure = f"Stopped ЖК detail collection at {record['url']}: HTTP {response.status if response else 'no response'}"
+                logger.warning(failure)
+                break
+            if SEARCH.city.lower() not in page.title().lower():
+                failure = f"Unexpected ЖК city at {record['url']}"
+                logger.warning(failure)
+                break
+            details = extract_complex_details(page.content())
+            if details["latitude"] is not None:
+                record.update(details)
+                enriched += 1
+                if enriched % 10 == 0:
+                    save_complexes_raw(complexes, path)
+            else:
+                logger.warning("No verified coordinates at %s", record["url"])
+            time.sleep(delay_seconds)
+        save_complexes_raw(complexes, path)
+        if failure:
+            raise RuntimeError(failure)
+        return enriched, sum(record.get("latitude") is not None for record in complexes)
+    finally:
+        page.close()
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Capture public Cian pages for Krasnoyarsk")
+    parser.add_argument("--complexes", action="store_true", help="Collect the full residential complex search and details")
+    parser.add_argument("--resume-complexes", action="store_true", help="Enrich complexes already saved in RAW JSON")
+    args = parser.parse_args(argv)
+    if args.complexes and args.resume_complexes:
+        parser.error("Choose only one complex collection mode")
     try:
         with sync_playwright() as playwright:
             browser = create_browser(playwright)
             try:
+                if args.complexes or args.resume_complexes:
+                    if args.complexes:
+                        complexes = collect_all_complexes(browser)
+                        save_complexes_raw(complexes)
+                    else:
+                        complexes = json.loads(COMPLEXES_FILE.read_text(encoding="utf-8"))
+                        if not isinstance(complexes, list) or not complexes:
+                            raise ValueError("No saved complexes to resume")
+                    enriched, located = enrich_complexes(browser, complexes)
+                    logger.info("Enriched %s complexes; %s/%s have coordinates", enriched, located, len(complexes))
+                    return 0
                 page, status = open_page(browser)
                 state = capture_page_state(page, status)
                 expected = (status == 200 and
@@ -201,7 +374,7 @@ def main() -> int:
             finally:
                 browser.close()
         return 0
-    except (OSError, ValueError, PlaywrightError):
+    except (OSError, ValueError, RuntimeError, PlaywrightError):
         logger.exception("Could not capture Cian search page")
         return 1
 

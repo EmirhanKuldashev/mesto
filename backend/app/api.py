@@ -35,12 +35,14 @@ def parse_bbox(bbox: str | None):
     return func.ST_MakeEnvelope(west, south, east, north, 4326)
 
 
-def catalogue(session: Session, model, *, district_id=None, category=None, min_price=None, max_price=None, bbox=None):
+def catalogue(session: Session, model, *, district_id=None, category=None, min_price=None, max_price=None, bbox=None, source_id=None):
     if min_price is not None and max_price is not None and min_price > max_price:
         raise HTTPException(422, "min_price must not exceed max_price")
     geom_names = [name for name in ("geometry", "centroid", "boundary", "location") if hasattr(model, name)]
     geom_columns = [func.ST_AsGeoJSON(getattr(model, name)).label(name) for name in geom_names]
     query = select(model, *geom_columns).order_by(model.id)
+    if source_id is not None and hasattr(model, "source_id"):
+        query = query.where(model.source_id == source_id)
     if district_id is not None:
         if hasattr(model, "district_id"):
             query = query.where(model.district_id == district_id)
@@ -69,8 +71,9 @@ def catalogue(session: Session, model, *, district_id=None, category=None, min_p
 
 
 @router.get("/districts")
-def districts(district_id: int | None = None, bbox: str | None = None, session: Session = Depends(get_session)):
-    return catalogue(session, models.District, district_id=district_id, bbox=bbox)
+def districts(district_id: int | None = None, bbox: str | None = None, source_id: str | None = None,
+              session: Session = Depends(get_session)):
+    return catalogue(session, models.District, district_id=district_id, bbox=bbox, source_id=source_id)
 
 
 @router.get("/districts/{district_id}")
@@ -83,22 +86,25 @@ def district(district_id: int, session: Session = Depends(get_session)):
 
 @router.get("/poi")
 def poi(district_id: int | None = None, category: str | None = None, bbox: str | None = None,
+        source_id: str | None = None,
         session: Session = Depends(get_session)):
-    return catalogue(session, models.POI, district_id=district_id, category=category, bbox=bbox)
+    return catalogue(session, models.POI, district_id=district_id, category=category, bbox=bbox, source_id=source_id)
 
 
 @router.get("/residential-complexes")
 def residential_complexes(district_id: int | None = None, min_price: float | None = Query(default=None, ge=0),
                           max_price: float | None = Query(default=None, ge=0), bbox: str | None = None,
+                          source_id: str | None = None,
                           session: Session = Depends(get_session)):
-    return catalogue(session, models.ResidentialComplex, district_id=district_id, min_price=min_price, max_price=max_price, bbox=bbox)
+    return catalogue(session, models.ResidentialComplex, district_id=district_id, min_price=min_price, max_price=max_price, bbox=bbox, source_id=source_id)
 
 
 @router.get("/properties")
 def properties(district_id: int | None = None, min_price: float | None = Query(default=None, ge=0),
                max_price: float | None = Query(default=None, ge=0), bbox: str | None = None,
+               source_id: str | None = None,
                session: Session = Depends(get_session)):
-    return catalogue(session, models.PropertyOffer, district_id=district_id, min_price=min_price, max_price=max_price, bbox=bbox)
+    return catalogue(session, models.PropertyOffer, district_id=district_id, min_price=min_price, max_price=max_price, bbox=bbox, source_id=source_id)
 
 
 @router.get("/rent")

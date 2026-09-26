@@ -1,16 +1,34 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Clock3, Compass, MapPin, ShieldCheck, Sparkles, TrendingUp, Wallet } from "lucide-react";
-import { Brand, DemoBadge, DistrictInsightCard, MetricTile, Reveal, ScenarioCard, ScoreRing } from "@/components/concept-ui";
-import { demoDistrict, demoScenarios } from "@/lib/demo-data";
+import { ArrowLeft, Compass, Database, Home, Wallet } from "lucide-react";
+import { Brand, EmptyState, MetricTile } from "@/components/concept-ui";
+import { CianListingCard } from "@/components/cian-listing-card";
+import { formatPrice, useCianListings } from "@/lib/cian-listings";
 
 export default function ResultsPage() {
-  return <main className="page-shell"><header className="content-shell flex h-20 items-center justify-between"><Brand /><div className="flex items-center gap-4"><DemoBadge /><Link href="/onboarding" className="hidden text-sm text-[#b4cece] hover:text-white sm:block">Изменить ответы</Link></div></header>
-    <section className="mesh-background relative overflow-hidden border-t border-white/10"><div className="content-shell relative z-10 grid gap-12 py-16 sm:py-24 lg:grid-cols-[1fr_360px] lg:items-center"><div><p className="eyebrow">Пример результата · Красноярск</p><h1 className="mt-5 max-w-4xl text-[clamp(3rem,6.3vw,6.6rem)] font-semibold leading-[.99] tracking-[-.075em]">Похоже, вам <span className="gradient-text">сюда.</span></h1><p className="mt-6 max-w-xl text-lg leading-relaxed text-[#acc8ca]">{demoDistrict.name} показывает, как МЕСТО сможет соединить ваши маршруты, приоритеты и планы в ясную картину.</p><div className="mt-8 flex flex-wrap gap-3"><span className="soft-chip"><MapPin size={15} /> {demoDistrict.city}</span><span className="soft-chip"><Sparkles size={15} /> Иллюстративный пример</span></div><div className="mt-10 flex flex-wrap gap-3"><Link href="/district" className="primary-button">Исследовать район <ArrowRight size={17} /></Link><Link href="/onboarding" className="secondary-button">Изменить ответы</Link></div></div><motion.div initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} className="glass-panel flex flex-col items-center rounded-[34px] p-9 text-center"><p className="eyebrow">Демо-совпадение</p><ScoreRing value={demoDistrict.score} /><h2 className="mt-3 text-2xl font-semibold">Ваш ориентир</h2><p className="mt-2 text-sm leading-relaxed text-[#a9c5c5]">Пример оценки для демонстрации интерфейса. Персональный расчёт ещё не подключён.</p></motion.div></div></section>
-    <section className="bg-[#f2f8f5] py-16 text-[#12313d] sm:py-24"><div className="content-shell"><Reveal><div className="flex flex-wrap items-end justify-between gap-5"><div><p className="text-xs font-bold uppercase tracking-[.2em] text-[#168e78]">Картина района</p><h2 className="mt-3 text-4xl font-semibold tracking-[-.06em] sm:text-5xl">Главное — на одном экране</h2></div><DemoBadge light /></div></Reveal><div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-5"><MetricTile label="Сегодня" value={`${demoDistrict.today}/100`} note="Демонстрационная оценка" icon={ShieldCheck} /><MetricTile label="Перспектива" value={`${demoDistrict.future}/100`} note="Демонстрационная оценка" icon={TrendingUp} /><MetricTile label="До работы" value={demoDistrict.commute} note="Иллюстративный маршрут" icon={Clock3} /><MetricTile label="Уровень цен" value={demoDistrict.price} note="Без данных рынка" icon={Wallet} /><MetricTile label="Уверенность" value={demoDistrict.confidence} note="Расчёт не подключён" icon={Sparkles} /></div><div className="mt-7 grid gap-6 lg:grid-cols-[1.2fr_.8fr]"><article className="rounded-[27px] border border-[#dce9e5] bg-white p-7 sm:p-9"><p className="text-xs font-bold uppercase tracking-[.18em] text-[#198b78]">Почему это место</p><h3 className="mt-3 text-2xl font-semibold tracking-[-.05em]">Логика выбора понятна</h3><div className="mt-7 space-y-5">{demoDistrict.reasons.map((reason, index) => <div key={reason} className="flex gap-4"><span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-[#e3f8ef] text-sm font-bold text-[#148d76]">{index + 1}</span><p className="pt-1 text-sm leading-relaxed text-[#54747b]">{reason}</p></div>)}</div><div className="mt-8 rounded-2xl bg-[#f5f7f4] p-5"><p className="text-xs font-bold uppercase tracking-[.14em] text-[#ad8060]">На что обратить внимание</p><ul className="mt-3 space-y-2 text-sm text-[#60777a]">{demoDistrict.risks.map((risk) => <li key={risk}>• {risk}</li>)}</ul></div></article><DistrictInsightCard /></div></div></section>
-    <section className="content-shell py-16 sm:py-24"><Reveal><p className="eyebrow">Один город · разные решения</p><h2 className="section-title mt-4">Выбирайте сценарий, <span className="gradient-text">а не только адрес.</span></h2><p className="mt-5 max-w-xl text-[#a6c0c1]">Три иллюстративных направления показывают, как может выглядеть сравнение в готовом продукте.</p></Reveal><div className="mt-10 grid gap-4 lg:grid-cols-3">{demoScenarios.map((scenario) => <ScenarioCard key={scenario.id} scenario={scenario} />)}</div><div className="mt-12 flex flex-wrap gap-3"><Link href="/district" className="primary-button"><Compass size={17} /> Открыть карту</Link><Link href="/onboarding" className="secondary-button"><ArrowLeft size={17} /> К анкете</Link></div></section>
-    <footer className="border-t border-white/10 py-8"><div className="content-shell flex flex-wrap items-center justify-between gap-4 text-xs text-[#78999f]"><Brand compact /><span>МЕСТО · концепт MVP · все показатели на экране демонстрационные</span></div></footer>
+  const { listings, loading, error } = useCianListings();
+  const sorted = [...listings].sort((a, b) => a.price - b.price);
+  const median = sorted.length ? sorted[Math.floor(sorted.length / 2)].price : null;
+  const fetchedAt = listings.reduce((latest, item) => item.fetched_at > latest ? item.fetched_at : latest, "");
+
+  return <main className="page-shell">
+    <header className="content-shell flex h-20 items-center justify-between"><Brand /><Link href="/onboarding" className="text-sm text-[#b4cece] hover:text-white">Изменить ответы</Link></header>
+    <section className="mesh-background border-t border-white/10"><div className="content-shell py-16 sm:py-24">
+      <p className="eyebrow">Объявления ЦИАН · Красноярск</p>
+      <h1 className="mt-5 max-w-4xl text-[clamp(3rem,6vw,6rem)] font-semibold leading-none tracking-[-.07em]">Реальные квартиры <span className="gradient-text">в одном списке.</span></h1>
+      <p className="mt-6 max-w-2xl text-base leading-relaxed text-[#acc8ca]">Цены и параметры взяты из сохранённых объявлений ЦИАН. Рейтинг районов и персональный подбор пока не рассчитываются.</p>
+      <div className="mt-9 flex flex-wrap gap-3"><Link href="/district" className="primary-button"><Compass size={17} /> Открыть карту</Link><Link href="/onboarding" className="secondary-button"><ArrowLeft size={17} /> К анкете</Link></div>
+    </div></section>
+    <section className="bg-[#f2f8f5] py-14 text-[#12313d] sm:py-20"><div className="content-shell">
+      <div className="grid gap-3 sm:grid-cols-3"><MetricTile label="Объявлений" value={loading ? "…" : String(listings.length)} note="Источник: ЦИАН" icon={Home} /><MetricTile label="Минимальная цена" value={sorted.length ? formatPrice(sorted[0].price) : "—"} note="Среди загруженных объявлений" icon={Wallet} /><MetricTile label="Медианная цена" value={median !== null ? formatPrice(median) : "—"} note="Среди загруженных объявлений" icon={Database} /></div>
+      <h2 className="mt-14 text-3xl font-semibold tracking-[-.05em]">Объявления</h2>
+      {fetchedAt && <p className="mt-2 text-sm text-[#607f82]">Данные собраны {new Date(fetchedAt).toLocaleString("ru-RU", { dateStyle: "medium", timeStyle: "short" })}</p>}
+      {loading && <p role="status" className="mt-8 text-[#607f82]">Загружаем объявления…</p>}
+      {error && <div role="alert" className="mt-8"><EmptyState title="Данные недоступны" body={`${error}. Проверьте подключение к backend.`} /></div>}
+      {!loading && !error && listings.length === 0 && <div className="mt-8"><EmptyState title="Объявлений пока нет" body="Загрузите RAW JSON ЦИАН через backend/data/loaders/cian_loader.py." /></div>}
+      {listings.length > 0 && <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">{sorted.map((listing) => <CianListingCard key={listing.id} listing={listing} />)}</div>}
+      <p className="mt-9 text-xs leading-relaxed text-[#78918f]">Объявления могут устареть. Уточняйте цену и доступность на странице источника. У объявлений нет проверенных координат, поэтому они не отображаются маркерами на карте.</p>
+    </div></section>
   </main>;
 }
