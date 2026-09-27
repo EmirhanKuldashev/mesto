@@ -19,6 +19,9 @@ services:
     build: ./backend
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgresql+psycopg://mesto:change-me-for-local-development@db:5432/mesto}
+      ORCA_API_KEY: ${ORCA_API_KEY:-}
+      ORCA_BASE_URL: ${ORCA_BASE_URL:-https://api.orcarouter.ai/v1}
+      ORCA_MODEL: ${ORCA_MODEL:-z-ai/glm-5.3-flash-free}
     depends_on:
       db:
         condition: service_healthy

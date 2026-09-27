@@ -40,6 +40,7 @@ class UserProfile(IdMixin, Base):
     comfortable_monthly_payment: Mapped[Decimal | None] = mapped_column(Numeric(14, 2))
     rent_budget: Mapped[Decimal | None] = mapped_column(Numeric(14, 2))
     planning_horizon: Mapped[str | None] = mapped_column(String(30))
+    commute_minutes: Mapped[int | None] = mapped_column(Integer)
     car_availability: Mapped[bool] = mapped_column(Boolean, server_default=text("false"))
     transport_preferences: Mapped[list] = mapped_column(JSONB, server_default=text("'[]'::jsonb"))
     future_changes: Mapped[list] = mapped_column(JSONB, server_default=text("'[]'::jsonb"))

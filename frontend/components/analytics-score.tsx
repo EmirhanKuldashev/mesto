@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { AlertTriangle, ArrowUpRight, Check, Sparkles } from "lucide-react";
 import type { CategoryScores, DistrictScoreResponse } from "@/types/analytics";
 import { SignalPanel } from "@/components/signal-panel";
+import { DistrictAiSummary } from "@/components/district-ai-summary";
 
 const categories: { key: keyof CategoryScores; title: string; description: string }[] = [
   { key: "infrastructure", title: "Инфраструктура", description: "Школы, медицина, парки и повседневные места" },
@@ -17,6 +18,7 @@ function number(value: number | null) { return value === null ? "—" : Math.rou
 
 export function AnalyticsScore({ score }: { score: DistrictScoreResponse }) {
   return <div className="space-y-6">
+    <DistrictAiSummary districtId={score.district.id} />
     <div className="grid gap-4 lg:grid-cols-[1.1fr_1fr]">
       <motion.article initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .5 }}
         className="rounded-[30px] border border-white/15 bg-gradient-to-br from-[#185652] via-[#103c47] to-[#0b2939] p-7 text-white shadow-[0_25px_80px_rgba(4,24,35,.25)] sm:p-9">

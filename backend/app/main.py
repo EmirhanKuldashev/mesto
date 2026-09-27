@@ -11,6 +11,7 @@ from app.profile_api import router as profile_router
 from app.analytics.api import router as analytics_router
 from app.recommendations.api import router as recommendations_router
 from app.intelligence.api import router as intelligence_router
+from app.ai.api import router as ai_router
 
 app = FastAPI(title="МЕСТО API", version="0.1.0")
 app.include_router(router)
@@ -18,6 +19,7 @@ app.include_router(profile_router)
 app.include_router(analytics_router)
 app.include_router(recommendations_router)
 app.include_router(intelligence_router)
+app.include_router(ai_router)
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(
     CORSMiddleware,

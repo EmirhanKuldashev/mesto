@@ -120,6 +120,7 @@ class ProfileCreate(BaseModel):
     comfortable_monthly_payment: Decimal | None = Field(default=None, gt=0)
     rent_budget: Decimal | None = Field(default=None, gt=0)
     planning_horizon: PlanningHorizon = "3_5_years"
+    commute_minutes: int | None = Field(default=None, ge=1, le=240)
     car_availability: bool = False
     transport_preferences: list[Transport] = Field(default_factory=lambda: ["public_transport"])
     preferences: PreferencesInput = Field(default_factory=PreferencesInput)
