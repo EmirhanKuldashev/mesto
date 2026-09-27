@@ -8,6 +8,7 @@ from statistics import median
 @dataclass
 class DistrictFacts:
     population: int | None
+    area_km2: float | None = None
     poi_counts: Counter[str] = field(default_factory=Counter)
     sale_prices: list[float] = field(default_factory=list)
     rent_prices: list[float] = field(default_factory=list)
@@ -24,26 +25,37 @@ def _per_10000(count: int, population: int | None) -> float | None:
     return count * 10000 / population
 
 
-def _saturation(count: int, population: int | None, target: float) -> float | None:
+def _saturation(count: int, population: int | None, area_km2: float | None,
+                target_per_10000: float, target_per_km2: float) -> float | None:
     density = _per_10000(count, population)
-    return None if density is None else min(100.0, density / target * 100)
+    if density is not None:
+        return min(100.0, density / target_per_10000 * 100)
+    if area_km2 and area_km2 > 0:
+        return min(100.0, count / area_km2 / target_per_km2 * 100)
+    return None
 
 
 class InfrastructureCalculator:
-    """POI coverage per 10k residents; no distance or quality claim."""
+    """POI density by population or area; no distance or quality claim."""
 
     def calculate(self, facts: DistrictFacts) -> float | None:
         if facts.poi_total == 0:
             return None
-        groups = (
-            ("education", "kindergarten", "university"),
-            ("healthcare", "hospital", "pharmacy"),
-            ("park",),
-            ("shop", "mall"),
-        )
-        targets = (2, 3, 1, 4)
-        values = [_saturation(sum(facts.poi_counts[name] for name in group), facts.population, target)
-                  for group, target in zip(groups, targets)]
+        if facts.population and facts.population > 0:
+            groups = (
+                ("education", "kindergarten", "university"),
+                ("healthcare", "hospital", "pharmacy"),
+                ("park",),
+                ("shop", "mall"),
+            )
+            targets = ((2, 1), (3, 0.4), (1, 0.15), (4, 1))
+        else:
+            # The bundled OSM snapshot covers education, healthcare and parks.
+            groups = (("education", "kindergarten"), ("healthcare",), ("park",))
+            targets = ((2, 1), (3, 0.4), (1, 0.15))
+        values = [_saturation(sum(facts.poi_counts[name] for name in group),
+                              facts.population, facts.area_km2, per_10000, per_km2)
+                  for group, (per_10000, per_km2) in zip(groups, targets)]
         return None if any(value is None for value in values) else round(sum(values) / len(values), 2)
 
 
@@ -53,7 +65,8 @@ class TransportCalculator:
     def calculate(self, facts: DistrictFacts) -> float | None:
         if facts.poi_total == 0:
             return None
-        value = _saturation(facts.poi_counts["transport_stop"], facts.population, 3)
+        value = _saturation(facts.poi_counts["transport_stop"], facts.population,
+                            facts.area_km2, 3, 6)
         return None if value is None else round(value, 2)
 
 

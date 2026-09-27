@@ -39,6 +39,15 @@ def test_engine_applies_weights_and_reports_coverage():
         ScoringWeights(lifestyle=.9).as_dict()
 
 
+def test_calculators_use_area_when_population_is_unknown():
+    facts = DistrictFacts(population=None, area_km2=10)
+    facts.poi_counts.update({
+        "education": 10, "healthcare": 4, "park": 2, "transport_stop": 60,
+    })
+    assert InfrastructureCalculator().calculate(facts) == 100
+    assert TransportCalculator().calculate(facts) == 100
+
+
 def test_calculators_use_recorded_facts_not_default_scores():
     facts = DistrictFacts(population=10000)
     assert InfrastructureCalculator().calculate(facts) is None

@@ -31,9 +31,9 @@
 docker compose up --build
 ```
 
-Страница: http://localhost:3000. Создание сценария: http://localhost:3000/onboarding. Анализ: http://localhost:3000/analysis. Результаты: http://localhost:3000/results. Карта районов: http://localhost:3000/district. API: http://localhost:8000/health. Документация API: http://localhost:8000/docs. При старте backend применяет миграции и добавляет synthetic данные для внутренних слоёв; объявления ЦИАН загружаются отдельно через loader. Анкета сохраняется в браузере и с согласия пользователя отправляется в API. Экран объявлений запрашивает только записи `source_id=cian`; вымышленные оценки и маркеры жилья не показываются. Координат объявлений в RAW данных нет.
+Страница: http://localhost:3000. Создание сценария: http://localhost:3000/onboarding. Анализ: http://localhost:3000/analysis. Результаты: http://localhost:3000/results. Карта районов: http://localhost:3000/district. API: http://localhost:8000/health. Документация API: http://localhost:8000/docs. При старте backend применяет миграции и импортирует проверенный снимок районов и инфраструктуры OpenStreetMap; предложения жилья загружаются отдельно из подтверждённого источника. Анкета сохраняется в браузере и с согласия пользователя отправляется в API. Экран объявлений запрашивает только записи `source_id=cian`; вымышленные оценки и маркеры жилья не показываются. Координат объявлений в RAW данных нет.
 
-Для локальной разработки без Docker задайте `DATABASE_URL`, установите зависимости из `backend/pyproject.toml`, затем в `backend` выполните `alembic upgrade head`, `python -m app.etl.seed` и `uvicorn app.main:app --reload`. Во `frontend` выполните `npm install` и `npm run dev`.
+Для локальной разработки без Docker задайте `DATABASE_URL`, установите зависимости из `backend/pyproject.toml`, затем в `backend` выполните `alembic upgrade head`, `python -m app.etl.bootstrap_osm` и `uvicorn app.main:app --reload`. Во `frontend` выполните `npm install` и `npm run dev`.
 
 ## Проверка
 

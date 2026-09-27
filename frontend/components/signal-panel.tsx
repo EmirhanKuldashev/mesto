@@ -25,7 +25,7 @@ export function SignalPanel({ districtId }: { districtId: number }) {
         if (!Array.isArray(payload?.signals)) throw new Error("Некорректный ответ API");
         return payload.signals;
       })
-      .then((items) => { if (!controller.signal.aborted) setSignals(items); })
+      .then((items) => { if (!controller.signal.aborted) setSignals(items.filter((item) => !item.is_demo)); })
       .catch((reason: unknown) => {
         if (!controller.signal.aborted) setError(reason instanceof Error ? reason.message : "Ошибка загрузки");
       })
@@ -43,7 +43,7 @@ export function SignalPanel({ districtId }: { districtId: number }) {
       {signals.map((signal) => {
         const Icon = signal.category === "education" ? GraduationCap : signal.category === "transport" ? Route : Construction;
         return <article key={signal.id} className="rounded-[20px] border border-[#dcebe6] bg-[#f4faf7] p-5">
-          <div className="flex items-start gap-3"><Icon size={20} className="mt-0.5 shrink-0 text-[#168e79]" /><div><h3 className="font-semibold">{signal.title}</h3><p className="mt-1 text-xs text-[#647f80]">{names[signal.category]}{signal.is_demo ? " · Демо-данные" : ""}</p></div></div>
+          <div className="flex items-start gap-3"><Icon size={20} className="mt-0.5 shrink-0 text-[#168e79]" /><div><h3 className="font-semibold">{signal.title}</h3><p className="mt-1 text-xs text-[#647f80]">{names[signal.category]}</p></div></div>
           {signal.description && <p className="mt-3 text-sm text-[#547477]">{signal.description}</p>}
           <p className="mt-3 text-sm">Влияние: <strong>{signal.impact}</strong> · Учтено: <strong>{signal.future_growth_impact > 0 ? "+" : ""}{signal.future_growth_impact}</strong> · Уверенность: {Math.round(signal.confidence * 100)}%</p>
         </article>;

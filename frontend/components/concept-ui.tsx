@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { Check, Compass, MapPin, Sparkles } from "lucide-react";
+import { Check, Compass, MapPin } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
 
@@ -11,12 +11,6 @@ export function Brand({ compact = false }: { compact?: boolean }) {
     <span className="grid h-10 w-10 place-items-center rounded-[15px] border border-[#9ef5d9]/30 bg-[#9ef5d9]/15 text-[#a8f7df]"><MapPin size={20} strokeWidth={2.4} /></span>
     {!compact && <span className="text-[25px]">МЕСТО<span className="ml-1 text-[#9ef5d9]">.</span></span>}
   </Link>;
-}
-
-export function DemoBadge({ light = false }: { light?: boolean }) {
-  return <span className={light ? "inline-flex items-center gap-1.5 rounded-full border border-[#bad9d3] bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.13em] text-[#376979]" : "demo-chip"}>
-    <Sparkles size={12} /> Демо-анкета
-  </span>;
 }
 
 export function Reveal({ children, className = "", delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {

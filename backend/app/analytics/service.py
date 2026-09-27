@@ -31,9 +31,17 @@ class AnalyticsService:
         self.explanations = ExplanationGenerator()
 
     def _facts(self, district: models.District) -> DistrictFacts:
-        facts = DistrictFacts(population=district.population, synthetic=bool(district.is_synthetic))
+        facts = DistrictFacts(
+            population=district.population,
+            area_km2=float(district.area_km2) if district.area_km2 else None,
+            synthetic=bool(district.is_synthetic),
+        )
+        category_aliases = {
+            "school": "education", "clinic": "healthcare",
+            "hospital": "healthcare", "bus_stop": "transport_stop",
+        }
         for poi in self.session.scalars(select(models.POI).where(models.POI.district_id == district.id)):
-            facts.poi_counts[poi.category] += 1
+            facts.poi_counts[category_aliases.get(poi.category, poi.category)] += 1
             facts.synthetic |= bool(poi.is_synthetic)
         for offer in self.session.scalars(select(models.PropertyOffer).where(models.PropertyOffer.district_id == district.id)):
             if offer.price and offer.price > 0:

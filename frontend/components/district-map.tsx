@@ -9,6 +9,12 @@ const style: StyleSpecification = { version: 8, sources: { osm: { type: "raster"
 
 export type MapLayer = "housing" | "schools" | "kindergarten" | "healthcare" | "transport" | "parks" | "future";
 
+const poiNames: Record<string, string> = {
+  school: "Школа", kindergarten: "Детский сад", clinic: "Поликлиника",
+  hospital: "Больница", park: "Парк", bus_stop: "Автобусная остановка",
+  tram_stop: "Трамвайная остановка", transport_stop: "Остановка",
+};
+
 function layerForPoi(category: string): MapLayer | null {
   if (category === "school") return "schools";
   if (category === "kindergarten") return "kindergarten";
@@ -180,7 +186,7 @@ export default function DistrictMap({ points, districts, pois, futureObjects, la
           dot.setAttribute("aria-label", poi.name);
           const content = document.createElement("div");
           const title = document.createElement("strong"); title.textContent = poi.name;
-          const type = document.createElement("p"); type.textContent = `Тип: ${poi.category}`;
+          const type = document.createElement("p"); type.textContent = poiNames[poi.category] ?? poi.category;
           content.append(title, type);
           const distance = distanceLabel(poi.location.coordinates, selected);
           if (distance) { const note = document.createElement("p"); note.textContent = distance; content.append(note); }
@@ -195,7 +201,7 @@ export default function DistrictMap({ points, districts, pois, futureObjects, la
           const title = document.createElement("strong"); title.textContent = item.name;
           const type = document.createElement("p"); type.textContent = `Будущий объект · ${item.category}`;
           const status = document.createElement("p");
-          status.textContent = `Статус: ${item.status}${item.planned_year ? ` · ${item.planned_year}` : ""}${item.is_synthetic ? " · Демо-данные" : ""}`;
+          status.textContent = `Статус: ${item.status}${item.planned_year ? ` · ${item.planned_year}` : ""}`;
           content.append(title, type, status);
           const distance = distanceLabel(item.location!.coordinates, selected);
           if (distance) { const note = document.createElement("p"); note.textContent = distance; content.append(note); }

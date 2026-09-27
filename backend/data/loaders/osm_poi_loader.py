@@ -9,7 +9,7 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
 from geoalchemy2.elements import WKTElement
-from sqlalchemy import select
+from sqlalchemy import func, select, update
 
 from app import models
 from app.db import create_session_factory
@@ -50,7 +50,10 @@ def load_pois(session, path: Path = RAW_PATH) -> dict[str, int]:
     payload = json.loads(raw)
     if not isinstance(payload.get("elements"), list):
         raise ValueError("Invalid OSM POI RAW file")
-    fetched_at = datetime.now(timezone.utc)
+    snapshot_time = payload.get("snapshot_fetched_at")
+    fetched_at = datetime.fromisoformat(snapshot_time) if snapshot_time else datetime.now(timezone.utc)
+    if fetched_at.tzinfo is None:
+        raise ValueError("OSM snapshot timestamp must include a timezone")
     checksum = hashlib.sha256(raw).hexdigest()
     version_name = f"krasnoyarsk-{checksum[:20]}"
     source = session.scalar(select(models.DataSource).where(models.DataSource.source_id == "osm"))
@@ -102,8 +105,26 @@ def load_pois(session, path: Path = RAW_PATH) -> dict[str, int]:
         point.category = category
         point.location = WKTElement(f"POINT({lon} {lat})", srid=4326)
         point.metadata_json = {"osm_type": item["type"], "osm_id": item["id"]}
-    logger.info("OSM POIs: created=%s updated=%s skipped=%s", created, updated, skipped)
-    return {"created": created, "updated": updated, "skipped": skipped}
+    session.flush()
+    owners = {}
+    for poi_id, district_id in session.execute(
+        select(models.POI.id, models.District.id).join(
+            models.District, func.ST_Covers(models.District.geometry, models.POI.location)
+        ).where(models.POI.source_id == "osm", models.District.source_id == "osm")
+    ):
+        owners.setdefault(poi_id, []).append(district_id)
+    poi_ids = session.scalars(select(models.POI.id).where(models.POI.source_id == "osm")).all()
+    assignments = [
+        {"id": poi_id, "district_id": owners[poi_id][0] if len(owners.get(poi_id, [])) == 1 else None}
+        for poi_id in poi_ids
+    ]
+    if assignments:
+        session.execute(update(models.POI), assignments)
+    assigned = sum(item["district_id"] is not None for item in assignments)
+    logger.info("OSM POIs: created=%s updated=%s skipped=%s assigned=%s/%s",
+                created, updated, skipped, assigned, len(assignments))
+    return {"created": created, "updated": updated, "skipped": skipped,
+            "assigned": assigned, "total": len(assignments)}
 
 
 def main() -> None:

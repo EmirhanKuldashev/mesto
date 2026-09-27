@@ -33,7 +33,7 @@ export default function AnalysisPage() {
     <section className="content-shell flex min-h-[calc(100vh-80px)] flex-col items-center justify-center text-center">
       <h1 className="section-title">Создаём ваш персональный анализ</h1>
       <p role="status" className="mt-5 max-w-xl text-[#b5d2cf]">{!ready ? "Восстанавливаем сохранённый сценарий…" :
-        !profileId ? "Профиль не сохранён. Откроем явно помеченный демо-режим." :
+        !profileId ? "Для персонального анализа сначала сохраните анкету." :
         status === "loading" ? "Получаем данные и рассчитываем результат через API." : "Завершаем анализ…"}</p>
       <div className="mt-8 w-full max-w-lg space-y-3 text-left">{stages.map((item, index) =>
         <div key={item.key} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[.06] px-5 py-4 text-sm">

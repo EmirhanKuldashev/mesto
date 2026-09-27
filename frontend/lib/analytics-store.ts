@@ -1,13 +1,12 @@
 "use client";
 
 import { create } from "zustand";
-import { AnalyticsApiError, calculateScore, getDistrictIds } from "@/lib/api/analytics";
+import { calculateScore, getDistrictIds } from "@/lib/api/analytics";
 import { getRecommendations } from "@/lib/api/recommendations";
-import { demoScores } from "@/lib/demo-analytics";
 import type { DistrictScoreResponse } from "@/types/analytics";
 import type { DistrictRecommendation } from "@/types/recommendations";
 
-type Status = "idle" | "loading" | "ready" | "empty" | "demo";
+type Status = "idle" | "loading" | "ready" | "empty" | "needs_profile" | "error";
 type Stage = "profile" | "districts" | "scoring" | "future_growth" | "recommendations";
 type State = {
   status: Status;
@@ -34,13 +33,13 @@ export const useAnalytics = create<State>((set, get) => ({
   },
   load: (profileId, force = false) => {
     if (pending && get().profileId === profileId) return pending;
-    if (!force && get().profileId === profileId && ["ready", "empty", "demo"].includes(get().status))
+    if (!force && get().profileId === profileId && ["ready", "empty", "needs_profile", "error"].includes(get().status))
       return Promise.resolve();
     if (!profileId) {
       generation++;
       const error = sessionStorage.getItem("mesto-save-status");
       sessionStorage.removeItem("mesto-save-status");
-      set({ status: "demo", stage: "profile", profileId: null, scores: demoScores,
+      set({ status: "needs_profile", stage: "profile", profileId: null, scores: [],
         recommendations: [], recommendationError: null, error });
       return Promise.resolve();
     }
@@ -72,9 +71,9 @@ export const useAnalytics = create<State>((set, get) => ({
           if (requestGeneration === generation) set({ status: "ready", recommendations: [],
             recommendationError: reason instanceof Error ? reason.message : "Не удалось получить рекомендации" });
         }
-      } catch (reason) {
-        if (requestGeneration === generation) set({ status: "demo", scores: demoScores, recommendations: [],
-          error: reason instanceof AnalyticsApiError ? reason.message : "Не удалось получить анализ. Попробуйте позже." });
+      } catch {
+        if (requestGeneration === generation) set({ status: "error", scores: [], recommendations: [],
+          error: "Сервис анализа временно недоступен. Попробуйте ещё раз." });
       } finally { if (requestGeneration === generation) pending = null; }
     })();
     return pending;

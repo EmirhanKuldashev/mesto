@@ -51,7 +51,7 @@ export default function Home() {
 
         <div className="grid min-h-[calc(100vh-110px)] items-center gap-16 pb-24 pt-12 lg:grid-cols-[1.05fr_.95fr] lg:gap-7 lg:pt-0">
           <div className="relative z-10 max-w-[760px]">
-            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .6 }} className="mb-7 flex flex-wrap items-center gap-3"><span className="demo-chip"><Sparkles size={13} />Новый взгляд на выбор жилья</span><span className="text-xs text-[#7fa3ad]">Красноярск · концепт MVP</span></motion.div>
+            <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .6 }} className="mb-7 flex flex-wrap items-center gap-3"><span className="demo-chip"><Sparkles size={13} />Новый взгляд на выбор жилья</span><span className="text-xs text-[#7fa3ad]">Красноярск</span></motion.div>
             <motion.h1 initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .75, delay: .08 }} className="display-title max-w-[740px]">Найди место, которое подойдёт <span className="gradient-text">не квартире, а жизни.</span></motion.h1>
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7, delay: .18 }} className="mt-8 max-w-[580px] text-base leading-[1.8] text-[#aec7ca] sm:text-lg">МЕСТО анализирует районы, инфраструктуру, дорогу, развитие территории и ваши жизненные сценарии — чтобы показать, где действительно удобно жить.</motion.p>
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .7, delay: .28 }} className="mt-10 flex flex-wrap items-center gap-3">

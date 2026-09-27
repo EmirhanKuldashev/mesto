@@ -9,7 +9,8 @@ from pathlib import Path
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
-from sqlalchemy import func, select
+from sqlalchemy import cast, func, select
+from geoalchemy2 import Geography
 
 from app import models
 from app.db import create_session_factory
@@ -154,6 +155,13 @@ def load_districts(session, path: Path = RAW_PATH) -> dict[str, int]:
         district.geometry = func.ST_SetSRID(func.ST_GeomFromGeoJSON(geometry), 4326)
         district.boundary = func.ST_SetSRID(func.ST_GeomFromGeoJSON(geometry), 4326)
         district.centroid = func.ST_PointOnSurface(func.ST_SetSRID(func.ST_GeomFromGeoJSON(geometry), 4326))
+    session.flush()
+    areas = session.execute(select(
+        models.District.id,
+        func.ST_Area(cast(models.District.geometry, Geography(srid=4326))) / 1_000_000,
+    ).where(models.District.source_id == "osm")).all()
+    for district_id, area_km2 in areas:
+        session.get(models.District, district_id).area_km2 = round(area_km2, 2)
     session.flush()
     invalid = session.scalar(select(func.count()).select_from(models.District).where(
         models.District.source_id == "osm", func.ST_IsValid(models.District.geometry).is_(False),

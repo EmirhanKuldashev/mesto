@@ -47,7 +47,9 @@ class RecommendationService:
             life_point_kinds=tuple(point.kind for point in points),
             work_point_priority=work_priority,
         )
-        district_ids = list(self.session.scalars(select(models.District.id).order_by(models.District.id)))
+        district_ids = list(self.session.scalars(select(models.District.id).where(
+            models.District.is_synthetic.is_(False)
+        ).order_by(models.District.id)))
         if not district_ids:
             return []
         # AnalyticsService owns the score formula and snapshot persistence.

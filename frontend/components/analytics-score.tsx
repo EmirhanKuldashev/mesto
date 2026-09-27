@@ -22,7 +22,7 @@ export function AnalyticsScore({ score }: { score: DistrictScoreResponse }) {
         className="rounded-[30px] border border-white/15 bg-gradient-to-br from-[#185652] via-[#103c47] to-[#0b2939] p-7 text-white shadow-[0_25px_80px_rgba(4,24,35,.25)] sm:p-9">
         <p className="text-xs font-bold uppercase tracking-[.22em] text-[#a4e9d3]">MESTO SCORE · {score.district.name}</p>
         <div className="mt-7 flex items-end gap-2"><span className="text-[clamp(4.5rem,11vw,8rem)] font-semibold leading-none tracking-[-.09em]">{number(score.score)}</span><span className="pb-2 text-2xl text-[#a7ceca]">/100</span></div>
-        <p className="mt-6 text-sm text-[#b9d4d0]">Покрытие данных: {Math.round(score.confidence * 100)}%{score.is_synthetic ? " · есть синтетические данные" : ""}</p>
+        <p className="mt-6 text-sm text-[#b9d4d0]">Покрытие данных: {Math.round(score.confidence * 100)}%</p>
       </motion.article>
       <div className="grid grid-cols-2 gap-4">
         {[{ label: "Сегодня", value: score.current_score }, { label: "Потенциал", value: score.future_score }].map((item, index) =>

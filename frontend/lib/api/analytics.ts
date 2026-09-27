@@ -23,7 +23,7 @@ function isScore(value: unknown): value is DistrictScoreResponse {
       (key) => categories[key] === null || typeof categories[key] === "number") &&
     ["score", "current_score", "future_score", "future_growth_score"].every(
       (key) => item[key] === null || typeof item[key] === "number") &&
-    typeof item.confidence === "number" && Array.isArray(item.reasons) &&
+    typeof item.confidence === "number" && typeof item.is_synthetic === "boolean" && Array.isArray(item.reasons) &&
     Array.isArray(item.warnings) && Array.isArray(item.future_factors) &&
     Array.isArray(item.external_signal_impacts);
 }
@@ -32,7 +32,8 @@ export async function getDistrictIds(onStage?: (stage: "districts") => void): Pr
   onStage?.("districts");
   const payload = await readResponse(await fetch(`${API_URL}/api/districts`, { cache: "no-store" }));
   if (!Array.isArray(payload)) throw new AnalyticsApiError("API районов вернул некорректные данные");
-  return [...new Set(payload.map((row) => row && typeof row === "object" ? (row as { id?: unknown }).id : null)
+  return [...new Set(payload.map((row) => row && typeof row === "object" &&
+    (row as { is_synthetic?: unknown }).is_synthetic === false ? (row as { id?: unknown }).id : null)
     .filter((id): id is number => typeof id === "number" && Number.isInteger(id) && id > 0))];
 }
 
@@ -47,7 +48,7 @@ export async function calculateScore(profileId: string, districtIds: number[],
       body: JSON.stringify({ profile_id: profileId, district_ids: districtIds.slice(index, index + 50) }),
     });
     const payload = await readResponse(response);
-    if (!Array.isArray(payload) || !payload.every(isScore))
+    if (!Array.isArray(payload) || !payload.every(isScore) || payload.some((item) => item.is_synthetic))
       throw new AnalyticsApiError("API аналитики вернул некорректные данные");
     results.push(...payload);
   }

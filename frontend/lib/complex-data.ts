@@ -57,7 +57,7 @@ export function useComplexData() {
     const controller = new AbortController();
     const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
     const paths = ["/api/residential-complexes?source_id=cian", "/api/poi?source_id=osm",
-      "/api/districts?source_id=osm", "/api/future-objects"];
+      "/api/districts?source_id=osm", "/api/future-objects?source_id=osm"];
     Promise.all(paths.map(async (path) => {
       const response = await fetch(`${base}${path}`, { signal: controller.signal, cache: "no-store" });
       if (!response.ok) throw new Error(`Геоданные недоступны (HTTP ${response.status})`);

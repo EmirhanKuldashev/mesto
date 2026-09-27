@@ -116,8 +116,9 @@ def rent(district_id: int | None = None, min_price: float | None = Query(default
 
 @router.get("/future-objects")
 def future_objects(district_id: int | None = None, category: str | None = None, bbox: str | None = None,
-                   session: Session = Depends(get_session)):
-    return catalogue(session, models.FutureObject, district_id=district_id, category=category, bbox=bbox)
+                   source_id: str | None = None, session: Session = Depends(get_session)):
+    return catalogue(session, models.FutureObject, district_id=district_id, category=category,
+                     bbox=bbox, source_id=source_id)
 
 
 @router.get("/mortgage-programs")

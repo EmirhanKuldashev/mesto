@@ -59,28 +59,6 @@ export const initialDraft: OnboardingDraft = {
   life_points: [],
 };
 
-export const demoDraft: OnboardingDraft = {
-  ...initialDraft,
-  name: "Максим", household_type: "couple", adults_count: 2, children: [{ age: 7 }],
-  housing_goal: "compare", commute_minutes: 30, purchase_budget: 12000000, initial_payment: 3000000,
-  comfortable_monthly_payment: 75000, rent_budget: 55000, planning_horizon: "3_5_years",
-  car_availability: true, transport_preferences: ["car", "public_transport"],
-  preferences: { ...preferences, transport_weight: answeredPreference(90, "user"), housing_price_weight: answeredPreference(85, "user"),
-    education_weight: answeredPreference(90, "user"), parks_weight: answeredPreference(85, "user"), ecology_weight: answeredPreference(85, "user") },
-  partner: { name: "Анна", work_point: { latitude: 56.044, longitude: 93.005 },
-    transport_preferences: ["public_transport"],
-    preferences: { education_weight: answeredPreference(95, "partner"), parks_weight: answeredPreference(90, "partner"), ecology_weight: answeredPreference(90, "partner") },
-    life_goals: ["family_time", "green_environment"] },
-  life_points: [
-    { localId: "demo-maxim-work", owner_type: "primary_user", type: "work", name: "Работа Максима — центр", latitude: 56.011, longitude: 92.874, importance: 10, frequency_per_week: 5 },
-    { localId: "demo-anna-work", owner_type: "partner", type: "partner_work", name: "Работа Анны", latitude: 56.044, longitude: 93.005, importance: 9, frequency_per_week: 5 },
-    { localId: "demo-school", owner_type: "primary_user", type: "school", name: "Школа ребёнка", latitude: 56.022, longitude: 92.824, importance: 10, frequency_per_week: 5 },
-  ],
-  home_values: ["family_time", "financial_stability", "green_environment"],
-  good_home_text: "Дом, из которого удобно добираться до работы и школы, а рядом есть парк.",
-  data_processing_consent: false,
-};
-
 type State = {
   step: number;
   draft: OnboardingDraft;
@@ -90,7 +68,6 @@ type State = {
   setPreference: (name: PreferenceName, value: number | null) => void;
   upsertPoint: (point: LifePoint) => void;
   removePoint: (localId: string) => void;
-  fillDemo: () => void;
   setProfileId: (id: string) => void;
   reset: () => void;
 };
@@ -105,8 +82,14 @@ export const useOnboarding = create<State>()(persist((set) => ({
     life_points: [...state.draft.life_points.filter((item) => item.localId !== point.localId), point] }, profileId: null })),
   removePoint: (localId) => set((state) => ({ draft: { ...state.draft,
     life_points: state.draft.life_points.filter((point) => point.localId !== localId) }, profileId: null })),
-  fillDemo: () => set({ draft: demoDraft, step: 0, profileId: null }),
   setProfileId: (profileId) => set({ profileId }),
   reset: () => set({ draft: initialDraft, step: 0, profileId: null }),
 }), { name: "mesto-onboarding-v2", storage: createJSONStorage(() => localStorage),
+  version: 1,
+  migrate: (persisted) => {
+    const state = persisted as { step?: number; draft?: OnboardingDraft; profileId?: string | null };
+    if (state.draft?.life_points?.some((point) => point.localId.startsWith("demo-")))
+      return { step: 0, draft: initialDraft, profileId: null };
+    return persisted as State;
+  },
   partialize: ({ step, draft, profileId }) => ({ step, draft, profileId }) }));
