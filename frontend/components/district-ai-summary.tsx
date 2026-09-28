@@ -16,12 +16,18 @@ export function DistrictAiSummary({ districtId }: { districtId: number }) {
     if (!profileId) return;
     const controller = new AbortController();
     let active = true;
+    let settled = false;
+    const finish = (value: Result) => {
+      if (!active || settled) return;
+      settled = true;
+      setResult(value);
+    };
     const timer = setTimeout(() => {
-      if (active) {
-        setResult({ key, error: "Генерация заняла слишком много времени. Попробуйте ещё раз." });
+      if (active && !settled) {
+        finish({ key, error: "Генерация заняла слишком много времени. Попробуйте ещё раз." });
         controller.abort();
       }
-    }, 65000);
+    }, 30000);
     const base = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
     void fetch(`${base}/api/ai/district-summary`, {
       method: "POST", headers: { "Content-Type": "application/json" },
@@ -32,10 +38,10 @@ export function DistrictAiSummary({ districtId }: { districtId: number }) {
       if (!response.ok) throw new Error(typeof data.detail === "string" ? data.detail : "ИИ-сводка временно недоступна.");
       if (data.district_id !== districtId || typeof data.summary !== "string" || !data.summary.trim())
         throw new Error("Не удалось получить сводку. Попробуйте ещё раз.");
-      if (active) setResult({ key, summary: data.summary });
+      finish({ key, summary: data.summary });
     }).catch((reason: unknown) => {
-      if (active && !controller.signal.aborted)
-        setResult({ key, error: reason instanceof Error ? reason.message : "ИИ-сводка временно недоступна." });
+      if (active && !settled)
+        finish({ key, error: reason instanceof Error ? reason.message : "ИИ-сводка временно недоступна." });
     }).finally(() => clearTimeout(timer));
     return () => { active = false; clearTimeout(timer); controller.abort(); };
   }, [profileId, districtId, key]);
@@ -45,7 +51,7 @@ export function DistrictAiSummary({ districtId }: { districtId: number }) {
   return <section aria-label="Персональная ИИ-сводка" className="rounded-[28px] border border-[#b8ded1] bg-[#eaf7f0] p-6 text-[#153c44] sm:p-8">
     <div className="flex items-center gap-2"><Sparkles size={21} className="text-[#168e79]" /><h2 className="text-xl font-semibold">Насколько район подходит вам</h2><span className="ml-auto rounded-full bg-white px-3 py-1 text-xs font-semibold text-[#138d7b]">ИИ-сводка</span></div>
     <div aria-live="polite" aria-busy={!current} className="mt-4 text-sm leading-relaxed sm:text-base">
-      {!current && <p role="status" className="animate-pulse text-[#54787a]">Сопоставляем район с вашими ответами…</p>}
+      {!current && <p role="status" className="animate-pulse text-[#54787a]">Сопоставляем район с вашими ответами… Ожидание до 30 секунд.</p>}
       {current?.summary && <p className="whitespace-pre-line">{current.summary}</p>}
       {current?.error && <div><p role="alert" className="text-[#76562b]">{current.error}</p><button type="button" onClick={() => setAttempt((value) => value + 1)} className="mt-3 font-semibold text-[#138d7b] underline">Повторить</button></div>}
     </div>

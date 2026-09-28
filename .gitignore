@@ -26,3 +26,10 @@ data/synthetic/*
 *.log
 .DS_Store
 tsconfig.tsbuildinfo
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
