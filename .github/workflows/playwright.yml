@@ -1,0 +1,62 @@
+name: MESTO E2E
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CI: 'true'
+      COMPOSE_PROJECT_NAME: mesto-e2e-${{ github.run_id }}-${{ github.run_attempt }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install E2E dependencies
+        run: npm ci
+      - name: Install Chromium
+        run: npx --no-install playwright install --with-deps chromium
+      - name: Start disposable MESTO stack
+        run: docker compose -f docker-compose.e2e.yml up --build --detach --wait --wait-timeout 180
+      - name: Check frontend and backend health
+        run: |
+          curl --fail --silent --show-error http://127.0.0.1:18100/health
+          curl --fail --silent --show-error --output /dev/null http://127.0.0.1:3100/
+      - name: Show migration and bootstrap evidence
+        run: |
+          docker compose -f docker-compose.e2e.yml exec -T backend alembic current
+          docker compose -f docker-compose.e2e.yml exec -T db psql -U mesto_e2e -d mesto_e2e -c "SELECT PostGIS_Version();"
+          docker compose -f docker-compose.e2e.yml logs --no-color backend
+      - name: Run MESTO Chromium smoke-test
+        run: npm run e2e
+      - name: Collect container logs on failure
+        if: failure()
+        run: |
+          mkdir -p test-results
+          docker compose -f docker-compose.e2e.yml ps --all > test-results/compose-status.txt
+          docker compose -f docker-compose.e2e.yml logs --no-color > test-results/compose.log 2>&1
+      - name: Upload failure artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mesto-e2e-failure
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 7
+          if-no-files-found: ignore
+      - name: Stop disposable MESTO stack
+        if: always()
+        run: docker compose -f docker-compose.e2e.yml down --volumes
