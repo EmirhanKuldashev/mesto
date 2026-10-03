@@ -6,6 +6,7 @@
     "dev": "next dev --hostname 0.0.0.0",
     "lint": "next lint",
     "build": "next build",
+    "prestart": "node -e \"const fs = require('node:fs'); fs.cpSync('public', '.next/standalone/public', { recursive: true }); fs.cpSync('.next/static', '.next/standalone/.next/static', { recursive: true });\"",
     "start": "node .next/standalone/server.js"
   },
   "dependencies": {
