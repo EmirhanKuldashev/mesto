@@ -83,10 +83,12 @@ class MarketCalculator:
         return round(sum(candidates) / len(candidates), 2) if candidates else None
 
 
-def lifestyle_score(preferences: dict, categories: dict[str, float | None]) -> tuple[float | None, bool]:
+def lifestyle_score(preferences: dict, categories: dict[str, float | None],
+                    *, include_future_growth: bool = True) -> tuple[float | None, bool]:
     """Preference-weighted fit over supported category proxies.
 
     The boolean reports whether answered preferences lacked a supported signal.
+    Current-only callers exclude future proxies without removing their mapping.
     """
     mapping = {
         "education_weight": "infrastructure", "kindergarten_weight": "infrastructure",
@@ -100,6 +102,8 @@ def lifestyle_score(preferences: dict, categories: dict[str, float | None]) -> t
         if not isinstance(answer, dict) or not answer.get("is_answered"):
             continue
         category = mapping.get(name)
+        if category == "future_growth" and not include_future_growth:
+            continue
         value = categories.get(category) if category else None
         if value is None:
             unsupported = True

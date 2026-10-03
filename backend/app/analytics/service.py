@@ -95,7 +95,8 @@ class AnalyticsService:
                                                 purchase_budget=float(profile.purchase_budget) if profile.purchase_budget else None,
                                                 rent_budget=float(profile.rent_budget) if profile.rent_budget else None),
             }
-            lifestyle, unsupported = lifestyle_score(preferences, categories)
+            # Outlook's Current includes lifestyle, so it must use today's evidence only.
+            lifestyle, unsupported = lifestyle_score(preferences, categories, include_future_growth=False)
             categories["lifestyle"] = lifestyle
             combined = self.engine.calculate(categories)
             current_score, future_score = self.engine.calculate_outlook(categories)

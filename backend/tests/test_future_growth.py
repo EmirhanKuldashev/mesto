@@ -1,6 +1,15 @@
 """Future-object impact rules and current/future score behavior."""
 
-from datetime import date
+from datetime import date, datetime, timezone
+from decimal import Decimal
+
+import pytest
+from geoalchemy2.elements import WKTElement
+from sqlalchemy.orm import Session
+
+from app import models
+from app.analytics.service import AnalyticsService
+from app.db import create_session_factory
 
 from app.analytics.future_growth.calculator import FutureGrowthCalculator
 from app.analytics.future_growth.models import FutureObjectEvidence
@@ -70,3 +79,125 @@ def test_configurable_future_weight_adds_uplift_to_current_score():
     same_current, future = engine.calculate_outlook(categories)
     assert same_current == current
     assert future == round(current + .15 * 80, 2)
+
+
+@pytest.fixture
+def current_isolation_case(test_database_url):
+    """Real current/future evidence in a rollback-only PostGIS transaction."""
+    _, engine = create_session_factory(test_database_url)
+    try:
+        with engine.connect() as connection:
+            transaction = connection.begin()
+            try:
+                with Session(bind=connection, join_transaction_mode="create_savepoint") as session:
+                    source = dict(source_id="current-isolation-test", source_type="test",
+                                  source_version="v1", fetched_at=datetime.now(timezone.utc),
+                                  is_synthetic=False)
+                    district = models.District(
+                        name="Current isolation", population=20000,
+                        geometry=WKTElement(
+                            "MULTIPOLYGON(((92.8 56,92.9 56,92.9 56.1,92.8 56.1,92.8 56)))",
+                            srid=4326), **source,
+                    )
+                    profile = models.UserProfile(
+                        data_processing_consent=True, housing_goal="buy",
+                        purchase_budget=Decimal("8000000"),
+                    )
+                    session.add_all([district, profile])
+                    session.flush()
+                    # At 20,000 residents these counts produce I=T=50.
+                    for category, count in (("education", 2), ("healthcare", 3),
+                                            ("park", 1), ("shop", 4), ("transport_stop", 3)):
+                        for index in range(count):
+                            session.add(models.POI(
+                                name=f"{category} {index}", category=category,
+                                district_id=district.id,
+                                location=WKTElement("POINT(92.85 56.05)", srid=4326), **source,
+                            ))
+                    preferences = models.UserPreferences(
+                        user_profile_id=profile.id, preference_values={},
+                    )
+                    session.add(preferences)
+                    session.flush()
+                    yield session, district, profile, preferences, source
+            finally:
+                transaction.rollback()
+    finally:
+        engine.dispose()
+
+
+def _answer(value):
+    return {"value": value, "is_answered": True, "source": "user", "confidence": 1}
+
+
+def _add_growth_evidence(session, district, source, evidence_kind):
+    if evidence_kind == "objects":
+        # Two approved schools saturate the unchanged future-growth formula.
+        for index in range(2):
+            session.add(models.FutureObject(
+                name=f"Future school {index}", district_id=district.id,
+                category="school", status="approved", planned_year=date.today().year + 1,
+                confidence=Decimal("1"),
+                location=WKTElement("POINT(92.85 56.05)", srid=4326), **source,
+            ))
+    else:
+        session.add(models.ExternalSignal(
+            district_id=district.id, source_type="government_plan", title="Future plan",
+            category="education", impact_direction="positive", impact_value=Decimal("100"),
+            confidence=Decimal("1"), is_demo=False,
+        ))
+    session.flush()
+
+
+def _current_projection(result, engine):
+    categories = result.categories.model_dump()
+    categories["future_growth"] = None
+    # No separate Current coverage field exists in the public API.
+    return result.current_score, categories, engine.calculate(categories).coverage
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize("evidence_kind", ["objects", "signals"])
+@pytest.mark.parametrize("with_current_preference", [False, True])
+def test_future_evidence_cannot_change_current(current_isolation_case, evidence_kind,
+                                             with_current_preference):
+    session, district, profile, preferences, source = current_isolation_case
+    answers = {"future_growth_weight": _answer(100)}
+    if with_current_preference:
+        answers["transport_weight"] = _answer(80)
+    preferences.preference_values = answers
+    session.flush()
+    service = AnalyticsService(session)
+    before = service.calculate(profile.public_id, [district.id])[0]
+    _add_growth_evidence(session, district, source, evidence_kind)
+    after = service.calculate(profile.public_id, [district.id])[0]
+
+    assert before.current_score == after.current_score == 50
+    assert _current_projection(before, service.engine) == _current_projection(after, service.engine)
+    assert after.categories.lifestyle == (50 if with_current_preference else None)
+    assert _current_projection(after, service.engine)[2] == (.75 if with_current_preference else .45)
+    assert before.future_growth_score is None and before.future_score is None
+    assert after.future_growth_score == after.categories.future_growth == 100
+    assert after.future_score == after.score == 65
+    if evidence_kind == "objects":
+        assert len(after.future_factors) == 2
+        assert all(factor.distance_km == 0 for factor in after.future_factors)
+        assert after.future_impacts["education"] > 0
+    else:
+        assert after.external_signal_impacts[0].future_growth_impact == 100
+
+
+@pytest.mark.integration
+@pytest.mark.parametrize("evidence_kind", ["objects", "signals"])
+def test_future_preference_cannot_change_current(current_isolation_case, evidence_kind):
+    session, district, profile, preferences, source = current_isolation_case
+    _add_growth_evidence(session, district, source, evidence_kind)
+    service = AnalyticsService(session)
+    baseline = service.calculate(profile.public_id, [district.id])[0]
+    for value in (0, 100):
+        preferences.preference_values = {"future_growth_weight": _answer(value)}
+        session.flush()
+        result = service.calculate(profile.public_id, [district.id])[0]
+        assert _current_projection(result, service.engine) == _current_projection(baseline, service.engine)
+        assert result.current_score == 50 and result.categories.lifestyle is None
+        assert result.future_growth_score == 100 and result.future_score == 65

@@ -156,7 +156,7 @@ def test_score_api_persists_snapshot_with_postgis(test_database_url, alembic_hea
         stored = connection.execute(text("SELECT total_score, calculation_version FROM district_scores WHERE id=:id"),
                                     {"id": result["id"]}).one()
         assert float(stored.total_score) == result["score"]
-        assert stored.calculation_version == "future-signals-v3"
+        assert stored.calculation_version == "future-signals-v4"
     finally:
         app.dependency_overrides.clear()
         transaction.rollback()
@@ -215,7 +215,7 @@ def test_service_calculates_and_saves_a_versioned_snapshot(monkeypatch):
     assert result.is_synthetic and any("синтетические" in warning for warning in result.warnings)
     saved = session.add.call_args.args[0]
     assert isinstance(saved, models.DistrictScore)
-    assert saved.profile_id == 4 and saved.calculation_version == "future-signals-v3"
+    assert saved.profile_id == 4 and saved.calculation_version == "future-signals-v4"
     assert saved.future_factors[-1]["kind"] == "external_signal"
     assert saved.future_factors[-1]["future_growth_impact"] == 10
     session.commit.assert_called_once()
