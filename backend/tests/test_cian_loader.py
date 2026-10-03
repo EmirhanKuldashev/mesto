@@ -1,7 +1,6 @@
 """CIAN RAW validation and database upsert checks."""
 
 import json
-import os
 from uuid import uuid4
 
 import pytest
@@ -30,10 +29,9 @@ def test_cian_listing_requires_importable_fields():
             CianListing.model_validate({**base, **changed})
 
 
-def test_cian_loader_upserts_without_duplicates(tmp_path):
-    url = os.getenv("MESTO_TEST_DATABASE_URL")
-    if not url:
-        pytest.skip("Set MESTO_TEST_DATABASE_URL for database integration checks")
+@pytest.mark.integration
+def test_cian_loader_upserts_without_duplicates(tmp_path, test_database_url):
+    url = test_database_url
 
     listing_id = str(uuid4().int)[:15]
     record = {

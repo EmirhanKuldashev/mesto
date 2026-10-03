@@ -1,7 +1,5 @@
 """Determinism checks and opt-in PostGIS integration checks."""
 
-import os
-
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import func, select, text
@@ -20,10 +18,8 @@ def test_synthetic_source_is_deterministic():
 
 
 @pytest.fixture
-def database(monkeypatch):
-    url = os.getenv("MESTO_TEST_DATABASE_URL")
-    if not url:
-        pytest.skip("Set MESTO_TEST_DATABASE_URL for PostGIS integration checks")
+def database(monkeypatch, test_database_url):
+    url = test_database_url
     monkeypatch.setattr("app.api.create_session_factory", lambda: create_session_factory(url))
     factory, engine = create_session_factory(url)
     try:
@@ -32,10 +28,11 @@ def database(monkeypatch):
         engine.dispose()
 
 
-def test_migration_seed_geometry_and_metadata(database):
+@pytest.mark.integration
+def test_migration_seed_geometry_and_metadata(database, alembic_heads):
     factory, engine = database
     with engine.connect() as connection:
-        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "0011_external_signals"
+        assert set(connection.scalars(text("SELECT version_num FROM alembic_version"))) == alembic_heads
         assert connection.scalar(text("SELECT PostGIS_Version()"))
     with factory.begin() as session:
         first = seed(session)
@@ -61,6 +58,7 @@ def test_migration_seed_geometry_and_metadata(database):
         assert all(version.record_count for version in session.scalars(select(models.SourceVersion)))
 
 
+@pytest.mark.integration
 def test_catalogue_api_and_filters(database):
     client = TestClient(app)
     counts = {"districts": 7, "poi": 250, "residential-complexes": 12,

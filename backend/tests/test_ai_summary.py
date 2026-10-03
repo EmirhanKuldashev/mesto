@@ -121,8 +121,7 @@ def test_free_access_denied_is_not_presented_as_retryable_throttling():
     assert error.value.status_code == 503
 
 @pytest.mark.integration
-def test_database_context_keeps_commute_without_names_or_coordinates():
-    import os
+def test_database_context_keeps_commute_without_names_or_coordinates(test_database_url):
     from sqlalchemy import select
     from sqlalchemy.orm import Session
     from app import models
@@ -130,9 +129,7 @@ def test_database_context_keeps_commute_without_names_or_coordinates():
     from app.profile_api import save_profile
     from app.profile_schemas import ProfileCreate
     from uuid import UUID
-    url = os.getenv('MESTO_TEST_DATABASE_URL')
-    if not url:
-        pytest.skip('Set MESTO_TEST_DATABASE_URL for PostGIS context validation')
+    url = test_database_url
     _, engine = create_session_factory(url)
     try:
         with engine.connect() as connection:
@@ -141,8 +138,7 @@ def test_database_context_keeps_commute_without_names_or_coordinates():
                 with Session(bind=connection, join_transaction_mode='create_savepoint') as session:
                     district = session.scalar(select(models.District).where(
                         models.District.is_synthetic.is_(False), models.District.centroid.is_not(None)))
-                    if district is None:
-                        pytest.skip('Requires a real district with a centroid')
+                    assert district is not None, "OSM test district with a centroid must be loaded"
                     profile = save_profile(ProfileCreate(name='private-name', housing_goal='buy',
                         purchase_budget=8000000, commute_minutes=30, data_processing_consent=True,
                         life_points=[{'owner_type':'primary_user','type':'work','name':'private-address',

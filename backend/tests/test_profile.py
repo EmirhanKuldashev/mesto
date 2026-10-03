@@ -1,7 +1,5 @@
 """Stage 3 profile validation and database-backed API behavior."""
 
-import os
-
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import text
@@ -15,10 +13,8 @@ from app.profile_schemas import ProfileCreate
 
 
 @pytest.fixture
-def client():
-    url = os.getenv("MESTO_TEST_DATABASE_URL")
-    if not url:
-        pytest.skip("Set MESTO_TEST_DATABASE_URL for profile integration checks")
+def client(test_database_url):
+    url = test_database_url
     _, engine = create_session_factory(url)
     connection = engine.connect()
     transaction = connection.begin()
@@ -67,6 +63,7 @@ def test_validation_and_consent():
             "value": 90, "is_answered": True, "source": "default", "confidence": 1}}))
 
 
+@pytest.mark.integration
 def test_single_family_couple_and_life_points(client):
     api, connection = client
     single = api.post("/api/profile", json=base_profile(name="Single"))
@@ -138,6 +135,7 @@ def test_single_family_couple_and_life_points(client):
     assert api.post("/api/analysis/request", json={"profile_id": data["id"]}).status_code == 403
 
 
+@pytest.mark.integration
 def test_api_rejects_invalid_payload(client):
     api, connection = client
     assert api.post("/api/profile", json=base_profile(data_processing_consent=False)).status_code == 422
@@ -155,6 +153,7 @@ def test_api_rejects_invalid_payload(client):
                 VALUES (:id, 'orphan', 'other', ST_GeomFromText('POINT(93 56)', 4326), 1, 5)"""), {"id": profile_id})
 
 
+@pytest.mark.integration
 def test_analysis_snapshot_is_immutable_after_life_point_change(client):
     api, connection = client
     created = api.post("/api/profile", json=base_profile(

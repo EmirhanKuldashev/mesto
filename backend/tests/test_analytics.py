@@ -109,18 +109,15 @@ def test_score_api_response_schema_and_input_validation():
         app.dependency_overrides.clear()
 
 @pytest.mark.integration
-def test_score_api_persists_snapshot_with_postgis(monkeypatch):
+def test_score_api_persists_snapshot_with_postgis(test_database_url, alembic_heads):
     """Runs when MESTO_TEST_DATABASE_URL points to a migrated PostGIS database."""
-    import os
     from sqlalchemy import text
     from sqlalchemy.orm import Session
     from app.api import get_session
     from app.db import create_session_factory
     from app.etl.seed import seed
 
-    url = os.getenv("MESTO_TEST_DATABASE_URL")
-    if not url:
-        pytest.skip("Set MESTO_TEST_DATABASE_URL for PostGIS integration checks")
+    url = test_database_url
     _, engine = create_session_factory(url)
     connection = engine.connect()
     transaction = connection.begin()
@@ -131,7 +128,7 @@ def test_score_api_persists_snapshot_with_postgis(monkeypatch):
 
     app.dependency_overrides[get_session] = override_session
     try:
-        assert connection.scalar(text("SELECT version_num FROM alembic_version")) == "0011_external_signals"
+        assert set(connection.scalars(text("SELECT version_num FROM alembic_version"))) == alembic_heads
         with Session(bind=connection, join_transaction_mode="create_savepoint") as session:
             seed(session)
             session.commit()

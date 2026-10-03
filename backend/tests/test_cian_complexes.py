@@ -1,7 +1,6 @@
 """Checks for Cian residential complex extraction and import."""
 
 import json
-import os
 from uuid import uuid4
 
 import pytest
@@ -45,10 +44,9 @@ def test_complex_validation_requires_verified_identity_and_coordinate_pair():
             CianComplex.model_validate({**record, **change})
 
 
-def test_complex_loader_upserts_without_duplicates(tmp_path):
-    url = os.getenv("MESTO_TEST_DATABASE_URL")
-    if not url:
-        pytest.skip("Set MESTO_TEST_DATABASE_URL for database integration checks")
+@pytest.mark.integration
+def test_complex_loader_upserts_without_duplicates(tmp_path, test_database_url):
+    url = test_database_url
     name = f"zhk-test-{uuid4().hex[:12]}-krasnoyarsk-i.cian.ru"
     record = {
         "complex_id": name, "source": "cian", "url": f"https://{name}/",
