@@ -63,7 +63,7 @@ export default function DistrictPage() {
     </div></section>
     <section className="bg-[#f0f7f3] py-8 text-[#14333e] sm:py-12"><div className="content-shell grid gap-6 lg:grid-cols-[300px_1fr]">
       <aside className="space-y-5">
-        {status === "needs_profile" && <div role="status" className="rounded-[22px] border border-[#eac998] bg-[#fff5e5] p-5 text-sm text-[#76562b]">Чтобы увидеть персональную оценку районов, заполните анкету. <Link href="/onboarding" className="font-semibold underline">Создать сценарий</Link></div>}
+        {status === "needs_profile" && <div role="status" className="rounded-[22px] border border-[#eac998] bg-[#fff5e5] p-5 text-sm text-[#76562b]">Заполните анкету, чтобы получить MESTO Score и персональный Match. <Link href="/onboarding" className="font-semibold underline">Создать сценарий</Link></div>}
         {status === "error" && <div role="alert" className="rounded-[22px] border border-[#eac998] bg-[#fff5e5] p-5 text-sm text-[#76562b]">Не удалось получить оценку{analyticsError ? `: ${analyticsError}` : "."} <button type="button" onClick={() => void load(profileId, true)} className="mt-2 block font-semibold underline">Повторить запрос</button></div>}
         <div className="rounded-[26px] border border-[#dbe8e4] bg-white p-6">
           <h2 className="text-xl font-semibold">{selectedMapDistrict?.name ?? selectedScore?.district.name ?? "MESTO Score районов"}</h2>

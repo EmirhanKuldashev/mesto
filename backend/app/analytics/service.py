@@ -43,6 +43,7 @@ class AnalyticsService:
             "hospital": "healthcare", "bus_stop": "transport_stop",
         }
         for poi in self.session.scalars(select(models.POI).where(models.POI.district_id == district.id)):
+            facts.raw_poi_counts[poi.category] += 1
             facts.poi_counts[category_aliases.get(poi.category, poi.category)] += 1
             facts.synthetic |= bool(poi.is_synthetic)
         for offer in self.session.scalars(select(models.PropertyOffer).where(models.PropertyOffer.district_id == district.id)):
@@ -95,13 +96,14 @@ class AnalyticsService:
                                                 purchase_budget=float(profile.purchase_budget) if profile.purchase_budget else None,
                                                 rent_budget=float(profile.rent_budget) if profile.rent_budget else None),
             }
-            # Outlook's Current includes lifestyle, so it must use today's evidence only.
+            # Compatibility/personal categories remain available to Match, outside MESTO.
             lifestyle, unsupported = lifestyle_score(preferences, categories, include_future_growth=False)
             categories["lifestyle"] = lifestyle
-            combined = self.engine.calculate(categories)
+            current = self.engine.calculate_current(categories)
             current_score, future_score = self.engine.calculate_outlook(categories)
-            score = future_score if future_score is not None else current_score
-            confidence = round(combined.coverage * (0.5 if facts.synthetic else 1.0), 3) if score is not None else 0
+            score = current_score
+            # v1 confidence is required-component coverage, independent of quality/source flags.
+            confidence = current.coverage
             reasons, warnings = self.explanations.generate(categories, facts,
                                                            unsupported_preferences=unsupported, future_result=future_result)
             results.append(CalculatedDistrictScore(

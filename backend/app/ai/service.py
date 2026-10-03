@@ -79,7 +79,10 @@ def build_context(session, profile_id: UUID, district_id: int) -> dict:
                 "snapshot_date": max((item.fetched_at for item in complexes), default=None)}},
         "analytics": score.model_dump(mode="json"),
         "limitations": ["Цены и инфраструктура — датированные снимки, не данные в реальном времени.",
-            "Нет маршрутов, времени поездки и подтверждения наличия квартир."]})
+            "Нет маршрутов, времени поездки и подтверждения наличия квартир.",
+            "MESTO score/current_score — объективный индекс только инфраструктуры и остановок; "
+            "бюджет и предпочтения в него не входят. Growth и future_score — отдельные будущие показатели.",
+            "confidence — покрытие двух обязательных компонентов MESTO, не полнота данных и не качество района."]})
 
 
 class SummaryRuntime:

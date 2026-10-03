@@ -3,7 +3,9 @@
 from dataclasses import dataclass
 
 CATEGORIES = ("lifestyle", "infrastructure", "transport", "future_growth", "market")
-CALCULATION_VERSION = "future-signals-v4"
+CALCULATION_VERSION = "objective-current-v1"
+# Existing territorial weights 0.25:0.20 reduced to 5:4; both are required.
+CURRENT_WEIGHTS = {"infrastructure": 5, "transport": 4}
 
 
 @dataclass(frozen=True)

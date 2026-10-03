@@ -131,7 +131,8 @@ def _answer(value):
 
 
 def _add_growth_evidence(session, district, source, evidence_kind):
-    if evidence_kind == "objects":
+    source = {**source, "is_synthetic": evidence_kind.endswith("demo")}
+    if evidence_kind.startswith("objects"):
         # Two approved schools saturate the unchanged future-growth formula.
         for index in range(2):
             session.add(models.FutureObject(
@@ -144,7 +145,7 @@ def _add_growth_evidence(session, district, source, evidence_kind):
         session.add(models.ExternalSignal(
             district_id=district.id, source_type="government_plan", title="Future plan",
             category="education", impact_direction="positive", impact_value=Decimal("100"),
-            confidence=Decimal("1"), is_demo=False,
+            confidence=Decimal("1"), is_demo=evidence_kind.endswith("demo"),
         ))
     session.flush()
 
@@ -153,11 +154,11 @@ def _current_projection(result, engine):
     categories = result.categories.model_dump()
     categories["future_growth"] = None
     # No separate Current coverage field exists in the public API.
-    return result.current_score, categories, engine.calculate(categories).coverage
+    return result.current_score, result.score, categories, result.confidence, engine.calculate_current(categories).coverage
 
 
 @pytest.mark.integration
-@pytest.mark.parametrize("evidence_kind", ["objects", "signals"])
+@pytest.mark.parametrize("evidence_kind", ["objects", "signals", "objects_demo", "signals_demo"])
 @pytest.mark.parametrize("with_current_preference", [False, True])
 def test_future_evidence_cannot_change_current(current_isolation_case, evidence_kind,
                                              with_current_preference):
@@ -175,11 +176,11 @@ def test_future_evidence_cannot_change_current(current_isolation_case, evidence_
     assert before.current_score == after.current_score == 50
     assert _current_projection(before, service.engine) == _current_projection(after, service.engine)
     assert after.categories.lifestyle == (50 if with_current_preference else None)
-    assert _current_projection(after, service.engine)[2] == (.75 if with_current_preference else .45)
+    assert before.confidence == after.confidence == 1
     assert before.future_growth_score is None and before.future_score is None
     assert after.future_growth_score == after.categories.future_growth == 100
-    assert after.future_score == after.score == 65
-    if evidence_kind == "objects":
+    assert after.future_score == 65 and before.score == after.score == 50
+    if evidence_kind.startswith("objects"):
         assert len(after.future_factors) == 2
         assert all(factor.distance_km == 0 for factor in after.future_factors)
         assert after.future_impacts["education"] > 0
@@ -200,4 +201,4 @@ def test_future_preference_cannot_change_current(current_isolation_case, evidenc
         result = service.calculate(profile.public_id, [district.id])[0]
         assert _current_projection(result, service.engine) == _current_projection(baseline, service.engine)
         assert result.current_score == 50 and result.categories.lifestyle is None
-        assert result.future_growth_score == 100 and result.future_score == 65
+        assert result.future_growth_score == 100 and result.future_score == 65 and result.score == 50

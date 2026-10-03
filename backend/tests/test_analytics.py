@@ -152,11 +152,11 @@ def test_score_api_persists_snapshot_with_postgis(test_database_url, alembic_hea
         assert result["current_score"] is not None and result["future_score"] is not None
         assert result["future_factors"]
         assert 0 <= result["score"] <= 100
-        assert result["confidence"] <= .5 and result["is_synthetic"] is True
+        assert result["confidence"] == 1 and result["is_synthetic"] is True
         stored = connection.execute(text("SELECT total_score, calculation_version FROM district_scores WHERE id=:id"),
                                     {"id": result["id"]}).one()
         assert float(stored.total_score) == result["score"]
-        assert stored.calculation_version == "future-signals-v4"
+        assert stored.calculation_version == "objective-current-v1"
     finally:
         app.dependency_overrides.clear()
         transaction.rollback()
@@ -205,17 +205,17 @@ def test_service_calculates_and_saves_a_versioned_snapshot(monkeypatch):
             confidence=.5, is_demo=True)]))
     result = service.score(public_id, [7])[0]
     assert result.id == 42 and result.district.id == 7
-    assert result.current_score == 97.06
+    assert result.current_score == 100
     assert result.future_score == 100
     assert result.score == 100 and result.future_factors
     assert result.categories.market == 75
     assert result.categories.future_growth == 50
     assert result.external_signal_impacts[0].future_growth_impact == 10
-    assert result.confidence == .5
+    assert result.confidence == 1
     assert result.is_synthetic and any("синтетические" in warning for warning in result.warnings)
     saved = session.add.call_args.args[0]
     assert isinstance(saved, models.DistrictScore)
-    assert saved.profile_id == 4 and saved.calculation_version == "future-signals-v4"
+    assert saved.profile_id == 4 and saved.calculation_version == "objective-current-v1"
     assert saved.future_factors[-1]["kind"] == "external_signal"
     assert saved.future_factors[-1]["future_growth_impact"] == 10
     session.commit.assert_called_once()

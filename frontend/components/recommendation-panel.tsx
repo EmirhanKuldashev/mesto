@@ -16,7 +16,7 @@ export function RecommendationPanel({ items, error, selectedId, onSelect, onRetr
       <p className="text-xs font-bold uppercase tracking-[.15em] text-[#168e79]">Персональный подбор</p>
       <h2 className="mt-2 text-3xl font-semibold tracking-[-.04em]">Ваши лучшие места</h2>
     </div><Sparkles size={24} className="text-[#168e79]" /></div>
-    <p className="mt-3 max-w-2xl text-sm text-[#647f80]">Match Score показывает совместимость с вашим сценарием. MESTO Score описывает сам район.</p>
+    <p className="mt-3 max-w-2xl text-sm text-[#647f80]">Match Score показывает персональное соответствие. MESTO Score — базовый индекс текущей инфраструктуры и доступности остановок.</p>
     {error && <div role="alert" className="mt-5 text-sm text-[#a15c49]">Не удалось получить рекомендации: {error}. <button type="button" onClick={onRetry} className="font-semibold underline">Повторить</button></div>}
     {!error && items.length === 0 && <p className="mt-5 text-sm text-[#647f80]">Пока нет районов с достаточными данными для персонального подбора.</p>}
     {items.length > 0 && <div className="mt-6 grid gap-3 md:grid-cols-2 xl:grid-cols-3">{items.map((item) =>

@@ -73,7 +73,7 @@ def test_future_growth_service_reads_persisted_signals_and_explains_demo():
                   "future_growth": result.score, "market": None}
     reasons, warnings = ExplanationGenerator().generate(categories, DistrictFacts(population=None),
         unsupported_preferences=False, future_result=result)
-    assert any("внешним сигналам" in reason for reason in reasons)
+    assert reasons == []  # Future signals do not explain objective Current.
     assert any("демонстрационные" in warning for warning in warnings)
 
 

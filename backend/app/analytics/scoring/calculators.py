@@ -13,6 +13,7 @@ class DistrictFacts:
     sale_prices: list[float] = field(default_factory=list)
     rent_prices: list[float] = field(default_factory=list)
     synthetic: bool = False
+    raw_poi_counts: Counter[str] = field(default_factory=Counter)
 
     @property
     def poi_total(self) -> int:
@@ -39,8 +40,11 @@ class InfrastructureCalculator:
     """POI density by population or area; no distance or quality claim."""
 
     def calculate(self, facts: DistrictFacts) -> float | None:
-        if facts.poi_total == 0:
-            return None
+        values = list(self.components(facts).values())
+        return None if any(value is None for value in values) else round(sum(values) / len(values), 2)
+
+    def components(self, facts: DistrictFacts) -> dict[str, float | None]:
+        """Retain the existing density proxies and thresholds for later consumers."""
         if facts.population and facts.population > 0:
             groups = (
                 ("education", "kindergarten", "university"),
@@ -53,10 +57,13 @@ class InfrastructureCalculator:
             # The bundled OSM snapshot covers education, healthcare and parks.
             groups = (("education", "kindergarten"), ("healthcare",), ("park",))
             targets = ((2, 1), (3, 0.4), (1, 0.15))
+        labels = ("education", "healthcare", "parks", "shopping")[:len(groups)]
+        if facts.poi_total == 0:
+            return dict.fromkeys(labels)
         values = [_saturation(sum(facts.poi_counts[name] for name in group),
                               facts.population, facts.area_km2, per_10000, per_km2)
                   for group, (per_10000, per_km2) in zip(groups, targets)]
-        return None if any(value is None for value in values) else round(sum(values) / len(values), 2)
+        return dict(zip(labels, values))
 
 
 class TransportCalculator:
@@ -88,7 +95,7 @@ def lifestyle_score(preferences: dict, categories: dict[str, float | None],
     """Preference-weighted fit over supported category proxies.
 
     The boolean reports whether answered preferences lacked a supported signal.
-    Current-only callers exclude future proxies without removing their mapping.
+    Compatibility callers can exclude future proxies without removing their mapping.
     """
     mapping = {
         "education_weight": "infrastructure", "kindergarten_weight": "infrastructure",
