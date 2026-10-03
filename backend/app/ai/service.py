@@ -63,7 +63,7 @@ def build_context(session, profile_id: UUID, district_id: int) -> dict:
         models.ResidentialComplex.district_id == district_id,
         models.ResidentialComplex.is_synthetic.is_(False)).order_by(models.ResidentialComplex.id)).all()
     prices = [float(item.price_from) for item in complexes if item.price_from and item.price_from > 0]
-    score = AnalyticsService(session).score(profile_id, [district_id])[0]
+    score = AnalyticsService(session).calculate(profile_id, [district_id])[0]
     if score.is_synthetic:
         raise HTTPException(409, "В оценке присутствуют демонстрационные данные; сводка недоступна.")
     return jsonable_encoder({"questionnaire": preferences,
@@ -77,7 +77,7 @@ def build_context(session, profile_id: UUID, district_id: int) -> dict:
                 "within_purchase_budget": sum(price <= float(profile.purchase_budget) for price in prices)
                     if profile.purchase_budget else None,
                 "snapshot_date": max((item.fetched_at for item in complexes), default=None)}},
-        "analytics": score.model_dump(mode="json", exclude={"id", "created_at"}),
+        "analytics": score.model_dump(mode="json"),
         "limitations": ["Цены и инфраструктура — датированные снимки, не данные в реальном времени.",
             "Нет маршрутов, времени поездки и подтверждения наличия квартир."]})
 

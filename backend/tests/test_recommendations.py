@@ -57,7 +57,7 @@ def test_service_returns_ranked_districts_and_profile_specific_reasons():
     session.scalar.side_effect = [profile, preferences]
     session.scalars.side_effect = [[point], [1, 2]]
     service = RecommendationService(session)
-    service.analytics.score = Mock(return_value=[
+    service.analytics.calculate = Mock(return_value=[
         score(2, "Transit district", infrastructure=45, transport=95, future_growth=90),
         score(1, "School district", infrastructure=95, transport=45, future_growth=40),
     ])
@@ -68,7 +68,7 @@ def test_service_returns_ranked_districts_and_profile_specific_reasons():
     assert result[0].profile_id == public_id and result[0].district_score == 75
     assert any("семейн" in reason for reason in result[0].reasons)
     assert any("Время в пути" in warning for warning in result[0].warnings)
-    service.analytics.score.assert_called_once_with(public_id, [1, 2])
+    service.analytics.calculate.assert_called_once_with(public_id, [1, 2])
 
 
 def test_api_returns_recommendation_schema():

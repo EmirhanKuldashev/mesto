@@ -52,8 +52,8 @@ class RecommendationService:
         ).order_by(models.District.id)))
         if not district_ids:
             return []
-        # AnalyticsService owns the score formula and snapshot persistence.
-        scores = self.analytics.score(profile_id, district_ids)
+        # Ranking consumes calculated evidence without creating analytics snapshots.
+        scores = self.analytics.calculate(profile_id, district_ids)
         recommendations: list[DistrictRecommendation] = []
         now = datetime.now(timezone.utc)
         for district in scores:

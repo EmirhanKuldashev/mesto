@@ -65,8 +65,9 @@ class DistrictReference(BaseModel):
     slug: str | None
 
 
-class DistrictScoreResponse(BaseModel):
-    id: int
+class CalculatedDistrictScore(BaseModel):
+    """Calculated evidence without a persisted snapshot identity or timestamp."""
+
     district: DistrictReference
     score: float | None
     current_score: float | None
@@ -81,4 +82,8 @@ class DistrictScoreResponse(BaseModel):
     warnings: list[str]
     is_synthetic: bool
     calculation_version: str
+
+
+class DistrictScoreResponse(CalculatedDistrictScore):
+    id: int
     created_at: datetime

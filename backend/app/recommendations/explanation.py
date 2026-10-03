@@ -1,12 +1,12 @@
 """Evidence-bound reasons for a personal match."""
 
-from app.analytics.models import DistrictScoreResponse
+from app.analytics.models import CalculatedDistrictScore
 from app.recommendations.models import MatchProfile
 from app.recommendations.ranking import MatchResult, answered_value
 
 
 class RecommendationExplanation:
-    def generate(self, district: DistrictScoreResponse, profile: MatchProfile,
+    def generate(self, district: CalculatedDistrictScore, profile: MatchProfile,
                  match: MatchResult) -> tuple[list[str], list[str]]:
         categories = district.categories
         reasons: list[str] = []

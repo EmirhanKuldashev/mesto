@@ -1,4 +1,4 @@
-"""Read existing records, calculate a score, and persist an auditable snapshot."""
+"""Calculate district evidence; persist snapshots only for explicit scoring requests."""
 
 from dataclasses import asdict
 from uuid import UUID
@@ -10,7 +10,9 @@ from sqlalchemy.orm import Session
 from app import models
 from app.analytics.explanation.generator import ExplanationGenerator
 from app.analytics.future_growth.service import FutureGrowthService
-from app.analytics.models import CategoryScores, DistrictReference, DistrictScoreResponse
+from app.analytics.models import (
+    CalculatedDistrictScore, CategoryScores, DistrictReference, DistrictScoreResponse,
+)
 from app.analytics.scoring.calculators import (
     DistrictFacts, InfrastructureCalculator, MarketCalculator,
     TransportCalculator, lifestyle_score,
@@ -54,11 +56,23 @@ class AnalyticsService:
         return facts
 
     def score(self, profile_id: UUID, district_ids: list[int]) -> list[DistrictScoreResponse]:
+        """Calculate and save a new historical snapshot for each requested district."""
+        profile = self._profile(profile_id)
+        return self._persist(profile.id, self._calculate(profile, district_ids))
+
+    def calculate(self, profile_id: UUID, district_ids: list[int]) -> list[CalculatedDistrictScore]:
+        """Read current facts and calculate without adding or committing score records."""
+        return self._calculate(self._profile(profile_id), district_ids)
+
+    def _profile(self, profile_id: UUID) -> models.UserProfile:
         profile = self.session.scalar(select(models.UserProfile).where(models.UserProfile.public_id == profile_id))
         if profile is None:
             raise HTTPException(404, "Profile not found")
         if not profile.data_processing_consent:
             raise HTTPException(403, "Profile consent is required")
+        return profile
+
+    def _calculate(self, profile: models.UserProfile, district_ids: list[int]) -> list[CalculatedDistrictScore]:
         districts = {district.id: district for district in self.session.scalars(
             select(models.District).where(models.District.id.in_(district_ids)))}
         if len(districts) != len(district_ids):
@@ -89,21 +103,7 @@ class AnalyticsService:
             confidence = round(combined.coverage * (0.5 if facts.synthetic else 1.0), 3) if score is not None else 0
             reasons, warnings = self.explanations.generate(categories, facts,
                                                            unsupported_preferences=unsupported, future_result=future_result)
-            row = models.DistrictScore(
-                profile_id=profile.id, district_id=district_id, total_score=score,
-                current_score=current_score, future_score=future_score,
-                future_factors=[factor.model_dump(mode="json") for factor in future_result.factors]
-                    + [{"kind": "external_signal", **asdict(signal)}
-                       for signal in future_result.signal_impacts],
-                lifestyle_score=lifestyle, infrastructure_score=categories["infrastructure"],
-                transport_score=categories["transport"], future_growth_score=categories["future_growth"],
-                market_score=categories["market"], confidence=confidence,
-                calculation_version=CALCULATION_VERSION, is_synthetic=facts.synthetic,
-            )
-            self.session.add(row)
-            self.session.flush()
-            results.append(DistrictScoreResponse(
-                id=row.id,
+            results.append(CalculatedDistrictScore(
                 district=DistrictReference(id=district.id, name=district.name, slug=district.slug),
                 score=score, current_score=current_score, future_score=future_score,
                 future_growth_score=future_result.score, future_factors=future_result.factors,
@@ -113,7 +113,29 @@ class AnalyticsService:
                 categories=CategoryScores(**categories),
                 confidence=confidence, reasons=reasons, warnings=warnings,
                 is_synthetic=facts.synthetic, calculation_version=CALCULATION_VERSION,
-                created_at=row.created_at,
+            ))
+        return results
+
+    def _persist(self, profile_id: int, scores: list[CalculatedDistrictScore]) -> list[DistrictScoreResponse]:
+        results = []
+        for score in scores:
+            row = models.DistrictScore(
+                profile_id=profile_id, district_id=score.district.id, total_score=score.score,
+                current_score=score.current_score, future_score=score.future_score,
+                future_factors=[factor.model_dump(mode="json") for factor in score.future_factors]
+                    + [{"kind": "external_signal", **signal.model_dump(mode="json")}
+                       for signal in score.external_signal_impacts],
+                lifestyle_score=score.categories.lifestyle,
+                infrastructure_score=score.categories.infrastructure,
+                transport_score=score.categories.transport,
+                future_growth_score=score.categories.future_growth,
+                market_score=score.categories.market, confidence=score.confidence,
+                calculation_version=score.calculation_version, is_synthetic=score.is_synthetic,
+            )
+            self.session.add(row)
+            self.session.flush()
+            results.append(DistrictScoreResponse(
+                **score.model_dump(), id=row.id, created_at=row.created_at,
             ))
         self.session.commit()
         return results
