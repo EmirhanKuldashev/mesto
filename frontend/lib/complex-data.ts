@@ -28,11 +28,11 @@ function isDistrict(value: unknown): value is District {
     (item.centroid === null || isPoint(item.centroid));
 }
 
-function isPoi(value: unknown): value is Poi {
+export function isPoi(value: unknown): value is Poi {
   if (!value || typeof value !== "object") return false;
   const item = value as Record<string, unknown>;
   return item.source_id === "osm" && item.is_synthetic === false && typeof item.id === "number" &&
-    typeof item.name === "string" && typeof item.category === "string" &&
+    (item.name === null || typeof item.name === "string") && typeof item.category === "string" &&
     (item.district_id === null || typeof item.district_id === "number") && isPoint(item.location);
 }
 

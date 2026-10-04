@@ -145,7 +145,7 @@ class DistrictMetrics(IdMixin, SourceFields, Base):
 
 class POI(IdMixin, SourceFields, Base):
     __tablename__ = "pois"
-    name: Mapped[str] = mapped_column(String(200))
+    name: Mapped[str | None] = mapped_column(String(200), nullable=True)
     category: Mapped[str] = mapped_column(String(80), index=True)
     location: Mapped[str] = mapped_column(Geometry("POINT", srid=4326))
     geometry: Mapped[str | None] = mapped_column(Geometry("POINT", srid=4326))

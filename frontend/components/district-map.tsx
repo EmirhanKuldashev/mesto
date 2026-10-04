@@ -183,9 +183,10 @@ export default function DistrictMap({ points, districts, pois, futureObjects, la
           dot.className = "h-4 w-4 rounded-full border-2 border-white shadow-lg";
           dot.style.backgroundColor = layer === "schools" || layer === "kindergarten" ? "#247fc1" :
             layer === "healthcare" ? "#e8757b" : layer === "transport" ? "#dc9f3b" : "#37a577";
-          dot.setAttribute("aria-label", poi.name);
+          const label = poi.name ?? "Объект без названия";
+          dot.setAttribute("aria-label", label);
           const content = document.createElement("div");
-          const title = document.createElement("strong"); title.textContent = poi.name;
+          const title = document.createElement("strong"); title.textContent = label;
           const type = document.createElement("p"); type.textContent = poiNames[poi.category] ?? poi.category;
           content.append(title, type);
           const distance = distanceLabel(poi.location.coordinates, selected);
