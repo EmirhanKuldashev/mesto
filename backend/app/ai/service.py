@@ -16,6 +16,7 @@ from app import models
 from app.analytics.service import AnalyticsService
 from app.profile_api import find_profile, profile_data
 from app.ai.provider import OrcaConfig, generate_summary
+from app.market.service import MarketService
 
 PROFILE_FIELDS = (
     "household_type", "adults_count", "children_count", "children", "housing_goal",
@@ -59,10 +60,7 @@ def build_context(session, profile_id: UUID, district_id: int) -> dict:
     poi_rows = session.execute(select(models.POI.category, func.count(), func.max(models.POI.fetched_at))
         .where(models.POI.district_id == district_id, models.POI.is_synthetic.is_(False))
         .group_by(models.POI.category).order_by(models.POI.category)).all()
-    complexes = session.scalars(select(models.ResidentialComplex).where(
-        models.ResidentialComplex.district_id == district_id,
-        models.ResidentialComplex.is_synthetic.is_(False)).order_by(models.ResidentialComplex.id)).all()
-    prices = [float(item.price_from) for item in complexes if item.price_from and item.price_from > 0]
+    housing = MarketService(session).assessment(profile_id, district_id)
     score = AnalyticsService(session).calculate(profile_id, [district_id])[0]
     if score.is_synthetic:
         raise HTTPException(409, "В оценке присутствуют демонстрационные данные; сводка недоступна.")
@@ -71,18 +69,16 @@ def build_context(session, profile_id: UUID, district_id: int) -> dict:
             "population": district.population, "boundary_fetched_at": district.fetched_at,
             "infrastructure": [{"category": category, "count": count, "fetched_at": date}
                                for category, count, date in poi_rows],
-            "housing": {"complex_count": len(complexes), "complexes_with_prices": len(prices),
-                "minimum_complex_starting_price": min(prices) if prices else None,
-                "maximum_complex_starting_price": max(prices) if prices else None,
-                "within_purchase_budget": sum(price <= float(profile.purchase_budget) for price in prices)
-                    if profile.purchase_budget else None,
-                "snapshot_date": max((item.fetched_at for item in complexes), default=None)}},
+            "housing": housing.model_dump(mode="json")},
         "analytics": score.model_dump(mode="json"),
         "limitations": ["Цены и инфраструктура — датированные снимки, не данные в реальном времени.",
             "Нет маршрутов, времени поездки и подтверждения наличия квартир.",
             "MESTO score/current_score — объективный индекс только инфраструктуры и остановок; "
             "бюджет и предпочтения в него не входят. Growth и future_score — отдельные будущие показатели.",
-            "confidence — покрытие двух обязательных компонентов MESTO, не полнота данных и не качество района."]})
+            "confidence — покрытие двух обязательных компонентов MESTO, не полнота данных и не качество района.",
+            "ObservedAffordability не входит в MESTO или Match: ranking_eligible=false. "
+            "within_budget_share описывает выборку стартовых цен ЖК, не вероятность найти квартиру.",
+            "Для жилья учитывай limitations и диапазон дат записей: дата конкретной price_from не гарантируется."]})
 
 
 class SummaryRuntime:

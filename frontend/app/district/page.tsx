@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, MapPin } from "lucide-react";
 import type { MapLayer } from "@/components/district-map";
 import { AnalyticsScore } from "@/components/analytics-score";
+import { DistrictMarket } from "@/components/district-market";
 import { Brand, EmptyState, Skeleton } from "@/components/concept-ui";
 import { useAnalytics } from "@/lib/analytics-store";
 import { useComplexData } from "@/lib/complex-data";
@@ -94,6 +95,7 @@ export default function DistrictPage() {
       {real && selectedDistrictId === null && <p className="text-[#607f82]">Нажмите на район в списке или на карте.</p>}
       {real && selectedDistrictId !== null && !selectedScore && <EmptyState title="Для этого района нет оценки" body="Выберите другой район из списка." />}
       {(real && selectedDistrictId !== null) && selectedScore && <AnalyticsScore score={selectedScore} />}
+      {(selectedMapDistrict || selectedScore) && <DistrictMarket districtId={selectedMapDistrict?.id ?? selectedScore!.district.id} profileId={profileId} />}
       {selectedMapDistrict && selectedMapDistrict.complexes.length > 0 && <div className="mt-8 rounded-[26px] border border-[#dbe8e4] bg-white p-6 text-[#153c44]">
         <h3 className="text-xl font-semibold">Жилые комплексы района</h3><p className="mt-2 text-sm text-[#607f82]">Объекты из API ЦИАН. Локальная оценка ЖК отличается от MESTO Score района.</p>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">{selectedMapDistrict.complexes.map((complex) => <article key={complex.id} className="rounded-xl bg-[#f1f8f5] p-4"><h4 className="font-semibold">{complex.name}</h4><p className="mt-1 text-sm text-[#607f82]">Цена от: {complex.price_from ? `${new Intl.NumberFormat("ru-RU").format(complex.price_from)} ₽` : "не указана"}</p><p className="mt-1 text-sm text-[#607f82]">Соответствие сценарию: {complex.score.value === null ? "нет данных" : `${Math.round(complex.score.value * 100)}%`}</p><p className="mt-1 text-xs text-[#789295]">{complex.score.reasons.slice(0, 2).join(" · ")}</p></article>)}</div>
