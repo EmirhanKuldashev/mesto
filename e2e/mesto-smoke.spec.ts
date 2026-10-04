@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test } from '@playwright/test';
-import { isPoi } from '../frontend/lib/complex-data';
+import { isPoi } from '../frontend/lib/poi-data';
 
 const api = 'http://127.0.0.1:18100';
 const frontend = 'http://127.0.0.1:3100';
