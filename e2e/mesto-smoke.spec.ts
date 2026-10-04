@@ -1,12 +1,20 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { expect, test } from '@playwright/test';
+import { isPoi } from '../frontend/lib/poi-data';
 
 const api = 'http://127.0.0.1:18100';
 const frontend = 'http://127.0.0.1:3100';
 const tile = readFileSync(path.join(__dirname, 'fixtures/map-tile.png'));
 
 test('onboarding persists a profile and opens a recommended district and map', async ({ page, context, request }) => {
+  // Exercise the shared POI parser without changing the real API dataset.
+  const poi = { id: 1, name: 'Школа №1', category: 'school', district_id: null,
+    location: { type: 'Point', coordinates: [92.85, 56.01] }, source_id: 'osm', is_synthetic: false };
+  expect(isPoi(poi)).toBe(true);
+  expect(isPoi({ ...poi, name: null })).toBe(true);
+  for (const name of [42, true, {}, undefined]) expect(isPoi({ ...poi, name })).toBe(false);
+  expect(isPoi({ ...poi, name: null, is_synthetic: true })).toBe(false);
   const externalRequests: string[] = [];
   const pageErrors: string[] = [];
   page.on('pageerror', error => pageErrors.push(error.message));

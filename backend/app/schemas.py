@@ -87,7 +87,7 @@ class DistrictMetrics(SourceMetadata):
 
 class POI(SourceMetadata):
     id: int | None = None
-    name: str
+    name: str | None
     category: str
     location: GeoPoint
     geometry: GeoPoint | None = None
