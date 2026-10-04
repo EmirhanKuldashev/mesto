@@ -1,0 +1,11 @@
+{
+  "query_version": "osm-poi-query-v1",
+  "source": "OSM/Overpass",
+  "timeout_seconds": 60,
+  "output_mode": "center",
+  "selectors": [
+    {"key": "amenity", "values": ["school", "kindergarten", "hospital", "clinic"]},
+    {"key": "leisure", "values": ["park"]},
+    {"key": "highway", "values": ["bus_stop"]}
+  ]
+}

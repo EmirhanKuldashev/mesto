@@ -56,7 +56,8 @@ def catalogue(session: Session, model, *, district_id=None, category=None, min_p
             query = query.where(price_column >= min_price)
         if max_price is not None:
             query = query.where(price_column <= max_price)
-    geometry = next((getattr(model, name) for name in ("geometry", "location", "centroid") if hasattr(model, name)), None)
+    geometry = model.location if model is models.POI else next(
+        (getattr(model, name) for name in ("geometry", "location", "centroid") if hasattr(model, name)), None)
     envelope = parse_bbox(bbox)
     if envelope is not None and geometry is not None:
         query = query.where(func.ST_Intersects(geometry, envelope))

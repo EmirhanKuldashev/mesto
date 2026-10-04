@@ -4,6 +4,7 @@ COPY pyproject.toml ./
 COPY app ./app
 COPY data/__init__.py ./data/__init__.py
 COPY data/loaders ./data/loaders
+COPY data/osm ./data/osm
 COPY data/fixtures ./data/fixtures
 COPY alembic.ini ./
 COPY migrations ./migrations
