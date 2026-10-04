@@ -105,8 +105,8 @@ def _persist(session, result: BuildResult, *, version_name: str, version_fetched
         "assigned": sum(item["district_id"] is not None for item in assignments), "total": len(ids)}
 
 
-def load_dataset(session, result: BuildResult) -> dict[str, int]:
-    """Accept validated evidence for upsert only; retirement is NOT implemented."""
+def load_dataset(session, result: BuildResult, *, manifest=None) -> dict[str, int]:
+    """Managed candidate path; never changes the active consumer projection."""
     if result.quality.quality_status != Status.VALIDATED:
         raise ValueError("Only a validated coherent build may be persisted through load_dataset")
     if checksum(canonical_bytes(result.canonical)) != result.canonical_checksum or result.canonical["observations"] != [
@@ -115,9 +115,10 @@ def load_dataset(session, result: BuildResult) -> dict[str, int]:
     fetches = [timestamp(part.get("fetched_at")) for part in result.canonical["parts"] if part.get("fetched_at")]
     if not fetches:
         raise ValueError("No per-part fetched_at available")
-    scope_hash = checksum(canonical_bytes([result.canonical["dataset_id"], result.canonical["scope_id"]]))[:12]
-    return _persist(session, result, version_name=f"osm-v1-{scope_hash}-{result.canonical_checksum[:32]}",
-                    version_fetched_at=max(fetches), legacy=False)
+    from data.osm.lifecycle import persist_candidate
+    snapshot = persist_candidate(session, result, manifest=manifest)
+    return {"snapshot_id": snapshot.id, "observations": len(result.observations),
+            "eligible": sum(row.eligible for row in result.observations)}
 
 
 def load_pois(session, path: Path = RAW_PATH, *, extent=LEGACY_EXTENT,
@@ -133,7 +134,14 @@ def load_pois(session, path: Path = RAW_PATH, *, extent=LEGACY_EXTENT,
     version_name = f"{scope_id}-{result.report['input_checksum'][:20]}"
     if len(version_name) > 100:
         raise ValueError("Legacy source version exceeds storage contract")
-    return _persist(session, result, version_name=version_name, version_fetched_at=fetched_at, legacy=True)
+    from data.osm.lifecycle import adopt_legacy, legacy_bootstrap_state
+    with session.begin_nested():
+        existing = legacy_bootstrap_state(session, result, version_name)
+        if existing is not None:
+            return existing
+        loaded = _persist(session, result, version_name=version_name, version_fetched_at=fetched_at, legacy=True)
+        adopt_legacy(session, result, version_name)
+        return loaded
 
 
 def main() -> None:
