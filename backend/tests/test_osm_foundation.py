@@ -374,18 +374,22 @@ def test_legacy_repeat_load_preserves_counts_and_seven_district_outputs(db_sessi
 
 @pytest.mark.integration
 def test_loader_accepts_unnamed_validated_evidence_and_preserves_metadata(db_session, tmp_path):
+    from data.osm.lifecycle import activate_snapshot, review_for_activation
     item = node(9000000000001, bus="yes", trolleybus="yes")
     manifest, root = collected(tmp_path, [(200, response([item]))])
     result = build(manifest, root)
     loaded = load_dataset(db_session, result)
-    assert loaded["created"] == loaded["total"] == 1
+    assert loaded["observations"] == loaded["eligible"] == 1
+    assert db_session.scalar(select(models.POI).where(models.POI.external_id == "node:9000000000001")) is None
+    review_for_activation(db_session, loaded["snapshot_id"], reviewer="test", reason="Disposable proxy evidence")
+    activate_snapshot(db_session, loaded["snapshot_id"])
     point = db_session.scalar(select(models.POI).where(models.POI.external_id == "node:9000000000001"))
     assert point.name is None and point.geometry is None and point.is_synthetic is False
     meta = point.metadata_json["osm_foundation"]
     assert meta["tags"] == item["tags"] and meta["scope_id"] == "test-scope"
     assert meta["coordinate_representation"] == "node_coordinate"
     assert meta["source_references"][0]["source_base_timestamp"] != meta["source_references"][0]["fetched_at"]
-    assert load_dataset(db_session, result)["created"] == 0
+    assert load_dataset(db_session, result)["snapshot_id"] == loaded["snapshot_id"]
 
 
 @pytest.mark.integration
@@ -411,24 +415,32 @@ def test_unvalidated_build_is_rejected_before_database_changes(db_session, tmp_p
 
 @pytest.mark.integration
 def test_loader_guards_other_scope_synthetic_identity_and_rollback(db_session, tmp_path):
+    from data.osm.lifecycle import activate_snapshot, review_for_activation
     item = node(9000000000004)
     manifest, root = collected(tmp_path, [(200, response([item]))])
     result = build(manifest, root)
     before = db_session.scalar(select(func.count()).select_from(models.POI))
     savepoint = db_session.begin_nested()
-    load_dataset(db_session, result)
+    loaded = load_dataset(db_session, result)
+    review_for_activation(db_session, loaded["snapshot_id"], reviewer="test", reason="Disposable evidence")
+    activate_snapshot(db_session, loaded["snapshot_id"])
     savepoint.rollback()
     assert db_session.scalar(select(func.count()).select_from(models.POI)) == before
-    load_dataset(db_session, result)
+    loaded = load_dataset(db_session, result)
+    review_for_activation(db_session, loaded["snapshot_id"], reviewer="test", reason="Disposable evidence")
+    activate_snapshot(db_session, loaded["snapshot_id"])
     point = db_session.scalar(select(models.POI).where(models.POI.external_id == "node:9000000000004"))
     other_scope = build(manifest.model_copy(update={"scope_id": "another-city"}), root)
+    other = load_dataset(db_session, other_scope)
+    review_for_activation(db_session, other["snapshot_id"], reviewer="test", reason="Disposable evidence")
     with pytest.raises(ValueError, match="Cross-dataset/scope"):
-        load_dataset(db_session, other_scope)
+        activate_snapshot(db_session, other["snapshot_id"])
     assert point.metadata_json["osm_foundation"]["scope_id"] == "test-scope"
     point.is_synthetic = True
     db_session.flush()
+    # Candidate history can coexist; activation cannot overwrite synthetic POIs.
     with pytest.raises(ValueError, match="Synthetic"):
-        load_dataset(db_session, result)
+        activate_snapshot(db_session, other["snapshot_id"])
     assert point.is_synthetic is True
 
 
@@ -436,7 +448,7 @@ def test_loader_guards_other_scope_synthetic_identity_and_rollback(db_session, t
 def test_legacy_loader_has_no_name_gate(db_session, tmp_path):
     path = tmp_path / "legacy.json"
     path.write_bytes(canonical_bytes({"snapshot_fetched_at": FETCH.isoformat(), "elements": [node(9000000000005)]}))
-    assert load_pois(db_session, path)["created"] == 1
+    assert load_pois(db_session, path, scope_id="independent-legacy-test")["created"] == 1
     point = db_session.scalar(select(models.POI).where(models.POI.external_id == "node:9000000000005"))
     assert point.name is None and point.metadata_json["osm_foundation"]["quality"]["quality_status"] == "PARTIAL"
 

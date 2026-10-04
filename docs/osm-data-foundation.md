@@ -106,25 +106,35 @@ Reloading legacy evidence may update an existing identity only at its existing
 checksum-derived source version; a different partial artifact cannot replace it.
 
 `load_dataset` accepts only validated coherent builder results for caller-owned
-transactional **upsert**, with content/checksum consistency checks. Metadata keeps
+transactional **candidate persistence**, with content/checksum consistency checks. Metadata keeps
 dataset/scope/snapshot, query, extent, tags, coordinate representation, policy,
 quality and per-part references. Version-level fetch time is latest fetch
 bookkeeping, not a substitute for per-part provenance. Cross-scope overwrites,
 synthetic identity overwrites, ambiguous persisted identities and implicit
 adoption of unlabelled legacy rows are rejected. Other sources are unaffected.
-No retired records are deleted or filtered. Empty validated builds do not retire
-anything. This API must not be represented as full replacement or activation.
+This original immediate-upsert path is superseded by the internal
+[snapshot lifecycle](osm-snapshot-lifecycle.md): `load_dataset` now persists a
+candidate/history only. Explicit reviewed activation updates the current `pois`
+projection atomically; historical observations are never deleted. Empty snapshot
+activation stays blocked. Legacy bootstrap adopts once and preserves the active
+dataset on later restarts.
 
-## Migration required for safe retirement
+## Historical proposal for safe retirement (Phase 4B-3A)
 
-Retirement/atomic active-dataset replacement is deliberately blocked for schema
+The proposal below is the historical Phase 4B-3A design record. Phase 4B-3B.2
+implements revision `0014_osm_snapshot_lifecycle`; the actual schema, compatibility
+projection, reviewed UNKNOWN-quality gate, migration/downgrade and Code Map are
+documented in [OSM snapshot lifecycle](osm-snapshot-lifecycle.md). The fresh
+candidate has NOT been activated; publication/review precedes first activation.
+
+In Phase 4B-3A, retirement/atomic active-dataset replacement was blocked for schema
 review. JSON metadata can store provenance, but cannot enforce snapshot lifecycle,
 unique scope/identity membership or an active pointer. Current scoring queries
 read every district POI; a metadata-only `retired` flag would leave stale evidence
 active unless consumer semantics were changed. `source_version` alone provides
 neither an active pointer nor constraints and conflicts across overlapping scopes.
 
-Minimum proposal (not implemented):
+Minimum proposal recorded in Phase 4B-3A (the implemented design is linked above):
 
 - `osm_datasets`: ID, source ID, scope ID, category scope, extent/version, nullable
   active snapshot FK; unique `(source_id, scope_id)`.
@@ -153,7 +163,9 @@ concurrent activations serialize; overlapping scopes preserve separate membershi
 ## Verification boundary
 
 Foundation tests use temporary raw files and mocked collection. PostGIS tests
-cover bbox with null/misleading geometry, unnamed ingestion, fail-closed upsert,
+cover bbox with null/misleading geometry, unnamed candidate/activation, fail-closed persistence,
 scope/synthetic guards, transaction rollback, legacy counts and the pinned
-seven-district scoring outputs. They do not claim retirement is implemented.
+seven-district scoring outputs. Lifecycle tests additionally cover history,
+retirement, quality gates, concurrent activation, legacy adoption and guarded
+downgrade. No real fresh candidate activation is performed by these tests.
 Residential complexes play no role in query/build/quality/eligibility.
