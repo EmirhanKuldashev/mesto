@@ -136,12 +136,12 @@ def test_nullable_poi_orm_schema_and_api(test_database_url, synthetic):
 
 
 @pytest.mark.integration
-def test_current_osm_fixture_counts_are_unchanged(test_database_url):
+def test_legacy_osm_fixture_counts_are_unchanged(legacy_test_database_url):
     fixture = json.loads((BACKEND / "data/fixtures/osm/poi.json").read_text(encoding="utf-8"))
     expected = Counter(bus_stop=1318, school=160, kindergarten=262, clinic=114, hospital=75, park=59)
     assert Counter(e["tags"].get("amenity") or e["tags"].get("leisure") or e["tags"].get("highway")
                    for e in fixture["elements"]) == expected
-    _, engine = create_session_factory(test_database_url)
+    _, engine = create_session_factory(legacy_test_database_url)
     try:
         with Session(engine) as session:
             rows = session.scalars(select(models.POI).where(models.POI.source_id == "osm", models.POI.is_synthetic.is_(False))).all()

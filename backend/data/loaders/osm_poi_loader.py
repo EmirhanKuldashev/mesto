@@ -145,11 +145,12 @@ def load_pois(session, path: Path = RAW_PATH, *, extent=LEGACY_EXTENT,
 
 
 def main() -> None:
-    # Offline by default. Fresh collection/build is a separate phase.
+    # The CLI uses the explicit packaged baseline; load_pois remains the legacy API.
+    from data.osm.baseline import load_current_baseline
     factory, engine = create_session_factory()
     try:
         with factory.begin() as session:
-            print(load_pois(session))
+            print(load_current_baseline(session))
     finally:
         engine.dispose()
 

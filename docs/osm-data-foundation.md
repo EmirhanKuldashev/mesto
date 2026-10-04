@@ -3,7 +3,10 @@
 This layer provides source evidence and quality contracts for school, kindergarten,
 clinic, hospital, park and `highway=bus_stop`. It implements no score, calibration,
 district sampling, semantic stop grouping or new transport taxonomy. No external
-OSM collection was performed in this phase; the bundled snapshot is unchanged.
+OSM collection was performed in the original foundation phase. The current
+explicit packaged baseline is `fresh-20261004T132116Z` (2,387 observations);
+[publication contract](osm-baseline-publication.md) records its checksums and
+offline startup. The original 1,988-observation legacy fixture remains unchanged.
 
 ## Source snapshot and query
 
@@ -125,7 +128,8 @@ The proposal below is the historical Phase 4B-3A design record. Phase 4B-3B.2
 implements revision `0014_osm_snapshot_lifecycle`; the actual schema, compatibility
 projection, reviewed UNKNOWN-quality gate, migration/downgrade and Code Map are
 documented in [OSM snapshot lifecycle](osm-snapshot-lifecycle.md). The fresh
-candidate has NOT been activated; publication/review precedes first activation.
+candidate was activated locally after lifecycle publication in Phase 4B-3B.3;
+its subsequent packaged startup contract is linked above.
 
 In Phase 4B-3A, retirement/atomic active-dataset replacement was blocked for schema
 review. JSON metadata can store provenance, but cannot enforce snapshot lifecycle,

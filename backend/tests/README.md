@@ -28,10 +28,14 @@ or migration errors fail setup, and skipping a marked integration test fails CI.
 The database revision is compared to the actual Alembic script head, not a
 hardcoded historical revision. The single-head requirement is also checked.
 
-Session setup loads existing demo sources plus the committed OSM district/POI
-snapshots. This makes catalogue, profile and AI context tests independent of
-test order and external services. Tests use real PostGIS operations; fixtures
-and application logic are unchanged. Never point these URLs at production or
+Session setup loads existing demo sources, OSM districts and the explicit packaged
+fresh baseline `fresh-20261004T132116Z` (2,387 POIs). Historical legacy regression
+tests use a separate disposable database with the unchanged 1,988-POI fixture;
+the DB role needs CREATE DATABASE, as for migration roundtrip tests. Publication
+tests independently migrate an empty DB and verify clean startup, checksums,
+idempotency, current score outputs and bbox without collection/raw storage.
+This makes catalogue, profile and AI context tests independent of test order and
+external services. Tests use real PostGIS operations. Never point these URLs at production or
 a database containing data that must be preserved.
 
 For optional local unit-only work without a DB, leave the strict flag unset:

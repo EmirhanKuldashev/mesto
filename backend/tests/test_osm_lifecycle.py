@@ -240,7 +240,8 @@ def test_db_constraints_and_immutable_history(session,tmp_path):
     force_constraints(session)
 
 
-def test_legacy_adoption_and_restart_do_not_change_payload(session):
+def test_legacy_adoption_and_restart_do_not_change_payload(legacy_session):
+    session = legacy_session
     before = session.execute(text("SELECT id,to_jsonb(p) AS payload FROM pois p WHERE source_id='osm' ORDER BY id")).all()
     loaded = load_pois(session,FIXTURE)
     after = session.execute(text("SELECT id,to_jsonb(p) AS payload FROM pois p WHERE source_id='osm' ORDER BY id")).all()
