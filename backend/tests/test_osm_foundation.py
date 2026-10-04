@@ -343,7 +343,8 @@ def test_real_osm_fixture_bbox_regression(db_session):
 
 
 @pytest.mark.integration
-def test_legacy_repeat_load_preserves_counts_and_seven_district_outputs(db_session):
+def test_legacy_repeat_load_preserves_counts_and_seven_district_outputs(legacy_session):
+    db_session = legacy_session
     profile = models.UserProfile(data_processing_consent=True, housing_goal="buy", purchase_budget=8000000)
     db_session.add(profile)
     db_session.flush()
@@ -454,7 +455,8 @@ def test_legacy_loader_has_no_name_gate(db_session, tmp_path):
 
 
 @pytest.mark.integration
-def test_changed_partial_legacy_cannot_overwrite_existing_snapshot(db_session, tmp_path):
+def test_changed_partial_legacy_cannot_overwrite_existing_snapshot(legacy_session, tmp_path):
+    db_session = legacy_session
     element = read_response(FIXTURE.read_bytes(), require_header=False)["elements"][0]
     path = tmp_path / "changed-legacy.json"
     path.write_bytes(canonical_bytes({"snapshot_fetched_at": FETCH.isoformat(), "elements": [

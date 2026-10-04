@@ -4,7 +4,7 @@ from pathlib import Path
 
 from app.db import create_session_factory
 from data.loaders.osm_district_loader import load_districts
-from data.loaders.osm_poi_loader import load_pois
+from data.osm.baseline import load_current_baseline
 
 SNAPSHOT = Path(__file__).resolve().parents[2] / "data" / "fixtures" / "osm"
 
@@ -14,7 +14,7 @@ def main() -> None:
     try:
         with factory.begin() as session:
             districts = load_districts(session, SNAPSHOT / "krasnoyarsk_districts.json")
-            pois = load_pois(session, SNAPSHOT / "poi.json")
+            pois = load_current_baseline(session)
             print({"districts": districts, "pois": pois})
     finally:
         engine.dispose()

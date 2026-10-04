@@ -35,6 +35,14 @@ docker compose up --build
 
 Для локальной разработки без Docker задайте `DATABASE_URL`, установите зависимости из `backend/pyproject.toml`, затем в `backend` выполните `alembic upgrade head`, `python -m app.etl.bootstrap_data` и `uvicorn app.main:app --reload`. Во `frontend` выполните `npm install` и `npm run dev`.
 
+Текущий OSM baseline явно задан в `backend/data/fixtures/osm/current-baseline.json`:
+`fresh-20261004T132116Z`, 2387 реальных POI, включая 394 без имени. Bootstrap
+проверяет version/checksums bundled canonical и работает без Overpass или локального
+raw storage. Clean DB начинает с fresh ACTIVE; история существующей legacy RETIRED
+сохраняется. Data version отличается от scoring version `objective-current-v1`;
+freshness/source completeness/real-world completeness остаются UNKNOWN.
+Подробнее: [baseline и Code Map](docs/osm-baseline-publication.md).
+
 ## Проверка
 
 ```sh
@@ -87,7 +95,7 @@ Loader читает `backend/data/raw/cian/listings.json`, проверяет о
 .\.venv\Scripts\python.exe -m data.loaders.osm_district_loader
 ```
 
-Скрипт ЖК обходит страницы публичного поиска Красноярска и прекращает сбор при HTTP ошибке или неполной пагинации. Детальные страницы посещаются последовательно, а прогресс хранится в `backend/data/raw/cian/complexes.json`. Для продолжения после ошибки: `python -m scrapers.cian --resume-complexes`. Не найденные на странице координаты остаются `null`; такие ЖК не получают оценку. Загрузчики делают upsert в существующие таблицы. OSM загрузчик инфраструктуры выполняет один ограниченный запрос Overpass и хранит ответ в `backend/data/raw/osm/poi.json`. Загрузчик границ однократно получает семь административных полигонов через Nominatim с паузой между запросами, кэширует их в `backend/data/raw/osm/krasnoyarsk_districts.json` и связывает ЖК с районами через PostGIS. Содержимое `data/raw` не хранится в Git: на новой базе эти команды надо выполнить отдельно. Результат сбора зависит от доступности сайтов и может измениться.
+Скрипт ЖК обходит страницы публичного поиска Красноярска и прекращает сбор при HTTP ошибке или неполной пагинации. Детальные страницы посещаются последовательно, а прогресс хранится в `backend/data/raw/cian/complexes.json`. Для продолжения после ошибки: `python -m scrapers.cian --resume-complexes`. Не найденные на странице координаты остаются `null`; такие ЖК не получают оценку. Загрузчики ЦИАН делают upsert в существующие таблицы. CLI OSM инфраструктуры использует явный packaged baseline офлайн; новый сбор является отдельной reviewed операцией. Нормальный bootstrap читает tracked границы районов и fresh POI bundle, поэтому новая база не требует Nominatim/Overpass или ignored raw файлов. Содержимое `data/raw` не хранится в Git.
 
 ## Analytics Core
 

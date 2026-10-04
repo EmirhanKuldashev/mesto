@@ -9,6 +9,8 @@
 | `backend/migrations/versions/0014_osm_snapshot_lifecycle.py` | Schema, legacy adoption, database guards, guarded downgrade |
 | `backend/data/osm/lifecycle.py` | Candidate persistence, explicit review, atomic projection/activation, bootstrap adoption |
 | `backend/data/loaders/osm_poi_loader.py` | Offline legacy bootstrap and managed candidate entry point |
+| `backend/data/osm/baseline.py` | Explicit packaged current baseline and idempotent lifecycle startup |
+| `backend/data/fixtures/osm/current-baseline.json` | Reviewed fresh version/checksum declaration; versioned bundle selection |
 | `backend/data/osm/builder.py` | Unchanged canonical build and evidence quality contracts |
 | `backend/tests/test_osm_lifecycle.py` | Disposable PostGIS history/activation/isolation/rollback regressions |
 | `backend/tests/test_osm_foundation.py` | Existing foundation/bbox/scoring regression; explicit lifecycle steps |
@@ -138,7 +140,9 @@ multiple historical versions exist, downgrade fails before destructive operation
 An explicit preservation/export plan is required; versions are never silently
 collapsed into one POI row.
 
-`fresh-20261004T132116Z` remains an ignored research artifact, NOT imported or
-activated in this phase. Lifecycle must be reviewed and published before its
-separate controlled activation task. No scoring calibration, taxonomy expansion,
-frontend work or production deployment is part of this foundation.
+Lifecycle publication preceded controlled local activation of
+`fresh-20261004T132116Z` in Phase 4B-3B.3. The current reproducible startup contract
+and clean-versus-upgraded history policy are documented in
+[packaged baseline publication](osm-baseline-publication.md). Raw research
+artifacts remain ignored. No scoring calibration, taxonomy expansion or frontend
+changes are part of the baseline publication.

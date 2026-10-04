@@ -1,0 +1,44 @@
+{
+  "activation_review": {
+    "policy": "osm-proxy-reviewed-unknown-v1",
+    "reason": "Fresh snapshot was validated in Phase 4B-3B.1; query execution, provenance, eligibility and temporal coherence are validated; freshness, OSM source completeness and real-world completeness remain explicitly UNKNOWN; activation is approved as the new current OSM evidence snapshot, not as proof of complete real-world coverage.",
+    "reviewer": "phase-4b-3b-3-core-review"
+  },
+  "build_report_checksum": "4f24f908f3842047a998053981927c5682f1cb51458a17c0b0712faec0d2ab44",
+  "bundle": "snapshots/fresh-20261004T132116Z",
+  "canonical_checksum": "c1ad85a1d071749c84e31541d104cdaee25d94881ac908ea0838433cbba306e7",
+  "category_counts": {
+    "bus_stop": 1360,
+    "clinic": 127,
+    "hospital": 89,
+    "kindergarten": 323,
+    "park": 283,
+    "school": 205
+  },
+  "clean_history_policy": "fresh_initial",
+  "compressed_checksum": "7d606150ae6d487cd3671db9a170b2eb788e21c2b31d94bc8364b9b00f6eee13",
+  "contract_version": "osm-packaged-baseline-v1",
+  "eligible_count": 2387,
+  "manifest_checksum": "2330b5fe0f5d807dba58493be8edc2f3dc92213d9607491ae55b5be6b963981a",
+  "observation_count": 2387,
+  "previous_baseline": {
+    "fixture": "poi.json",
+    "fixture_checksum": "9d166b3e123240e4d27d3e0ad56f2dc9bba2551292eca3e4785a9fed909c16ad",
+    "kind": "legacy",
+    "observation_count": 1988
+  },
+  "query_hash": "5dd8b0b1555d83e35b3694375fbb595ef62074ff1545065f1779d5e8e6df0c09",
+  "query_version": "osm-poi-query-v1",
+  "raw_response_checksum": "cf98ce519e9d3fbe5d0735230cbe7e8a02ed881ee0dfa0901b19365ead8375c4",
+  "scope_id": "krasnoyarsk",
+  "snapshot_id": "fresh-20261004T132116Z",
+  "source_id": "osm",
+  "unnamed_counts": {
+    "bus_stop": 38,
+    "clinic": 12,
+    "hospital": 14,
+    "kindergarten": 61,
+    "park": 224,
+    "school": 45
+  }
+}
