@@ -33,5 +33,10 @@ Sampling, reference и point normalizer разделены; текущий MESTO
 и coverage для переданного набора точек. `models.py` задаёт версии и контракты,
 `service.py` выполняет точный geography batch search, `aggregation.py` строит
 сырой summary, `research.py` использует grid250 только как RESEARCH_USE_FOR_SCHOOL.
-School score, production sampler и интеграция в MESTO отсутствуют. Семантика
+Raw consumer остаётся research-only; параллельный School District V1 использует
+`school-district-territorial-grid250-v1` и отдельный frozen School reference
+`school-krasnoyarsk-relative-v1`: point CDF → arithmetic mean с raw explanations.
+`reference.py`, `normalization.py`, `sampling.py`, `district.py` разделяют calibration,
+pure point normalization, geometry sampling и district aggregation. Интеграция
+School в текущий MESTO отсутствует. Семантика
 центров, неоднозначность taxonomy и ограничения: [School evidence](school-evidence.md).
