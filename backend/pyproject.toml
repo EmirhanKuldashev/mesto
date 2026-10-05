@@ -27,7 +27,7 @@ include = ["app*", "data*"]
 
 [tool.setuptools.package-data]
 "data.osm" = ["query.json"]
-"data" = ["fixtures/osm/*.json", "fixtures/osm/snapshots/*/*.json", "fixtures/osm/snapshots/*/*.gz", "fixtures/cian/*.json"]
+"data" = ["fixtures/osm/*.json", "fixtures/osm/snapshots/*/*.json", "fixtures/osm/snapshots/*/*.gz", "fixtures/cian/*.json", "fixtures/analytics/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

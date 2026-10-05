@@ -20,3 +20,10 @@ Stop Availability V1: координата → ближайшее активно
 Компонент работает параллельно текущему `objective-current-v1`; веса и scoring
 не менялись. Grid500 — отдельный RESEARCH_ONLY consumer, не продуктовая методика.
 Контракты, Code Map и ограничения: [Stop Availability evidence](stop-availability-evidence.md).
+
+Параллельный внутренний normalized consumer использует
+`district-territorial-grid250-v1` и frozen
+`stop-availability-krasnoyarsk-relative-v1`: canonical distance → midrank empirical
+CDF point utility → равное среднее района, с raw median/p90/coverage объяснениями.
+Sampling, reference и point normalizer разделены; текущий MESTO не интегрирован.
+Контракт и Code Map: [Stop Availability normalization](stop-availability-normalization.md).

@@ -168,7 +168,9 @@ Existing packaged-baseline tests independently pin all seven current MESTO /
 Infrastructure / Transport regression scores; those formulas and consumers are
 unchanged. No tests require OSM collection or an AI API.
 
-This phase stops at raw evidence. Calibration/normalization research and future
-Objective MESTO v2 can consume the versioned contracts only after separate review.
+This raw contract remains separate from scoring. The reviewed parallel internal
+[Krasnoyarsk-relative normalization](stop-availability-normalization.md) consumes
+it through approved territorial grid250, while grid500 remains RESEARCH_ONLY.
+Future Objective MESTO v2 integration requires its own review.
 There are no good/bad judgments, score thresholds, weights, new frontend flows,
 public endpoint, School/Healthcare/Parks components or route analytics here.
