@@ -48,3 +48,11 @@ territorial grid250 → отдельная frozen Krasnoyarsk-relative midrank C
 percentile и grid SQL primitives переиспользованы без изменения School/Stop.
 Текущий MESTO, frontend и public API не интегрированы. Контракт, frozen reference,
 taxonomy ограничения и результаты: [Kindergarten evidence](kindergarten-evidence.md).
+
+`backend/app/analytics/healthcare/` — самостоятельный Healthcare V1:
+active real OSM `amenity=clinic/hospital` → canonical nearest evidence с subtype →
+territorial grid250 → отдельная frozen Krasnoyarsk-relative midrank CDF → равное
+среднее района с raw median/p90/coverage и nearest-category breakdown. Clinic и
+hospital объединены как destinations без утверждения об эквивалентности услуг.
+Интеграции в текущий MESTO, frontend и public API нет; School/Kindergarten/Stop
+не менялись. Контракт и ограничения: [Healthcare evidence](healthcare-evidence.md).
