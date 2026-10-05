@@ -4,3 +4,7 @@
 /backend/data/fixtures/analytics/kindergarten-krasnoyarsk-relative-v1.json -text
 # Preserve the exact checksum-pinned Healthcare reference bytes.
 /backend/data/fixtures/analytics/healthcare-krasnoyarsk-relative-v1.json -text
+# Preserve checksum-pinned Parks reference and geometry manifest bytes.
+/backend/data/fixtures/analytics/parks-krasnoyarsk-relative-v1.json -text
+/backend/data/fixtures/osm/snapshots/parks-geometry-20261005T134520Z/manifest.json -text
+/backend/data/fixtures/osm/snapshots/parks-geometry-20261005T134520Z/query.txt -text

@@ -56,3 +56,13 @@ territorial grid250 → отдельная frozen Krasnoyarsk-relative midrank C
 hospital объединены как destinations без утверждения об эквивалентности услуг.
 Интеграции в текущий MESTO, frontend и public API нет; School/Kindergarten/Stop
 не менялись. Контракт и ограничения: [Healthcare evidence](healthcare-evidence.md).
+
+
+### Parks V1: separate geometry dataset and parallel component
+
+`data.osm.park_geometry` provides immutable, snapshot-bound source geometry,
+separate from existing representative POINT columns; no migration or GIS refactor.
+`app.analytics.parks` calculates active real observed geometry proximity,
+territorial grid250 and a separate frozen midrank CDF. Both baseline and recovery
+timestamps remain explicit; unknown/unsupported geometry fails closed.
+Current MESTO and prior components remain unchanged. See [Parks evidence](parks-evidence.md).
