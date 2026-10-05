@@ -40,3 +40,11 @@ Raw consumer остаётся research-only; параллельный School Dis
 pure point normalization, geometry sampling и district aggregation. Интеграция
 School в текущий MESTO отсутствует. Семантика
 центров, неоднозначность taxonomy и ограничения: [School evidence](school-evidence.md).
+
+`backend/app/analytics/kindergarten/` — самостоятельный Kindergarten V1:
+active real OSM `amenity=kindergarten` → canonical nearest point evidence →
+territorial grid250 → отдельная frozen Krasnoyarsk-relative midrank CDF → среднее
+района с raw median/p90/coverage и missing counts. Generic coordinate/quality,
+percentile и grid SQL primitives переиспользованы без изменения School/Stop.
+Текущий MESTO, frontend и public API не интегрированы. Контракт, frozen reference,
+taxonomy ограничения и результаты: [Kindergarten evidence](kindergarten-evidence.md).

@@ -1,2 +1,4 @@
 # Frozen School reference is verified by exact bytes on every platform.
 /backend/data/fixtures/analytics/school-krasnoyarsk-relative-v1.json -text
+# Preserve the exact checksum-pinned Kindergarten reference bytes.
+/backend/data/fixtures/analytics/kindergarten-krasnoyarsk-relative-v1.json -text
