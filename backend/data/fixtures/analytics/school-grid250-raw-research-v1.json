@@ -1,0 +1,120 @@
+{
+  "contract": "school-grid250-raw-research-regression-v1",
+  "purpose": "RESEARCH_USE_FOR_SCHOOL",
+  "snapshot_version": "fresh-20261004T132116Z",
+  "canonical_checksum": "c1ad85a1d071749c84e31541d104cdaee25d94881ac908ea0838433cbba306e7",
+  "sampling_version": "school-research-territorial-grid250-v1",
+  "sample_count": 6065,
+  "radii_m": [
+    500,
+    1000,
+    1500
+  ],
+  "districts": {
+    "osm-centralny": {
+      "N": 553,
+      "median_m": 782.1248402,
+      "p90_m": 1722.8328854160002,
+      "covered_counts": [
+        146,
+        361,
+        463
+      ],
+      "coverage_shares": [
+        0.2640144665461121,
+        0.6528028933092225,
+        0.8372513562386981
+      ]
+    },
+    "osm-sovetsky": {
+      "N": 1437,
+      "median_m": 1417.04782013,
+      "p90_m": 6392.560931572,
+      "covered_counts": [
+        344,
+        583,
+        755
+      ],
+      "coverage_shares": [
+        0.23938761308281142,
+        0.4057063326374391,
+        0.5254001391788448
+      ]
+    },
+    "osm-oktyabrsky": {
+      "N": 1461,
+      "median_m": 1598.03960313,
+      "p90_m": 4755.0377618,
+      "covered_counts": [
+        214,
+        481,
+        692
+      ],
+      "coverage_shares": [
+        0.1464750171115674,
+        0.32922655715263516,
+        0.4736481861738535
+      ]
+    },
+    "osm-zheleznodorozhny": {
+      "N": 180,
+      "median_m": 440.24998911,
+      "p90_m": 962.443596746,
+      "covered_counts": [
+        101,
+        164,
+        180
+      ],
+      "coverage_shares": [
+        0.5611111111111111,
+        0.9111111111111111,
+        1.0
+      ]
+    },
+    "osm-sverdlovsky": {
+      "N": 1215,
+      "median_m": 1774.73617647,
+      "p90_m": 4371.604454372001,
+      "covered_counts": [
+        196,
+        412,
+        542
+      ],
+      "coverage_shares": [
+        0.16131687242798354,
+        0.3390946502057613,
+        0.44609053497942386
+      ]
+    },
+    "osm-leninsky": {
+      "N": 843,
+      "median_m": 895.94509293,
+      "p90_m": 1827.1670670480007,
+      "covered_counts": [
+        213,
+        468,
+        687
+      ],
+      "coverage_shares": [
+        0.2526690391459075,
+        0.5551601423487544,
+        0.8149466192170819
+      ]
+    },
+    "osm-kirovsky": {
+      "N": 376,
+      "median_m": 684.481077805,
+      "p90_m": 2141.09214627,
+      "covered_counts": [
+        149,
+        239,
+        292
+      ],
+      "coverage_shares": [
+        0.3962765957446808,
+        0.6356382978723404,
+        0.776595744680851
+      ]
+    }
+  }
+}

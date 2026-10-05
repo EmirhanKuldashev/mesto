@@ -27,3 +27,11 @@ Stop Availability V1: координата → ближайшее активно
 CDF point utility → равное среднее района, с raw median/p90/coverage объяснениями.
 Sampling, reference и point normalizer разделены; текущий MESTO не интегрирован.
 Контракт и Code Map: [Stop Availability normalization](stop-availability-normalization.md).
+
+`backend/app/analytics/school/` — внутренний School raw evidence V1:
+координата → ближайшее активное OSM наблюдение `amenity=school` → median/p90
+и coverage для переданного набора точек. `models.py` задаёт версии и контракты,
+`service.py` выполняет точный geography batch search, `aggregation.py` строит
+сырой summary, `research.py` использует grid250 только как RESEARCH_USE_FOR_SCHOOL.
+School score, production sampler и интеграция в MESTO отсутствуют. Семантика
+центров, неоднозначность taxonomy и ограничения: [School evidence](school-evidence.md).
