@@ -1,0 +1,2 @@
+# Frozen School reference is verified by exact bytes on every platform.
+/backend/data/fixtures/analytics/school-krasnoyarsk-relative-v1.json -text

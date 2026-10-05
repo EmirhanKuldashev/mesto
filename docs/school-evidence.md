@@ -5,8 +5,10 @@
 `school-evidence-v1` describes **observed school proximity** to an eligible active
 OSM observation point. It is objective, user-independent and district-independent.
 It does not describe school quality, seats/capacity, enrollment, grades, catchment,
-admission eligibility, walking routes, entrances or travel time. No School score,
-normalization version, weights, threshold policy or MESTO contribution exists.
+admission eligibility, walking routes, entrances or travel time. Raw evidence remains
+separate from the standalone normalized School V1 described below. The accepted
+V1 policy deliberately retains all eligible observed amenity=school objects.
+No weights, arbitrary meter thresholds or MESTO contribution are introduced.
 Current `objective-current-v1` and Stop Availability V1 remain unchanged.
 
 ## Eligibility and taxonomy
@@ -32,8 +34,9 @@ name with `building=college` (`way:58788670`) within `amenity=school`.
 `way:136858035` has `building=kindergarten` but `amenity=school` and no name.
 One boarding school is operated by a university; seven names mention boarding.
 These are explicit taxonomy ambiguities, not grounds for an invented name filter.
-They stay in the accepted observed-tag set. Ordinary-school normalization requires
-taxonomy review before any calibration; UNKNOWN rows must not be silently removed.
+They stay in the accepted observed-tag set. An ordinary-school-only component would
+require taxonomy review; this V1 explicitly normalizes observed amenity=school
+proximity instead. UNKNOWN rows must not be silently removed.
 
 ## Point contract and source quality
 
@@ -48,7 +51,8 @@ Available evidence requires the known foundation policy/query metadata and
 VALIDATED quality, provenance, query completeness, eligibility and temporal
 statuses. UNKNOWN freshness/source completeness/real-world completeness remain
 visible limitations; they are neither zero evidence nor penalties. Foundation
-`normalized_score_status=BLOCKED` is retained: this component is raw evidence.
+`normalized_score_status=BLOCKED` is retained on the foundation/raw contract. It is
+not the readiness status of the separately approved normalized School component.
 
 Unavailable reasons are `invalid_coordinate`, `dataset_unavailable`,
 `no_eligible_observations` and `version_quality_failure`. Nearest observation and
@@ -103,8 +107,9 @@ thresholds or score parameters.
 School `district_research` reuses the existing accepted grid250 generator strictly
 as **RESEARCH_USE_FOR_SCHOOL**, version `school-research-territorial-grid250-v1`.
 It uses Stop reference metadata only for polygon/grid identity checks, never its
-distances/CDF. This does not approve `district-territorial-grid250-v1` as a School
-production sampler. UTM46N fixed centers `250*x+125`, `250*y+125`, original WGS84
+distances/CDF. This historical research consumer stays research-only. The new
+School District V1 sampler separately adopts the reviewed grid pattern as
+`school-district-territorial-grid250-v1`, with its own School reference metadata. UTM46N fixed centers `250*x+125`, `250*y+125`, original WGS84
 polygon `ST_Covers`, reviewed seven real OSM polygons; grid outside that domain
 fails explicitly. Administrative territory includes forest, industry and vacant
 land: this is not resident/child/population-weighted accessibility.
@@ -188,13 +193,14 @@ remains the sole primary baseline. No collection, activation or baseline switch.
   completeness is UNKNOWN, not independently validated. 202 center targets may
   distort entrance/boundary proximity; magnitude cannot be established from current
   location-only data. There is no evidence for entrance accessibility guarantees.
-- Future normalization: BLOCKED until School taxonomy/product meaning and
-  School-specific sampling/representation methodology are reviewed. The raw
-  observations and research pipeline can support that review, not authorize a score.
+- Normalized observed-school-proximity V1: approved under the explicit proxy
+  semantics and territorial grid250 policy below. It makes no ordinary-school-only,
+  capacity, admission or quality claim. Ordinary-only taxonomy remains review-required.
 
 Questions: ordinary vs specialized schools; center/entrance semantics; semantic
 campus grouping; appropriate residential/territorial sampling and completeness;
-whether d2/d3 can describe independent choices. No normalization is implemented.
+whether d2/d3 can describe independent choices. These remain questions for future
+product methodology; they are limitations of the deliberately accepted V1 proxy.
 
 ## Code Map and verification
 
@@ -214,3 +220,110 @@ refactor or changes to published Stop files. Research-only grid reuse is explici
 Full per-point results, audits, counterfactuals and scripts stay in ignored
 `backend/data/raw/research/school-evidence-v1-20261005/`.
 No migration, public endpoint, frontend, ranking or current scoring changes.
+
+
+## Standalone normalized School V1 — accepted proxy semantics
+
+Meaning: average relative territorial proximity to observed active real OSM
+amenity=school observations, compared with a frozen Krasnoyarsk territorial School
+reference. It does not mean school quality out of 100 or percent school provision.
+Music/art/college-looking objects remain eligible when their published canonical
+source contract is amenity=school. Name remains nullable; no semantic deduplication.
+
+Versions:
+
+- Evidence: `school-evidence-v1`; eligibility: `school-osm-eligibility-v1`.
+- Sampling: `school-district-territorial-grid250-v1`.
+- Normalization: `school-krasnoyarsk-relative-v1`.
+- Distance: `postgis-geography-wgs84-spheroid-v1`.
+
+District sampling uses EPSG:32646 centers `(250*i+125,250*j+125)` and
+`ST_Covers(original WGS84 polygon, point)`. The SQL grid primitive is reused without
+changing Stop Availability. School checks its own packaged geometry identities,
+real OSM geometry validity and exact reviewed sample counts: 553/376/843/1461/
+1437/1215/180 (6065 total). The smallest reviewed District has 180 samples; this is
+an existing domain boundary, not a population law. Missing/changed/synthetic or
+unreviewed polygons fail closed. Boundary fallback is accepted only if it matches
+that exact reviewed polygon identity. Forest/industrial/vacant territory contributes
+with equal point weight. No population, residential or child weighting is claimed.
+
+### Frozen School reference
+
+Reference ID:
+`school-krasnoyarsk-fresh-20261004T132116Z-territorial-grid250-center-cdf-v1`.
+City/scope: Krasnoyarsk / krasnoyarsk. Snapshot: `fresh-20261004T132116Z`.
+N=6065. The complete coordinate/OSM identity/nearest distance evidence reproduced
+point-for-point against the published raw research outputs; DB surrogate District
+IDs are excluded from that comparison because they vary across disposable DBs.
+
+Values SHA256:
+`6f5c6dcb4dcc457fee86dfc628f433a013d50fb58526786b0990712ef6a00037`.
+Packaged artifact SHA256:
+`b39783e4e579a0c7b800ac838cd93a7777835ddf04181d8b57d0e35b2fd662dc`.
+Artifact: `backend/data/fixtures/analytics/school-krasnoyarsk-relative-v1.json`,
+83,738 bytes, sorted School distance distribution plus minimum version/snapshot/
+geometry metadata and limitations. The existing analytics package-data includes it.
+Stop reference values are not used. Runtime does not require ignored research files.
+Checksum failure/unavailable artifact returns null with an explicit reason; runtime
+never regenerates reference. Source refresh does not refit or replace calibration.
+
+### Exact formula
+
+```text
+N = 6065
+L(d) = count(reference < d)
+U(d) = count(reference <= d)
+F_ref(d) = (L(d) + U(d)) / (2N)
+u(d) = 100 * (1 - F_ref(d))
+District score = arithmetic mean(u(d_i))
+```
+
+Midrank empirical CDF, without interpolation or rounding in calculation. Equal
+matches are deterministic; lower distance cannot reduce utility. No p90 weighting,
+seven-district min/max, dynamic refit, arbitrary distance thresholds or legacy
+Infrastructure fit. The full equally weighted reference reproduces mean utility 50.
+
+### Pipeline, raw explanations and null policy
+
+`PointNormalizer` consumes existing canonical School evidence; it never queries POIs.
+`DistrictSchoolAvailabilityService` uses one grid statement and one School batch
+statement for all reviewed Districts, then pure normalization and arithmetic mean.
+Every selected point must be available, version/quality valid and coordinate-paired;
+partial evidence does not produce a score. UNKNOWN completeness/freshness remains
+visible and does not penalize values. Output retains N, median, p90, C500, C1000,
+C1500, source snapshot/quality and limitations. Radius coverage is raw explanation,
+not a normalization threshold. Missing/invalid reference, source, geometry, sampling,
+evidence or versions yield score=null with explicit reason, never fake score 0.
+
+### Multi-city and refresh behavior
+
+This is **Krasnoyarsk-relative V1**. Point normalization requires Krasnoyarsk OSM
+scope; District geometry domain is the reviewed seven polygons. Other city/scope
+inputs fail with explicit unavailable state. A future city needs separate reviewed
+reference/version/domain; it cannot silently enter this reference. A future active
+Krasnoyarsk snapshot can be evaluated against the unchanged frozen School reference
+when its canonical evidence/quality contract remains valid. No bootstrap recalibration.
+
+### Deterministic District results
+
+| District | Score | N | Median m | p90 m | C500 % | C1000 % | C1500 % |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Central | 63.05 | 553 | 782.12 | 1722.83 | 26.40 | 65.28 | 83.73 |
+| Kirov | 65.12 | 376 | 684.48 | 2141.09 | 39.63 | 63.56 | 77.66 |
+| Lenin | 60.56 | 843 | 895.95 | 1827.17 | 25.27 | 55.52 | 81.49 |
+| Oktyabr | 42.59 | 1461 | 1598.04 | 4755.04 | 14.65 | 32.92 | 47.36 |
+| Sovet | 44.78 | 1437 | 1417.05 | 6392.56 | 23.94 | 40.57 | 52.54 |
+| Sverdlov | 42.89 | 1215 | 1774.74 | 4371.60 | 16.13 | 33.91 | 44.61 |
+| Zheleznodorozhny | 78.70 | 180 | 440.25 | 962.44 | 56.11 | 91.11 | 100.00 |
+
+All raw regressions are preserved; displayed rounding is not used in calculation.
+Current MESTO scoring, Stop Availability, APIs, frontend and migrations are unchanged.
+
+### Additional Code Map
+
+- `backend/app/analytics/school/reference.py`: pinned School-only runtime calibration.
+- `normalization.py`: pure point CDF and version/source/scope/quality gates.
+- `sampling.py`: separately versioned School District grid250 and geometry checks.
+- `district.py`: normalized District value paired with raw School explanations.
+- `backend/tests/test_school_normalization.py`: calibration, null, scope, exact
+  seven-district regression, batch query count and current MESTO invariance tests.
