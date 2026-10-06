@@ -103,11 +103,34 @@ scenario retains its existing growth uplift (`0.15 * Growth`) and cap, starting
 from the new objective base. Recommendation tie-breaking consumes the new MESTO
 value; its Match score formula is unchanged.
 
-Minimal frontend compatibility adds the optional objective type and corrects
-methodology text. Existing category cards are labelled additional legacy
-indicators, not V2 components. AI context receives the same additive explanation
-and corrected methodology text; provider, prompt, limits and flow stay unchanged.
-Full five-component UX presentation remains the next phase.
+## Product presentation
+
+Onboarding persists the profile; the analytics store loads districts, posts to
+`/api/analytics/score`, then loads personal recommendations. Results and the
+selected district share the ObjectiveScore component. The existing API contract
+is sufficient; no presentation endpoint or backend calculation is added.
+
+The primary MESTO Score reads `objective.score` only when V2 is AVAILABLE and
+the score is valid. Cards map the canonical keys to Остановки, Школы, Детские
+сады, Медицина and Парки and read their weights from the API. Scores are rounded
+to integers for display only. A keyboard-accessible disclosure explains equal
+20% weights, relative calibration and data limitations. Available components
+use labelled meters; missing components have no numeric/bar-zero substitute.
+
+Null, missing or UNAVAILABLE objective evidence shows an unavailable message.
+Map colours, district selectors and recommendation score captions follow the
+same objective availability. They never use compatibility scores as a fallback.
+Raw backend diagnostics are not displayed; a safe generic reason is used.
+
+Legacy Infrastructure/Transport stay in the API for compatibility/Match but no
+longer appear as primary UI component cards. Personal Match, Growth factors and
+warnings, future scenario, housing catalogue and Market/Affordability remain
+separate. AI provider, prompt, limits and flow remain unchanged.
+
+Raw medians, distance coverage and park-inside shares are not in the current
+public component contract. Presentation uses scores and honest spatial
+descriptions; a reviewed compact raw explanation contract is a follow-up. No
+raw distance arrays or runtime spatial computation is introduced.
 
 Limitations include relative frozen Krasnoyarsk calibration, territorial rather
 than population weighting, unknown real-world completeness/freshness, straight

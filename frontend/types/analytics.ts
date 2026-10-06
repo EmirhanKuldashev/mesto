@@ -37,7 +37,11 @@ export type DistrictScoreResponse = {
   warnings: string[];
   is_synthetic: boolean;
   calculation_version: string;
-  objective?: {
+  objective?: ObjectiveScoreResponse | null;
+  created_at: string;
+};
+
+export type ObjectiveScoreResponse = {
     calculation_version: "objective-mesto-v2";
     score: number | null;
     availability: "AVAILABLE" | "UNAVAILABLE";
@@ -58,6 +62,4 @@ export type DistrictScoreResponse = {
     unavailable_reason: string | null;
     limitations: string[];
     provenance: Record<string, unknown>;
-  } | null;
-  created_at: string;
 };

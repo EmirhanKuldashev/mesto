@@ -3,7 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 // Fixed loopback URLs match docker-compose.e2e.yml; never target production.
 export default defineConfig({
   testDir: './e2e',
-  testMatch: 'mesto-smoke.spec.ts',
+  testMatch: ['mesto-smoke.spec.ts', 'mesto-v2-presentation.spec.ts'],
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   workers: 1,
