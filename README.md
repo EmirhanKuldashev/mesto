@@ -35,6 +35,10 @@ docker compose up --build
 
 Для локальной разработки без Docker задайте `DATABASE_URL`, установите зависимости из `backend/pyproject.toml`, затем в `backend` выполните `alembic upgrade head`, `python -m app.etl.bootstrap_data` и `uvicorn app.main:app --reload`. Во `frontend` выполните `npm install` и `npm run dev`.
 
+Этот же bootstrap используется при обновлении существующей БД. `docker compose up --build` автоматически применяет migrations и запускает bootstrap перед API; удалять volume или пользовательские данные не требуется. Bootstrap сверяет packaged OSM baseline, сохраняя ID, bindings и историю snapshots. При переходе с legacy метка контейнера dataset остаётся `legacy-poi`: это неизменяемая запись source/scope, а не идентификатор нового snapshot. Provider и сервисы компонентов читают fresh `dataset_id` из sealed canonical payload активного snapshot; legacy snapshots сохраняют прежнюю идентификацию и ограничения качества.
+
+Objective MESTO V2 читает tracked prepared results из `backend/data/fixtures/analytics/objective-mesto-v2.json`. Offline builder уже подготовил этот опубликованный артефакт; при обычном старте и API-запросах он не запускается. Bootstrap не пересчитывает grid и scores. Provider проверяет snapshot identity, projection fingerprint, геометрию и frozen references; неподходящие данные остаются unavailable.
+
 Текущий OSM baseline явно задан в `backend/data/fixtures/osm/current-baseline.json`:
 `fresh-20261004T132116Z`, 2387 реальных POI, включая 394 без имени. Bootstrap
 проверяет version/checksums bundled canonical и работает без Overpass или локального
