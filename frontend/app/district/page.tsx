@@ -8,6 +8,7 @@ import type { MapLayer } from "@/components/district-map";
 import { AnalyticsScore } from "@/components/analytics-score";
 import { DistrictMarket } from "@/components/district-market";
 import { Brand, EmptyState, Skeleton } from "@/components/concept-ui";
+import { displayScore, objectiveValue } from "@/lib/objective-presentation";
 import { useAnalytics } from "@/lib/analytics-store";
 import { useComplexData } from "@/lib/complex-data";
 import { scoreColor, scoreComplex, scoreDistricts, type ScoredDistrict } from "@/lib/complex-scoring";
@@ -46,13 +47,15 @@ export default function DistrictPage() {
   const real = status === "ready";
   const mapDistricts: ScoredDistrict[] = useMemo(() => districts.map((district) => {
     const score = scores.find((item) => item.district.id === district.id);
-    return { ...district, value: score?.score === null || score === undefined ? null : score.score / 100,
+    const value = objectiveValue(score);
+    return { ...district, value: value === null ? null : value / 100,
       coverage: score?.confidence ?? 0, complexes: complexDistricts.find((item) => item.id === district.id)?.complexes ?? [] };
   }), [districts, scores, complexDistricts]);
   const selectedScore = real ? scores.find((item) => item.district.id === selectedDistrictId) : undefined;
   const displayedScores = real ? scores : [];
   const selectedMapDistrict = mapDistricts.find((item) => item.id === selectedDistrictId);
-  const selectedValue = selectedMapDistrict?.value ?? (real && selectedScore?.score != null ? selectedScore.score / 100 : null);
+  const selectedObjective = objectiveValue(selectedScore);
+  const selectedValue = selectedMapDistrict?.value ?? (real && selectedObjective !== null ? selectedObjective / 100 : null);
 
   return <main className="page-shell">
     <header className="content-shell flex h-20 items-center justify-between"><Brand /><Link href="/results" className="text-sm text-[#abc6c7]">К результатам</Link></header>
@@ -67,14 +70,14 @@ export default function DistrictPage() {
         {status === "needs_profile" && <div role="status" className="rounded-[22px] border border-[#eac998] bg-[#fff5e5] p-5 text-sm text-[#76562b]">Заполните анкету, чтобы получить MESTO Score и персональный Match. <Link href="/onboarding" className="font-semibold underline">Создать сценарий</Link></div>}
         {status === "error" && <div role="alert" className="rounded-[22px] border border-[#eac998] bg-[#fff5e5] p-5 text-sm text-[#76562b]">Не удалось получить оценку{analyticsError ? `: ${analyticsError}` : "."} <button type="button" onClick={() => void load(profileId, true)} className="mt-2 block font-semibold underline">Повторить запрос</button></div>}
         <div className="rounded-[26px] border border-[#dbe8e4] bg-white p-6">
-          <h2 className="text-xl font-semibold">{selectedMapDistrict?.name ?? selectedScore?.district.name ?? "MESTO Score районов"}</h2>
+          <h2 className="break-words text-xl font-semibold">{selectedMapDistrict?.name ?? selectedScore?.district.name ?? "MESTO Score районов"}</h2>
           <div className="mt-4 flex items-center gap-3"><span className="h-8 w-8 rounded-full" style={{ backgroundColor: scoreColor(selectedValue) }} /><span className="text-3xl font-semibold">{selectedValue === null ? "—" : real ? `${Math.round(selectedValue * 100)}/100` : `${Math.round(selectedValue * 100)}%`}</span></div>
-          <p className="mt-3 text-sm text-[#607f82]">{real ? "Оценка района по Analytics API" : "Ожидаем результат анализа"}</p>
+          <p className="mt-3 text-sm text-[#607f82]">{real ? "Объективная оценка территории" : "Ожидаем результат анализа"}</p>
           {selectedDistrictId !== null && <button type="button" onClick={() => setSelectedDistrictId(null)} className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[#138d7b]"><ArrowLeft size={15} /> Показать весь город</button>}
           <div className="mt-6 space-y-2 text-sm">{[["0–39", .2], ["40–69", .55], ["70–100", .85], ["Нет оценки", null]].map(([label, value]) => <div key={String(label)} className="flex items-center gap-3"><span className="h-4 w-4 rounded-full" style={{ backgroundColor: scoreColor(value as number | null) }} />{label}</div>)}</div>
         </div>
         <div className="rounded-[26px] border border-[#dbe8e4] bg-white p-6"><h3 className="font-semibold">Районы Красноярска</h3>
-          {real ? <div className="mt-4 space-y-2">{displayedScores.map((item) => <button key={item.district.id} type="button" onClick={() => setSelectedDistrictId(item.district.id)} aria-pressed={selectedDistrictId === item.district.id} className={`flex w-full items-center justify-between rounded-xl border px-3 py-3 text-left text-sm ${selectedDistrictId === item.district.id ? "border-[#2ab993] bg-[#e9f8f2]" : "border-[#e1ebe7] hover:bg-[#f3faf7]"}`}><span>{item.district.name}</span><span className="font-semibold">{item.score === null ? "—" : Math.round(item.score)}</span></button>)}</div> : <p className="mt-3 text-sm text-[#789295]">{status === "loading" ? "Получаем оценку районов…" : "Для оценки пройдите анкету"}</p>}
+          {real ? <div className="mt-4 space-y-2">{displayedScores.map((item) => <button key={item.district.id} type="button" onClick={() => setSelectedDistrictId(item.district.id)} aria-pressed={selectedDistrictId === item.district.id} className={`flex w-full items-center justify-between rounded-xl border px-3 py-3 text-left text-sm ${selectedDistrictId === item.district.id ? "border-[#2ab993] bg-[#e9f8f2]" : "border-[#e1ebe7] hover:bg-[#f3faf7]"}`}><span>{item.district.name}</span><span className="font-semibold">{displayScore(objectiveValue(item))}</span></button>)}</div> : <p className="mt-3 text-sm text-[#789295]">{status === "loading" ? "Получаем оценку районов…" : "Для оценки пройдите анкету"}</p>}
         </div>
         {draft.life_points.length > 0 && <div className="rounded-[26px] border border-[#dbe8e4] bg-white p-6"><h3 className="font-semibold">Ваши точки жизни</h3><ul className="mt-4 space-y-2">{draft.life_points.map((point) => <li key={point.localId} className="flex items-start gap-2 text-sm text-[#607f82]"><MapPin size={15} className="mt-0.5 text-[#187dda]" />{point.name}</li>)}</ul></div>}
         <Link href="/onboarding" className="text-sm font-semibold text-[#138d7b]">Изменить анкету</Link>

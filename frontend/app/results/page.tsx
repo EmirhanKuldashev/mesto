@@ -1,5 +1,7 @@
 "use client";
 
+import { displayScore, objectiveValue } from "@/lib/objective-presentation";
+
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Compass } from "lucide-react";
@@ -50,10 +52,10 @@ export default function ResultsPage() {
       {status === "needs_profile" && <div role="status" className="rounded-[20px] border border-[#eac998] bg-[#fff5e5] p-5 text-sm text-[#76562b]">Для персонального анализа заполните анкету и дайте согласие на обработку данных. <Link href="/onboarding" className="ml-2 font-semibold underline">Создать сценарий</Link></div>}
       {status === "error" && <div role="alert" className="rounded-[20px] border border-[#eac998] bg-[#fff5e5] p-5 text-sm text-[#76562b]">Не удалось получить анализ{error ? `: ${error}` : "."} <button type="button" onClick={() => void load(profileId, true)} className="ml-2 font-semibold underline">Повторить запрос</button></div>}
       {status === "empty" && <EmptyState title="Пока нет районов для анализа" body="Данные районов обновляются. Пожалуйста, вернитесь позже." />}
-      {status === "ready" && <RecommendationPanel items={recommendations} error={recommendationError} selectedId={selected?.district.id ?? null} onSelect={setSelectedId} onRetry={() => void load(profileId, true)} />}
+      {status === "ready" && <RecommendationPanel items={recommendations} scores={scores} error={recommendationError} selectedId={selected?.district.id ?? null} onSelect={setSelectedId} onRetry={() => void load(profileId, true)} />}
       {status === "ready" && selected && <>
-        {recommendations.length === 0 && scores.length > 1 && <div className="flex flex-wrap gap-2" aria-label="Выбор района">{scores.map((item) => <button key={item.district.id} type="button" onClick={() => setSelectedId(item.district.id)} aria-pressed={selected.district.id === item.district.id} className={`rounded-full px-5 py-3 text-sm font-semibold transition ${selected.district.id === item.district.id ? "bg-[#0d766c] text-white" : "bg-white text-[#41686a] hover:bg-[#e1f0e8]"}`}>{item.district.name} · {item.score === null ? "—" : Math.round(item.score)}</button>)}</div>}
-        <div><h2 className="mb-3 text-2xl font-semibold text-[#153c44]">{selected.district.name}</h2>{selectedRecommendation && <p className="mb-5 text-sm text-[#547477]">Ваш Match Score: {Math.round(selectedRecommendation.match_score)}%. Оценка района и причины расчёта ниже.</p>}<AnalyticsScore score={selected} /></div>
+        {recommendations.length === 0 && scores.length > 1 && <div className="flex flex-wrap gap-2" aria-label="Выбор района">{scores.map((item) => <button key={item.district.id} type="button" onClick={() => setSelectedId(item.district.id)} aria-pressed={selected.district.id === item.district.id} className={`rounded-full px-5 py-3 text-sm font-semibold transition ${selected.district.id === item.district.id ? "bg-[#0d766c] text-white" : "bg-white text-[#41686a] hover:bg-[#e1f0e8]"}`}>{item.district.name} · {displayScore(objectiveValue(item))}</button>)}</div>}
+        <div><h2 className="mb-3 break-words text-2xl font-semibold text-[#153c44]">{selected.district.name}</h2>{selectedRecommendation && <p className="mb-5 text-sm text-[#547477]">Ваш Match Score: {Math.round(selectedRecommendation.match_score)}%. Оценка района и причины расчёта ниже.</p>}<AnalyticsScore score={selected} /></div>
         {status === "ready" && <Link href={`/district?districtId=${selected.district.id}`} className="inline-flex items-center gap-2 font-semibold text-[#0a786d]">Посмотреть район на карте <Compass size={17} /></Link>}
       </>}
     </div></section>

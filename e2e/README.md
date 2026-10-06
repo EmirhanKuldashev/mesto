@@ -1,4 +1,4 @@
-# MESTO Chromium smoke-test
+# MESTO Chromium smoke and V2 presentation tests
 
 Requires Docker Compose v2, Node.js 22 and npm. Run from the repository root:
 
@@ -27,7 +27,19 @@ Only external OSM raster tiles are fulfilled with the local PNG fixture;
 district geometry, POIs and all MESTO APIs remain real. Other external browser
 requests are blocked and fail the test.
 
-No exact score, district ranking or screenshot is pinned. Browser contexts are
-fresh per test; start from a new stack for a clean database run. CI uses a
+The real API smoke also guards all seven published Objective V2 scores, their
+objective ranking, 20% weights and the five displayed components on results
+and district pages. This is an objective ranking check, not a personal Match
+ranking requirement.
+
+`mesto-v2-presentation.spec.ts` uses isolated API response fixtures to check
+key/label mapping, displayed weights, real zero, unavailable/null/absent
+objective (with a deliberately populated legacy score), safe diagnostics,
+loading/error/retry and separation from Match/Growth/housing. It checks 1440px
+and 360px with a long district name, keyboard disclosure, accessible meters and
+no horizontal overflow. These fixtures do not replace the real API smoke.
+Screenshots are saved in ignored `test-results/`; no pixel baseline is pinned.
+
+Browser contexts are fresh per test; start from a new stack for a clean database run. CI uses a
 unique Compose project, waits for service health, retries once and uploads
 failure traces/screenshots/video and container logs before cleanup.

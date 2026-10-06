@@ -117,6 +117,16 @@ test('onboarding persists a profile and opens a recommended district and map', a
   expect(typeof score.score).toBe('number');
   expect(score.score).toBeGreaterThanOrEqual(0);
   expect(score.score).toBeLessThanOrEqual(100);
+  const expected = { 'osm-centralny': 59.22, 'osm-kirovsky': 63.64, 'osm-leninsky': 57.67,
+    'osm-oktyabrsky': 45.58, 'osm-sovetsky': 46.75, 'osm-sverdlovsky': 41.50, 'osm-zheleznodorozhny': 76.45 };
+  expect(Object.fromEntries(scores.map((item: { district: { slug: string }; score: number }) => [item.district.slug, item.score]))).toEqual(expected);
+  expect([...scores].sort((a, b) => b.score - a.score).map(item => item.district.slug)).toEqual([
+    'osm-zheleznodorozhny', 'osm-kirovsky', 'osm-centralny', 'osm-leninsky', 'osm-sovetsky', 'osm-oktyabrsky', 'osm-sverdlovsky',
+  ]);
+  expect(score.objective.availability).toBe('AVAILABLE');
+  expect(score.objective.score).toBe(score.score);
+  expect(score.objective.weights).toEqual(Object.fromEntries(
+    ['stop_availability', 'school', 'kindergarten', 'healthcare', 'parks'].map(key => [key, .2])));
 
   await expect(page).toHaveURL(`${frontend}/results`);
   await expect(page.getByRole('heading', { level: 1, name: /Ваши лучшие места/ })).toBeVisible();
@@ -125,6 +135,13 @@ test('onboarding persists a profile and opens a recommended district and map', a
   }) });
   await expect(card).toHaveCount(1);
   await expect(card.getByText(/Match Score · MESTO Score \d+\/100/)).toBeVisible();
+  const objective = page.getByRole('region', { name: 'Объективная оценка территории', exact: true });
+  await expect(objective.getByLabel(`MESTO Score: ${Math.round(score.objective.score)} из 100`, { exact: true })).toBeVisible();
+  for (const [key, label] of [['stop_availability', 'Остановки'], ['school', 'Школы'],
+    ['kindergarten', 'Детские сады'], ['healthcare', 'Медицина'], ['parks', 'Парки']]) {
+    await expect(objective.getByRole('article', { name: label, exact: true }).getByRole('meter'))
+      .toHaveAttribute('aria-valuenow', String(score.objective.components[key].score));
+  }
   // No Orca key: the real backend returns 503 and recommendations remain usable.
   expect((await summaryResponse).status()).toBe(503);
   const ai = page.getByRole('region', { name: 'Персональная ИИ-сводка', exact: true });
@@ -133,7 +150,9 @@ test('onboarding persists a profile and opens a recommended district and map', a
   await expect(page).toHaveURL(`${frontend}/district?districtId=${best.district_id}`);
   await expect(page.getByRole('heading', { level: 1, name: /Город и ваши приоритеты/ })).toBeVisible();
   await expect(page.getByRole('heading', { level: 2, name: best.district_name, exact: true }).first()).toBeVisible();
-  await expect(page.getByText('Оценка района по Analytics API', { exact: true })).toBeVisible();
+  await expect(page.getByText('Объективная оценка территории', { exact: true }).first()).toBeVisible();
+  await expect(page.getByRole('region', { name: 'Объективная оценка территории', exact: true })
+    .getByLabel(`MESTO Score: ${Math.round(score.objective.score)} из 100`, { exact: true })).toBeVisible();
   const map = page.getByRole('application', { name: 'Карта административных районов и оценок ЖК', exact: true });
   await expect(map).toBeVisible();
   await expect(map.locator('canvas')).toBeVisible();

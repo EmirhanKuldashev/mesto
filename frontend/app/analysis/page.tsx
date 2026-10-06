@@ -12,7 +12,7 @@ import { useOnboardingReady } from "@/lib/use-onboarding-ready";
 const stages = [
   { key: "profile", label: "Анализируем ваши предпочтения" },
   { key: "districts", label: "Изучаем районы" },
-  { key: "scoring", label: "Оцениваем инфраструктуру и транспорт" },
+  { key: "scoring", label: "Оцениваем пять показателей территории" },
   { key: "future_growth", label: "Проверяем развитие территории" },
   { key: "recommendations", label: "Формируем рекомендации" },
 ] as const;
