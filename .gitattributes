@@ -8,3 +8,5 @@
 /backend/data/fixtures/analytics/parks-krasnoyarsk-relative-v1.json -text
 /backend/data/fixtures/osm/snapshots/parks-geometry-20261005T134520Z/manifest.json -text
 /backend/data/fixtures/osm/snapshots/parks-geometry-20261005T134520Z/query.txt -text
+# Precomputed canonical component provenance is checksum pinned.
+/backend/data/fixtures/analytics/objective-mesto-v2.json -text

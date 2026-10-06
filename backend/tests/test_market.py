@@ -227,7 +227,7 @@ def test_affordability_does_not_enter_mesto_growth_or_recommendations(market_cas
     assert low_affordability.market_context == high_affordability.market_context
     assert low_affordability.affordability.purchase.within_budget_count == 2
     assert high_affordability.affordability.purchase.within_budget_count == 3
-    assert low.score is not None and low.score == high.score and low.current_score == high.current_score and low.confidence == high.confidence
+    assert low.score is None and low.objective.unavailable_reason and low.score == high.score and low.current_score == high.current_score and low.confidence == high.confidence
     assert low.future_growth_score == high.future_growth_score == 25
     assert low.future_score == high.future_score
     if with_legacy_offer:
@@ -256,4 +256,4 @@ def test_ai_housing_uses_structured_starting_price_contract(market_case):
     purchase = housing["affordability"]["purchase"]
     assert purchase["within_budget_count"] == 2 and purchase["ranking_eligible"] is False
     assert any("не вероятность" in line for line in context["limitations"])
-    assert context["analytics"]["calculation_version"] == "objective-current-v1"
+    assert context["analytics"]["calculation_version"] == "objective-mesto-v2"

@@ -233,7 +233,7 @@ def test_grid250_fresh_all_seven_full_precision_two_queries_and_invariance(sessi
     assert session.scalar(text("""SELECT bool_and(ST_Covers(d.geometry,ST_SetSRID(ST_MakePoint(p.lon,p.lat),4326)))
         FROM jsonb_to_recordset(CAST(:p AS jsonb)) p(id integer,lon double precision,lat double precision)
         JOIN districts d ON d.id=p.id"""),{"p":json.dumps(payload)})
-    from app.analytics.service import AnalyticsService
+    from app.analytics.service import LegacyAnalyticsService as AnalyticsService
     profile=models.UserProfile(data_processing_consent=True,housing_goal="buy",purchase_budget=8000000)
     session.add(profile);session.flush()
     expected={"osm-centralny":(80.45,100,56.01),"osm-kirovsky":(87.67,100,72.25),"osm-leninsky":(80.36,100,55.82),

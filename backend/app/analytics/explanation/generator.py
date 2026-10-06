@@ -5,6 +5,21 @@ from app.analytics.scoring.calculators import DistrictFacts
 
 
 class ExplanationGenerator:
+    def objective(self, result, legacy_warnings):
+        """V2 explanation; compatibility category scores do not explain MESTO."""
+        labels = {"stop_availability": "Остановки", "school": "Школы", "kindergarten": "Детские сады",
+                  "healthcare": "Медицина", "parks": "Парки"}
+        reasons = [f"{labels[name]}: {component.score:.2f}/100; вес 20%"
+                   for name, component in result.components.items() if component.score is not None]
+        warnings = ["MESTO V2 — равновесный территориальный индекс пяти компонентов; "
+                    "персональные предпочтения учитываются отдельно в Match.",
+                    "Покрытие означает наличие пяти компонентов, не полноту данных. "
+                    "Прямые расстояния не являются временем или маршрутом поездки."]
+        if result.unavailable_reason:
+            warnings.append("MESTO V2 недоступен: " + result.unavailable_reason)
+        warnings.extend(w for w in legacy_warnings if w.startswith("Growth:") or "синтетические" in w)
+        return reasons, warnings
+
     def generate(self, categories: dict[str, float | None], facts: DistrictFacts,
                  *, unsupported_preferences: bool, future_result: FutureGrowthResult) -> tuple[list[str], list[str]]:
         reasons: list[str] = []

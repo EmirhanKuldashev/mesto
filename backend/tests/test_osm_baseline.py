@@ -3,7 +3,7 @@ from collections import Counter
 import json
 from pathlib import Path
 import shutil
-from uuid import uuid4
+from uuid import UUID, uuid4
 
 import pytest
 from alembic import command
@@ -105,10 +105,10 @@ def clean_database(test_database_url,monkeypatch):
 
 
 @pytest.mark.integration
-def test_clean_bootstrap_fresh_counts_idempotency_scores_and_bbox(clean_database):
+def test_clean_bootstrap_fresh_counts_idempotency_scores_and_bbox(clean_database, alembic_heads):
     factory=clean_database
     with factory.begin() as session:
-        assert session.scalar(text("SELECT version_num FROM alembic_version"))=="0014_osm_snapshot_lifecycle"
+        assert set(session.scalars(text("SELECT version_num FROM alembic_version"))) == alembic_heads
         assert session.scalar(text("SELECT count(*) FROM osm_snapshots"))==0
         seed(session)
         load_districts(session,BACKEND/"data/fixtures/osm/krasnoyarsk_districts.json")
@@ -145,8 +145,16 @@ def test_clean_bootstrap_fresh_counts_idempotency_scores_and_bbox(clean_database
             response=client.post("/api/analytics/score",json={"profile_id":profile_id,"district_ids":district_ids})
             assert response.status_code==200,response.text
             results=response.json()
-            assert {row["district"]["slug"]:(row["score"],row["categories"]["infrastructure"],row["categories"]["transport"]) for row in results}==SCORES
-            assert all(row["calculation_version"]=="objective-current-v1" for row in results)
+            assert {row["district"]["slug"]:(row["categories"]["infrastructure"],row["categories"]["transport"]) for row in results}=={slug: values[1:] for slug,values in SCORES.items()}
+            from app.analytics.service import LegacyAnalyticsService
+            with factory() as session:
+                legacy = LegacyAnalyticsService(session).calculate(UUID(profile_id), district_ids)
+                assert {r.district.slug:(r.score,r.categories.infrastructure,r.categories.transport) for r in legacy}==SCORES
+            assert all(row["objective"]["availability"]=="AVAILABLE" for row in results)
+            assert {row["district"]["slug"]:row["score"] for row in results} == {
+                "osm-centralny":59.22,"osm-kirovsky":63.64,"osm-leninsky":57.67,
+                "osm-oktyabrsky":45.58,"osm-sovetsky":46.75,"osm-sverdlovsky":41.50,"osm-zheleznodorozhny":76.45}
+            assert all(row["calculation_version"]=="objective-mesto-v2" for row in results)
             bbox=f"{point[1]-.00001},{point[2]-.00001},{point[1]+.00001},{point[2]+.00001}"
             response=client.get("/api/poi",params={"source_id":"osm","bbox":bbox})
             assert response.status_code==200 and point[0] in {row["id"] for row in response.json()}

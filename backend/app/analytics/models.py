@@ -12,6 +12,7 @@ from app.analytics.future_growth.models import FutureFactor
 from app.intelligence.schemas import SignalImpactResponse
 
 from app.db import Base
+from app.analytics.objective.engine import ObjectiveScore
 
 
 class DistrictScore(Base):
@@ -35,6 +36,7 @@ class DistrictScore(Base):
     market_score: Mapped[float | None] = mapped_column(Numeric(5, 2))
     confidence: Mapped[float] = mapped_column(Numeric(4, 3), nullable=False)
     calculation_version: Mapped[str] = mapped_column(String(40), nullable=False, server_default="baseline-v1")
+    objective_evidence: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
     is_synthetic: Mapped[bool] = mapped_column(Boolean, nullable=False, server_default=text("false"))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
@@ -82,6 +84,7 @@ class CalculatedDistrictScore(BaseModel):
     warnings: list[str]
     is_synthetic: bool
     calculation_version: str
+    objective: ObjectiveScore | None = None
 
 
 class DistrictScoreResponse(CalculatedDistrictScore):

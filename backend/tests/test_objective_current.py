@@ -18,7 +18,8 @@ from app.analytics.scoring.calculators import DistrictFacts, InfrastructureCalcu
 from app.analytics.explanation.generator import ExplanationGenerator
 from app.analytics.future_growth.models import FutureGrowthResult
 from app.analytics.scoring.engine import ScoringEngine
-from app.analytics.service import AnalyticsService
+# Historical v1 replay stays covered; public API assertions below use active V2.
+from app.analytics.service import LegacyAnalyticsService as AnalyticsService
 from app.analytics.models import DistrictScoreResponse
 from app.db import create_session_factory
 from app.main import app
@@ -122,14 +123,19 @@ def test_mesto_is_equal_for_family_urban_price_future_and_transit(objective_case
                                     "partner", "life_points"])
 def test_individual_profile_changes_do_not_change_mesto(objective_case, change):
     session, districts, profiles = objective_case
+    from app.analytics.service import AnalyticsService as ActiveAnalyticsService
+    # Active V2 invariance must include scored canonical districts, not only
+    # unavailable custom controls. Controls retain the separate Market assertion.
+    districts = districts + list(session.scalars(select(models.District).where(models.District.source_id == "osm")))
     profile = profiles[3]
     preferences = session.scalar(select(models.UserPreferences).where(models.UserPreferences.user_profile_id == profile.id))
     point = session.scalar(select(models.LifePoint).where(models.LifePoint.user_profile_id == profile.id))
     if change == "future_preference":
         preferences.preference_values = {"future_growth_weight": answer(0)}
     session.flush()
-    service = AnalyticsService(session)
+    service = ActiveAnalyticsService(session)
     before = service.calculate(profile.public_id, [district.id for district in districts])
+    assert any(r.score is not None and r.calculation_version == "objective-mesto-v2" for r in before)
     if change == "budget":
         profile.purchase_budget = Decimal("1000000")
     elif change == "preferences":
@@ -228,7 +234,7 @@ def test_unavailable_mesto_growth_and_old_snapshots_are_independent(objective_ca
         app.dependency_overrides.clear()
     assert score.score is None and score.current_score is None and score.future_score is None
     assert score.future_growth_score == score.categories.future_growth == 25
-    assert score.confidence == 0 and score.calculation_version == "objective-current-v1"
+    assert score.confidence == 0 and score.calculation_version == "objective-mesto-v2"
     saved = session.get(models.DistrictScore, score.id)
     assert saved.total_score is None and saved.current_score is None and saved.confidence == 0
     previous = session.get(models.DistrictScore, old_id)
@@ -244,8 +250,8 @@ def test_ai_context_and_cache_preserve_methodology_semantics(objective_case):
     context = build_context(session, profiles[0].public_id, districts[0].id)
     analytics = context["analytics"]
     assert analytics["score"] == analytics["current_score"]
-    assert analytics["calculation_version"] == "objective-current-v1" and analytics["confidence"] == 1
-    assert any("два" in line or "двух" in line for line in context["limitations"])
+    assert analytics["calculation_version"] == "objective-mesto-v2" and analytics["confidence"] == 0
+    assert any("пяти" in line for line in context["limitations"])
     runtime = SummaryRuntime()
     config = SimpleNamespace(model="test-model")
     generator = lambda *_: "Test summary"
