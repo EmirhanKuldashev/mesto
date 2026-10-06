@@ -7,7 +7,7 @@ const api = 'http://127.0.0.1:18100';
 const frontend = 'http://127.0.0.1:3100';
 const tile = readFileSync(path.join(__dirname, 'fixtures/map-tile.png'));
 
-test('onboarding persists a profile and opens a recommended district and map', async ({ page, context, request }) => {
+test('onboarding persists a profile and opens a recommended district and map', async ({ page, context, request }, testInfo) => {
   // Exercise the shared POI parser without changing the real API dataset.
   const poi = { id: 1, name: 'Школа №1', category: 'school', district_id: null,
     location: { type: 'Point', coordinates: [92.85, 56.01] }, source_id: 'osm', is_synthetic: false };
@@ -100,6 +100,7 @@ test('onboarding persists a profile and opens a recommended district and map', a
   expect(scored.status()).toBe(200);
   expect(scored.request().postDataJSON().profile_id).toBe(profile.id);
   const scores = await scored.json();
+  await testInfo.attach('objective-v2-real-api', { body: JSON.stringify(scores, null, 2), contentType: 'application/json' });
   expect(scores.length).toBeGreaterThan(0);
   const recommended = await recommendationsResponse;
   expect(recommended.status()).toBe(200);
@@ -127,6 +128,15 @@ test('onboarding persists a profile and opens a recommended district and map', a
   expect(score.objective.score).toBe(score.score);
   expect(score.objective.weights).toEqual(Object.fromEntries(
     ['stop_availability', 'school', 'kindergarten', 'healthcare', 'parks'].map(key => [key, .2])));
+  for (const item of scores) {
+    expect(item.objective.availability).toBe('AVAILABLE');
+    expect(item.objective.unavailable_reason).toBeNull();
+    for (const component of Object.values(item.objective.components) as { score: number; unavailable_reason: string | null }[]) {
+      expect(component.unavailable_reason).toBeNull();
+      expect(component.score).toBeGreaterThanOrEqual(0);
+      expect(component.score).toBeLessThanOrEqual(100);
+    }
+  }
 
   await expect(page).toHaveURL(`${frontend}/results`);
   await expect(page.getByRole('heading', { level: 1, name: /Ваши лучшие места/ })).toBeVisible();
@@ -157,6 +167,35 @@ test('onboarding persists a profile and opens a recommended district and map', a
   await expect(map).toBeVisible();
   await expect(map.locator('canvas')).toBeVisible();
   await expect(page.getByRole('alert').filter({ hasText: /Не удалось получить оценку|Не удалось загрузить/ })).toHaveCount(0);
+
+  // Verify the reported district through the real saved profile and API on both
+  // screens. These assertions fail if bootstrap leaves V2 unavailable.
+  const target = scores.find(item => item.district.slug === 'osm-zheleznodorozhny');
+  expect(target.objective.score).toBe(76.45);
+  await page.goto('/results');
+  const targetCard = page.getByRole('article').filter({ has: page.getByRole('heading', {
+    level: 3, name: target.district.name, exact: true,
+  }) });
+  await expect(targetCard).toHaveCount(1);
+  await expect(targetCard.getByText('Match Score · MESTO Score 76/100', { exact: true })).toBeVisible();
+  await targetCard.getByRole('button').click();
+  const assertTarget = async () => {
+    const region = page.getByRole('region', { name: 'Объективная оценка территории', exact: true });
+    await expect(region.getByLabel('MESTO Score: 76 из 100', { exact: true })).toBeVisible();
+    for (const [key, label, rounded] of [['stop_availability', 'Остановки', 71], ['school', 'Школы', 79],
+      ['kindergarten', 'Детские сады', 78], ['healthcare', 'Медицина', 83], ['parks', 'Парки', 72]] as const) {
+      const article = region.getByRole('article', { name: label, exact: true });
+      await expect(article.getByLabel(`${label}: ${rounded} из 100`, { exact: true })).toBeVisible();
+      await expect(article.getByRole('meter')).toHaveAttribute('aria-valuenow', String(target.objective.components[key].score));
+    }
+  };
+  await assertTarget();
+  await page.getByRole('region', { name: 'Объективная оценка территории', exact: true })
+    .screenshot({ path: testInfo.outputPath('objective-v2-results.png') });
+  await page.goto(`${frontend}/district?districtId=${target.district.id}`);
+  await assertTarget();
+  await page.getByRole('region', { name: 'Объективная оценка территории', exact: true })
+    .screenshot({ path: testInfo.outputPath('objective-v2-district.png') });
   expect(externalRequests).toEqual([]);
   expect(pageErrors).toEqual([]);
 });

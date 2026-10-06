@@ -16,7 +16,9 @@ from data.osm.contracts import Quality
 # Materialize active membership once, never query unbound POIs or historical rows.
 BATCH_QUERY = text("""
 WITH active AS MATERIALIZED (
-    SELECT d.id AS dataset_id,d.dataset_key,d.scope_id,s.id AS snapshot_id,
+    SELECT d.id AS dataset_id,
+           CASE WHEN s.is_legacy THEN d.dataset_key ELSE s.canonical_json->>'dataset_id' END AS dataset_key,
+           d.scope_id,s.id AS snapshot_id,
            s.version,s.canonical_checksum,s.query_version,s.query_hash,s.quality,
            s.canonical_json->'observations'->0->>'eligibility_policy_version' AS foundation_policy
     FROM osm_datasets d JOIN osm_snapshots s

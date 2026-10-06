@@ -23,9 +23,13 @@ ARTIFACT_SHA256 = "80d5d166aceef8f6a9c2e6dc84d30e32549fe2e91f1f9f2dec764630c1385
 # Same active bindings consumed by components. Detect edits/deletions/synthetic
 # substitutions, even if someone bypasses the immutable snapshot lifecycle.
 # IDs and district assignment do not affect city-wide nearest-object components.
+# The container label can be legacy-poi after an upgrade. Fresh provenance uses
+# the sealed active payload's dataset_id; migration-adopted legacy keeps its label.
 PARITY_QUERY = text("""
 WITH active AS MATERIALIZED (
- SELECT d.id dataset_id, s.id snapshot_id, d.dataset_key, d.scope_id, s.version,
+ SELECT d.id dataset_id, s.id snapshot_id,
+ CASE WHEN s.is_legacy THEN d.dataset_key ELSE s.canonical_json->>'dataset_id' END dataset_key,
+ d.scope_id, s.version,
  s.canonical_checksum, s.query_version, s.query_hash, s.quality,
  s.canonical_json->'observations'->0->>'eligibility_policy_version' foundation_policy
  FROM osm_datasets d JOIN osm_snapshots s ON s.id=d.active_snapshot_id AND s.dataset_id=d.id

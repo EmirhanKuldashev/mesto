@@ -1,5 +1,6 @@
 """Published fresh baseline, isolated clean installs and upgraded-history parity."""
 from collections import Counter
+from importlib import import_module
 import json
 from pathlib import Path
 import shutil
@@ -17,6 +18,8 @@ from app.api import get_session
 from app.db import create_session_factory
 from app.etl.seed import seed
 from app.main import app
+from app.analytics.objective.provider import ObjectiveProvider, read_precomputed
+from app.analytics.stop_availability.models import Coordinate
 from data.loaders.osm_district_loader import load_districts
 from data.loaders.osm_poi_loader import load_pois
 from data.osm.baseline import CURRENT_BASELINE, load_current_baseline, read_packaged_baseline
@@ -41,7 +44,7 @@ def no_osm_network(monkeypatch):
 
 
 def fingerprint(session, table, where="true"):
-    return session.execute(text("SELECT count(*),md5(coalesce(string_agg(to_jsonb(t)::text,'|' ORDER BY id),'')) FROM "
+    return session.execute(text("SELECT count(*),md5(coalesce(string_agg(to_jsonb(t)::text,'|' ORDER BY to_jsonb(t)::text),'')) FROM "
                                 + table + " t WHERE " + where)).one()
 
 
@@ -172,6 +175,10 @@ def test_upgraded_legacy_history_and_fresh_active_restart_are_stable(legacy_sess
     assert history[0]==1988
     fresh=load_current_baseline(session)
     assert fresh["total"]==2387 and legacy.status=="RETIRED"
+    dataset=session.get(models.OsmDataset,legacy.dataset_id)
+    assert dataset.dataset_key=="legacy-poi"  # Immutable managed source/scope identity.
+    assert session.get(models.OsmSnapshot,fresh["snapshot_id"]).dataset_id==legacy.dataset_id
+    assert_objective_baseline(session)
     before={table:fingerprint(session,table) for table in ("pois","osm_snapshots","osm_snapshot_observations")}
     review=session.get(models.OsmSnapshot,fresh["snapshot_id"]).activation_review.copy()
     assert load_current_baseline(session)["state"]=="unchanged"
@@ -181,3 +188,51 @@ def test_upgraded_legacy_history_and_fresh_active_restart_are_stable(legacy_sess
     assert fingerprint(session,"osm_snapshot_observations",f"snapshot_id={legacy.id}")==history
     assert session.get(models.OsmSnapshot,fresh["snapshot_id"]).activation_review==review
     assert session.scalar(text("SELECT count(*) FROM osm_snapshots"))==2
+
+
+def assert_objective_baseline(session):
+    """Require all full precision prepared components, not just rounded totals."""
+    districts=list(session.scalars(select(models.District).where(
+        models.District.source_id=="osm",models.District.is_synthetic.is_(False))))
+    assert len(districts)==7
+    prepared=read_precomputed()["districts"]
+    results=ObjectiveProvider(session).districts([d.id for d in districts])
+    for district in districts:
+        result=results[district.id]
+        assert result.availability=="AVAILABLE" and result.unavailable_reason is None
+        assert result.provenance["snapshot"]==read_precomputed()["snapshot"]
+        for key,component in result.components.items():
+            assert component.unavailable_reason is None and component.score is not None
+            assert component.score==prepared[district.slug]["components"][key]["score"]
+
+
+@pytest.mark.integration
+def test_bootstrap_existing_active_legacy_container_uses_canonical_identity_without_rewriting_data(legacy_session):
+    session=legacy_session
+    fresh=load_current_baseline(session)
+    snapshot=session.get(models.OsmSnapshot,fresh["snapshot_id"])
+    dataset=session.get(models.OsmDataset,snapshot.dataset_id)
+    # This is the real database state left by the previously published bootstrap.
+    assert dataset.dataset_key=="legacy-poi"
+    assert snapshot.canonical_json["dataset_id"]=="osm-poi"
+    identity=(dataset.id,dataset.source_id,dataset.scope_id,dataset.active_snapshot_id)
+    tables=("pois","osm_snapshots","osm_snapshot_observations","osm_active_pois","osm_datasets","districts","user_profiles")
+    before={table:fingerprint(session,table) for table in tables}
+    assert load_current_baseline(session)["state"]=="unchanged"
+    assert dataset.dataset_key=="legacy-poi"
+    assert (dataset.id,dataset.source_id,dataset.scope_id,dataset.active_snapshot_id)==identity
+    assert_objective_baseline(session)
+    # Offline builders use these same point services. They must identify the
+    # fresh payload too, despite the historical container label.
+    for name,title in (("stop_availability","Stop"),("school","School"),("kindergarten","Kindergarten"),
+                       ("healthcare","Healthcare"),("parks","Parks")):
+        service=getattr(import_module(f"app.analytics.{name}.service"),f"{title}AvailabilityService")
+        evidence=service(session,scope_id="krasnoyarsk").point(Coordinate(longitude=92.85,latitude=56.01))
+        assert evidence.availability=="AVAILABLE" and evidence.unavailable_reason is None
+        assert evidence.snapshot.dataset_key=="osm-poi"
+        assert evidence.snapshot.snapshot_version==SNAPSHOT
+    assert {table:fingerprint(session,table) for table in tables}==before
+    dataset_before=fingerprint(session,"osm_datasets")
+    assert load_current_baseline(session)["state"]=="unchanged"
+    assert fingerprint(session,"osm_datasets")==dataset_before
+    assert {table:fingerprint(session,table) for table in tables}==before
