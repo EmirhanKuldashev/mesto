@@ -299,7 +299,7 @@ def test_migration_existing_legacy_roundtrip_and_lossy_guard(test_database_url,t
     from alembic.config import Config
     from sqlalchemy import create_engine
     from sqlalchemy.engine import make_url
-    from app.analytics.service import AnalyticsService
+    from app.analytics.service import LegacyAnalyticsService as AnalyticsService
     database_name = "mesto_lifecycle_roundtrip_" + uuid4().hex
     assert database_name.startswith("mesto_lifecycle_roundtrip_")
     base_url = make_url(test_database_url)
@@ -359,7 +359,9 @@ def test_migration_existing_legacy_roundtrip_and_lossy_guard(test_database_url,t
         with pytest.raises(ValueError,match="Lossy"):
             command.downgrade(config,"0013_poi_nullable_name")
         with engine.connect() as connection:
-            assert connection.scalar(text("SELECT version_num FROM alembic_version"))=="0014_osm_snapshot_lifecycle"
+            from alembic.script import ScriptDirectory
+            assert set(connection.scalars(text("SELECT version_num FROM alembic_version"))) == set(
+                ScriptDirectory.from_config(config).get_heads())
         assert current_payloads()==before
         # Competing writers must serialize on the dataset and retire the actual
         # newly committed previous snapshot, not a stale identity-map pointer.

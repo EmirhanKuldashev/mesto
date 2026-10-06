@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 
 from app import models
 from app.api import get_session
-from app.analytics.service import AnalyticsService
+from app.analytics.service import LegacyAnalyticsService as AnalyticsService
 from app.db import create_session_factory
 from app.main import app
 from data.loaders.osm_poi_loader import load_dataset, load_pois

@@ -37,5 +37,27 @@ export type DistrictScoreResponse = {
   warnings: string[];
   is_synthetic: boolean;
   calculation_version: string;
+  objective?: {
+    calculation_version: "objective-mesto-v2";
+    score: number | null;
+    availability: "AVAILABLE" | "UNAVAILABLE";
+    coverage: number;
+    components: Record<string, {
+      score: number | null;
+      normalization_version: string;
+      sampling_version: string;
+      evidence_version: string;
+      eligibility_version: string;
+      reference_id: string;
+      reference_checksum: string;
+      unavailable_reason: string | null;
+      limitations: string[];
+      provenance: Record<string, unknown>;
+    }>;
+    weights: Record<string, number>;
+    unavailable_reason: string | null;
+    limitations: string[];
+    provenance: Record<string, unknown>;
+  } | null;
   created_at: string;
 };

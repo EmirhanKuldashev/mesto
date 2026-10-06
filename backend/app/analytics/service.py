@@ -18,11 +18,15 @@ from app.analytics.scoring.calculators import (
     TransportCalculator, lifestyle_score,
 )
 from app.analytics.scoring.engine import ScoringEngine
-from app.analytics.scoring.weights import CALCULATION_VERSION
+from app.analytics.scoring.weights import CALCULATION_VERSION as LEGACY_CALCULATION_VERSION
+from app.analytics.objective.engine import CALCULATION_VERSION
+from app.analytics.objective.provider import ObjectiveProvider
 from app.intelligence.schemas import SignalImpactResponse
 
 
 class AnalyticsService:
+    calculation_version = CALCULATION_VERSION
+
     def __init__(self, session: Session) -> None:
         self.session = session
         self.engine = ScoringEngine()
@@ -31,6 +35,9 @@ class AnalyticsService:
         self.market = MarketCalculator()
         self.future = FutureGrowthService(session)
         self.explanations = ExplanationGenerator()
+
+    def _objective(self, district_ids):
+        return ObjectiveProvider(self.session).districts(district_ids)
 
     def _facts(self, district: models.District) -> DistrictFacts:
         facts = DistrictFacts(
@@ -81,6 +88,7 @@ class AnalyticsService:
         preference_row = self.session.scalar(select(models.UserPreferences).where(
             models.UserPreferences.user_profile_id == profile.id))
         preferences = preference_row.preference_values if preference_row else {}
+        objective_scores = self._objective(district_ids)
         results = []
         for district_id in district_ids:
             district = districts[district_id]
@@ -99,13 +107,25 @@ class AnalyticsService:
             # Compatibility/personal categories remain available to Match, outside MESTO.
             lifestyle, unsupported = lifestyle_score(preferences, categories, include_future_growth=False)
             categories["lifestyle"] = lifestyle
-            current = self.engine.calculate_current(categories)
-            current_score, future_score = self.engine.calculate_outlook(categories)
+            objective = objective_scores[district_id] if objective_scores is not None else None
+            if objective is not None:
+                current_score = objective.score
+                # Retain the existing separate growth uplift and cap; change only its objective base.
+                growth = categories["future_growth"]
+                future_score = None if current_score is None or growth is None else round(
+                    min(100.0, current_score + self.engine.weights["future_growth"] * growth), 2)
+                confidence = objective.coverage
+            else:
+                if self.calculation_version != LEGACY_CALCULATION_VERSION:
+                    raise ValueError("Active V2 requires canonical objective evidence")
+                current = self.engine.calculate_current(categories)
+                current_score, future_score = self.engine.calculate_outlook(categories)
+                confidence = current.coverage
             score = current_score
-            # v1 confidence is required-component coverage, independent of quality/source flags.
-            confidence = current.coverage
             reasons, warnings = self.explanations.generate(categories, facts,
                                                            unsupported_preferences=unsupported, future_result=future_result)
+            if objective is not None:
+                reasons, warnings = self.explanations.objective(objective, warnings)
             results.append(CalculatedDistrictScore(
                 district=DistrictReference(id=district.id, name=district.name, slug=district.slug),
                 score=score, current_score=current_score, future_score=future_score,
@@ -115,7 +135,7 @@ class AnalyticsService:
                                          for signal in future_result.signal_impacts],
                 categories=CategoryScores(**categories),
                 confidence=confidence, reasons=reasons, warnings=warnings,
-                is_synthetic=facts.synthetic, calculation_version=CALCULATION_VERSION,
+                is_synthetic=facts.synthetic, calculation_version=self.calculation_version, objective=objective,
             ))
         return results
 
@@ -134,6 +154,7 @@ class AnalyticsService:
                 future_growth_score=score.categories.future_growth,
                 market_score=score.categories.market, confidence=score.confidence,
                 calculation_version=score.calculation_version, is_synthetic=score.is_synthetic,
+                objective_evidence=score.objective.model_dump(mode="json") if score.objective else None,
             )
             self.session.add(row)
             self.session.flush()
@@ -142,3 +163,11 @@ class AnalyticsService:
             ))
         self.session.commit()
         return results
+
+
+class LegacyAnalyticsService(AnalyticsService):
+    """Explicit historical v1 replay only; never selected by public endpoints."""
+    calculation_version = LEGACY_CALCULATION_VERSION
+
+    def _objective(self, district_ids):
+        return None

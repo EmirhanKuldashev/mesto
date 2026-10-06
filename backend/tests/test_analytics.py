@@ -141,22 +141,24 @@ def test_score_api_persists_snapshot_with_postgis(test_database_url, alembic_hea
                                                    "source": "user", "confidence": 1}},
         })
         assert created.status_code == 201, created.text
-        district_id = client.get("/api/districts").json()[0]["id"]
+        # Explicit demo district: V2 never substitutes synthetic catalogue evidence.
+        district_id = connection.scalar(text("SELECT id FROM districts WHERE is_synthetic ORDER BY id LIMIT 1"))
         response = client.post("/api/analytics/score", json={
             "profile_id": created.json()["id"], "district_ids": [district_id],
         })
         assert response.status_code == 200, response.text
         result = response.json()[0]
         assert result["district"]["id"] == district_id
-        assert result["score"] is not None
-        assert result["current_score"] is not None and result["future_score"] is not None
+        assert result["score"] is None
+        assert result["current_score"] is None and result["future_score"] is None
+        assert result["objective"]["availability"] == "UNAVAILABLE"
         assert result["future_factors"]
-        assert 0 <= result["score"] <= 100
-        assert result["confidence"] == 1 and result["is_synthetic"] is True
+        assert result["objective"]["unavailable_reason"]
+        assert result["confidence"] == 0 and result["is_synthetic"] is True
         stored = connection.execute(text("SELECT total_score, calculation_version FROM district_scores WHERE id=:id"),
                                     {"id": result["id"]}).one()
-        assert float(stored.total_score) == result["score"]
-        assert stored.calculation_version == "objective-current-v1"
+        assert stored.total_score is None and result["score"] is None
+        assert stored.calculation_version == "objective-mesto-v2"
     finally:
         app.dependency_overrides.clear()
         transaction.rollback()
@@ -169,7 +171,7 @@ def test_service_calculates_and_saves_a_versioned_snapshot(monkeypatch):
     from decimal import Decimal
     from unittest.mock import Mock
     from app import models
-    from app.analytics.service import AnalyticsService
+    from app.analytics.service import LegacyAnalyticsService as AnalyticsService
 
     public_id = uuid4()
     profile = models.UserProfile(id=4, public_id=public_id, data_processing_consent=True,

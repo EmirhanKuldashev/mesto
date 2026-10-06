@@ -21,9 +21,9 @@ export function AnalyticsScore({ score }: { score: DistrictScoreResponse }) {
         className="rounded-[30px] border border-white/15 bg-gradient-to-br from-[#185652] via-[#103c47] to-[#0b2939] p-7 text-white shadow-[0_25px_80px_rgba(4,24,35,.25)] sm:p-9">
         <p className="text-xs font-bold uppercase tracking-[.22em] text-[#a4e9d3]">MESTO SCORE · {score.district.name}</p>
         <div className="mt-7 flex items-end gap-2"><span className="text-[clamp(4.5rem,11vw,8rem)] font-semibold leading-none tracking-[-.09em]">{number(score.score)}</span><span className="pb-2 text-2xl text-[#a7ceca]">/100</span></div>
-        <p className="mt-5 text-sm text-[#b9d4d0]">Базовый индекс текущей инфраструктуры и доступности остановок.</p>
+        <p className="mt-5 text-sm text-[#b9d4d0]">{score.objective ? "MESTO V2: остановки, школы, детские сады, медицина и парки с равными весами." : "Базовый индекс текущей инфраструктуры и доступности остановок."}</p>
         <p className="mt-3 text-sm text-[#b9d4d0]">Покрытие компонентов MESTO: {Math.round(score.confidence * 100)}%</p>
-        <p className="mt-2 text-xs leading-relaxed text-[#b9d4d0]">100% покрытия означает, что рассчитаны оба обязательных компонента. Это не полнота информации о районе. Балл 100 означает достижение текущих порогов методики.</p>
+        <p className="mt-2 text-xs leading-relaxed text-[#b9d4d0]">{score.objective ? "100% покрытия означает наличие всех пяти обязательных компонентов. Это не полнота информации о районе. Индекс относителен к зафиксированным данным Красноярска." : "100% покрытия означает, что рассчитаны оба обязательных компонента. Это не полнота информации о районе. Балл 100 означает достижение текущих порогов методики."}</p>
       </motion.article>
       <div className="grid grid-cols-2 gap-4">
         {[{ label: "Growth · развитие", value: score.future_growth_score }, { label: "Будущий сценарий", value: score.future_score }].map((item, index) =>
@@ -36,7 +36,7 @@ export function AnalyticsScore({ score }: { score: DistrictScoreResponse }) {
     </div>
 
     <section className="rounded-[28px] border border-[#dbe9e4] bg-white p-6 text-[#153c44] sm:p-8">
-      <h2 className="text-2xl font-semibold tracking-[-.04em]">Компоненты MESTO Score</h2>
+      <h2 className="text-2xl font-semibold tracking-[-.04em]">{score.objective ? "Дополнительные показатели инфраструктуры и транспорта" : "Компоненты MESTO Score"}</h2>
       <div className="mt-6 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">{categories.map(({ key, title, description }, index) => {
         const value = score.categories[key];
         return <motion.div key={key} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: .15 + index * .07 }}

@@ -203,7 +203,7 @@ def test_district_all_seven_regressions_two_queries_and_mesto_unchanged(session)
         assert r.raw.p90_m == pytest.approx(p90,abs=1e-6,rel=0)
         assert [c.covered_count for c in r.raw.coverage_curve] == [c500,c1000,c1500]
         assert r.raw.inside_park_count == inside and r.raw.share_inside_park_geometry == inside/n
-    from app.analytics.service import AnalyticsService
+    from app.analytics.service import LegacyAnalyticsService as AnalyticsService
     profile = models.UserProfile(data_processing_consent=True,housing_goal="buy",purchase_budget=8000000)
     session.add(profile);session.flush()
     expected = {"osm-centralny":80.45,"osm-kirovsky":87.67,"osm-leninsky":80.36,"osm-oktyabrsky":63.84,

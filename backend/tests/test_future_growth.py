@@ -8,7 +8,7 @@ from geoalchemy2.elements import WKTElement
 from sqlalchemy.orm import Session
 
 from app import models
-from app.analytics.service import AnalyticsService
+from app.analytics.service import LegacyAnalyticsService as AnalyticsService
 from app.db import create_session_factory
 
 from app.analytics.future_growth.calculator import FutureGrowthCalculator
