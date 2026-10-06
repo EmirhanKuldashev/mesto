@@ -1,10 +1,24 @@
 import { expect, test, type Page } from '@playwright/test';
-import { initialDraft } from '../frontend/lib/onboarding-store';
+import type { OnboardingDraft } from '../frontend/lib/onboarding-store';
 import type { DistrictScoreResponse } from '../frontend/types/analytics';
 
 const api = 'http://127.0.0.1:18100';
 const keys = ['stop_availability', 'school', 'kindergarten', 'healthcare', 'parks'];
 const labels = ['Остановки', 'Школы', 'Детские сады', 'Медицина', 'Парки'];
+// Plain test data: the E2E runner installs only root tooling, not frontend dependencies.
+const initialDraft: OnboardingDraft = {
+  name: '', household_type: 'single', adults_count: 1, children: [], housing_goal: 'compare',
+  commute_minutes: null, purchase_budget: 0, initial_payment: 0, comfortable_monthly_payment: 0,
+  rent_budget: 0, planning_horizon: '3_5_years', car_availability: false,
+  transport_preferences: ['public_transport'], future_changes: [], home_values: [],
+  good_home_text: '', data_processing_consent: false, life_points: [],
+  preferences: Object.fromEntries(['education_weight', 'kindergarten_weight', 'healthcare_weight',
+    'transport_weight', 'ecology_weight', 'safety_weight', 'parks_weight', 'shopping_weight',
+    'entertainment_weight', 'housing_price_weight', 'future_growth_weight', 'quiet_active',
+    'green_urban', 'center_calm', 'price_vs_time', 'today_vs_future', 'car_dependency']
+    .map(key => [key, { value: null, is_answered: false, source: 'default', confidence: 0 }])) as OnboardingDraft['preferences'],
+  partner: { name: '', work_point: null, transport_preferences: ['public_transport'], preferences: {}, life_goals: [] },
+};
 // Deliberately different values catch key/label swaps and a legacy-score fallback.
 function fixture(): DistrictScoreResponse {
   return {
