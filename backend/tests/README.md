@@ -41,3 +41,13 @@ a database containing data that must be preserved.
 For optional local unit-only work without a DB, leave the strict flag unset:
 `python -m pytest -q -m 'not integration'`. A full run without a test URL skips
 integration checks locally and is **not** evidence of a passing full baseline.
+
+## Local Objective V1
+
+`python -m pytest tests/test_local.py -q -rs` verifies the public point contract,
+frozen references, provenance/geography/missing gates, real nearest evidence and
+read-only API transaction. Its parity test runs **all 6065 grid250 points**, checks
+all 35 district component means against the canonical artifact and reproduces
+all seven Objective scores with full-precision tolerance `1e-12`.
+This internal batch is never the public request path. See
+`docs/local-objective-v1.md` for the coordinate semantics and verification CLI.

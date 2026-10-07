@@ -14,6 +14,8 @@ import { useComplexData } from "@/lib/complex-data";
 import { scoreColor, scoreComplex, scoreDistricts, type ScoredDistrict } from "@/lib/complex-scoring";
 import { useOnboarding } from "@/lib/onboarding-store";
 import { useOnboardingReady } from "@/lib/use-onboarding-ready";
+import { LocalPanel } from "@/components/local-panel";
+import type { LocalLocation } from "@/types/local";
 
 const layerOptions: { key: MapLayer; label: string }[] = [
   { key: "housing", label: "🏠 Жильё" }, { key: "schools", label: "🏫 Школы" },
@@ -33,6 +35,8 @@ export default function DistrictPage() {
   const { complexes, pois, districts, futureObjects, loading: mapLoading, error: mapError } = useComplexData();
   const [layers, setLayers] = useState<Record<MapLayer, boolean>>({ housing: true, schools: true, kindergarten: true, healthcare: true, transport: true, parks: true, future: true });
   const [selectedDistrictId, setSelectedDistrictId] = useState<number | null>(null);
+  const [localMode, setLocalMode] = useState(false);
+  const [localLocation, setLocalLocation] = useState<LocalLocation | null>(null);
 
   useEffect(() => { if (ready) void load(profileId); }, [ready, load, profileId]);
   useEffect(() => {
@@ -67,6 +71,7 @@ export default function DistrictPage() {
     </div></section>
     <section className="bg-[#f0f7f3] py-8 text-[#14333e] sm:py-12"><div className="content-shell grid gap-6 lg:grid-cols-[300px_1fr]">
       <aside className="space-y-5">
+        <LocalPanel location={localLocation} onSelect={setLocalLocation} />
         {status === "needs_profile" && <div role="status" className="rounded-[22px] border border-[#eac998] bg-[#fff5e5] p-5 text-sm text-[#76562b]">Заполните анкету, чтобы получить MESTO Score и персональный Match. <Link href="/onboarding" className="font-semibold underline">Создать сценарий</Link></div>}
         {status === "error" && <div role="alert" className="rounded-[22px] border border-[#eac998] bg-[#fff5e5] p-5 text-sm text-[#76562b]">Не удалось получить оценку{analyticsError ? `: ${analyticsError}` : "."} <button type="button" onClick={() => void load(profileId, true)} className="mt-2 block font-semibold underline">Повторить запрос</button></div>}
         <div className="rounded-[26px] border border-[#dbe8e4] bg-white p-6">
@@ -87,7 +92,9 @@ export default function DistrictPage() {
           <button key={layer.key} type="button" aria-pressed={layers[layer.key]} onClick={() => setLayers((current) => ({ ...current, [layer.key]: !current[layer.key] }))}
             className={`rounded-full border px-3 py-2 text-xs font-semibold transition ${layers[layer.key] ? "border-[#279f83] bg-[#dcf5e9] text-[#0d766c]" : "border-[#cadbd5] bg-white text-[#63827f]"}`}>{layer.label}</button>)}</div>
         {selectedDistrictId !== null && !selectedMapDistrict && <p role="status" className="mb-3 rounded-xl bg-white p-4 text-sm text-[#607f82]">Для этого района в базе нет подтверждённой геометрии карты. Оценка и сигналы доступны ниже, объекты на карте не привязываются произвольно.</p>}
-        <DistrictMap points={draft.life_points} districts={mapDistricts} pois={pois} futureObjects={futureObjects} layers={layers} selectedDistrictId={selectedMapDistrict?.id ?? null} onSelectDistrict={setSelectedDistrictId} />
+        <button type="button" aria-pressed={localMode} onClick={() => setLocalMode(v => !v)} className={`mb-3 rounded-full border px-4 py-2 text-sm font-semibold ${localMode ? "border-[#279f83] bg-[#dcf5e9] text-[#0d766c]" : "border-[#cadbd5] bg-white text-[#63827f]"}`}>Оценить место на карте</button>
+        {localMode && <p role="status" className="mb-3 text-sm text-[#607f82]">Нажмите на карту, чтобы оценить конкретную точку.</p>}
+        <DistrictMap points={draft.life_points} districts={mapDistricts} pois={pois} futureObjects={futureObjects} layers={layers} selectedDistrictId={selectedMapDistrict?.id ?? null} onSelectDistrict={setSelectedDistrictId} localMode={localMode} localLocation={localLocation} onSelectLocal={setLocalLocation} />
         <p className="mt-3 text-xs text-[#6c898c]">Картографическая подложка и границы: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer" className="underline">? OpenStreetMap contributors ? ODbL</a>. Серый район не имеет оценки.</p>
       </div>
     </div></section>
@@ -100,7 +107,7 @@ export default function DistrictPage() {
       {(real && selectedDistrictId !== null) && selectedScore && <AnalyticsScore score={selectedScore} />}
       {(selectedMapDistrict || selectedScore) && <DistrictMarket districtId={selectedMapDistrict?.id ?? selectedScore!.district.id} profileId={profileId} />}
       {selectedMapDistrict && selectedMapDistrict.complexes.length > 0 && <div className="mt-8 rounded-[26px] border border-[#dbe8e4] bg-white p-6 text-[#153c44]">
-        <h3 className="text-xl font-semibold">Жилые комплексы района</h3><p className="mt-2 text-sm text-[#607f82]">Объекты из API ЦИАН. Локальная оценка ЖК отличается от MESTO Score района.</p>
+        <h3 className="text-xl font-semibold">Жилые комплексы района</h3><p className="mt-2 text-sm text-[#607f82]">Объекты из API ЦИАН. Соответствие ЖК сценарию рассчитывается отдельно от объективной оценки места и MESTO Score района.</p>
         <div className="mt-4 grid gap-3 sm:grid-cols-2">{selectedMapDistrict.complexes.map((complex) => <article key={complex.id} className="rounded-xl bg-[#f1f8f5] p-4"><h4 className="font-semibold">{complex.name}</h4><p className="mt-1 text-sm text-[#607f82]">Цена от: {complex.price_from ? `${new Intl.NumberFormat("ru-RU").format(complex.price_from)} ₽` : "не указана"}</p><p className="mt-1 text-sm text-[#607f82]">Соответствие сценарию: {complex.score.value === null ? "нет данных" : `${Math.round(complex.score.value * 100)}%`}</p><p className="mt-1 text-xs text-[#789295]">{complex.score.reasons.slice(0, 2).join(" · ")}</p></article>)}</div>
       </div>}
     </div></section>
