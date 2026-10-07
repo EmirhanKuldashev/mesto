@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import maplibregl, { type Map as MapInstance, type Marker, type StyleSpecification } from "maplibre-gl";
 import type { LifePoint } from "@/lib/onboarding-store";
+import type { LocalLocation } from "@/types/local";
 import { scoreColor, type FutureObject, type Poi, type ScoredDistrict } from "@/lib/complex-scoring";
 
 const style: StyleSpecification = { version: 8, sources: { osm: { type: "raster", tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"], tileSize: 256, attribution: "© OpenStreetMap contributors" } }, layers: [{ id: "osm", type: "raster", source: "osm" }] };
@@ -55,20 +56,28 @@ type Props = {
   layers: Record<MapLayer, boolean>;
   selectedDistrictId: number | null;
   onSelectDistrict: (id: number) => void;
+  localMode: boolean;
+  localLocation: LocalLocation | null;
+  onSelectLocal: (location: LocalLocation) => void;
 };
 
-export default function DistrictMap({ points, districts, pois, futureObjects, layers, selectedDistrictId, onSelectDistrict }: Props) {
+export default function DistrictMap({ points, districts, pois, futureObjects, layers, selectedDistrictId, onSelectDistrict, localMode, localLocation, onSelectLocal }: Props) {
   const element = useRef<HTMLDivElement>(null);
   const map = useRef<MapInstance | null>(null);
   const markers = useRef<Marker[]>([]);
   const selectedRef = useRef<number | null | undefined>(undefined);
   const onSelectRef = useRef(onSelectDistrict);
   onSelectRef.current = onSelectDistrict;
+  const localRef = useRef({ enabled: localMode, select: onSelectLocal });
+  localRef.current = { enabled: localMode, select: onSelectLocal };
 
   useEffect(() => {
     if (!element.current) return;
     const instance = new maplibregl.Map({ container: element.current, style, center: [92.8526, 56.0106], zoom: 10, minZoom: 8 });
     instance.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+    instance.on("click", event => {
+      if (localRef.current.enabled) localRef.current.select({ latitude: event.lngLat.lat, longitude: event.lngLat.lng });
+    });
     map.current = instance;
     return () => {
       markers.current.forEach((marker) => marker.remove());
@@ -100,7 +109,7 @@ export default function DistrictMap({ points, districts, pois, futureObjects, la
           paint: { "line-color": "#25515d", "line-width": 1.5 } });
         instance.on("click", "district-fill", (event) => {
           const id = Number(event.features?.[0]?.properties?.id);
-          if (Number.isFinite(id)) onSelectRef.current(id);
+          if (Number.isFinite(id) && !localRef.current.enabled) onSelectRef.current(id);
         });
         instance.on("mouseenter", "district-fill", () => { instance.getCanvas().style.cursor = "pointer"; });
         instance.on("mouseleave", "district-fill", () => { instance.getCanvas().style.cursor = ""; });
@@ -223,6 +232,15 @@ export default function DistrictMap({ points, districts, pois, futureObjects, la
     else instance.once("load", render);
     return () => { instance.off("load", render); };
   }, [points, districts, pois, futureObjects, layers, selectedDistrictId]);
+
+  useEffect(() => {
+    const instance = map.current;
+    if (!instance || !localLocation) return;
+    const marker = new maplibregl.Marker({ color: "#0d766c" })
+      .setLngLat([localLocation.longitude, localLocation.latitude]).addTo(instance);
+    marker.getElement().setAttribute("aria-label", "Выбранное место");
+    return () => { marker.remove(); };
+  }, [localLocation]);
 
   return <div ref={element} role="application" aria-label="Карта административных районов и оценок ЖК" className="h-[460px] w-full overflow-hidden rounded-[24px] border border-[#cddfdb] sm:h-[580px] lg:h-[700px]" />;
 }
