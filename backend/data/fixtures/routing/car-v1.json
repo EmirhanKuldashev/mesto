@@ -1,0 +1,23 @@
+{
+  "dataset_id": "krasnoyarsk-car-v1",
+  "source": "OpenStreetMap via Geofabrik",
+  "download_url": "https://download.geofabrik.de/russia/siberian-fed-district-261006.osm.pbf",
+  "fetched_at": "2026-10-07T10:41:11.253545+00:00",
+  "source_timestamp": "2026-10-06T20:21:06Z",
+  "raw_sha256": "b6ba648e37c3515abfc05b94d6d69e1a69c941644de56faf83573b84be06558f",
+  "raw_bytes": 586446498,
+  "pbf_sha256": "b628177781f0161e63fce958672bd5c384f0119bccd420828425e17c985d642f",
+  "bytes": 3765919,
+  "extraction_bounds": [92.2, 55.7, 93.4, 56.55],
+  "endpoint_bounds": [92.4, 55.8, 93.2, 56.35],
+  "selected_ways": 55894,
+  "selected_restrictions": 1503,
+  "extractor": "pyosmium-4.3.1-complete-ways-backreferences-v1",
+  "license": "ODbL-1.0",
+  "license_url": "https://www.openstreetmap.org/copyright",
+  "engine_version": "5.27.1",
+  "engine_image": "ghcr.io/project-osrm/osrm-backend:v5.27.1@sha256:855614a38f464b0558a2ad6eaa7cb8c139f39887da9b38b485ce453c6e6e6124",
+  "car_profile_sha256": "cb3df0546318665609606b746a1297f3d65ca3c2ff825f8a6f3c57247d86a2d3",
+  "data_version": "mesto-car-v1-b628177781f0161e63fce958672bd5c384f0119bccd420828425e17c985d642f",
+  "traffic": "not_included"
+}
