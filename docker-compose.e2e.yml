@@ -1,5 +1,15 @@
 # Standalone disposable test stack. Do not combine with production Compose.
 services:
+  routing:
+    build:
+      context: ./backend
+      dockerfile: data/routing/Dockerfile
+    healthcheck:
+      test: ["CMD", "bash", "/opt/mesto-healthcheck.sh"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
   db:
     image: postgis/postgis:16-3.4
     environment:
@@ -20,8 +30,11 @@ services:
       DATABASE_URL: postgresql+psycopg://mesto_e2e:disposable_e2e_password@db:5432/mesto_e2e
       FRONTEND_ORIGIN: http://127.0.0.1:3100
       ORCA_API_KEY: ""
+      MESTO_CAR_ROUTING_URL: http://routing:5000
     depends_on:
       db:
+        condition: service_healthy
+      routing:
         condition: service_healthy
     ports:
       - "127.0.0.1:18100:8000"

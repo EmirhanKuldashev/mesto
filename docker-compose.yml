@@ -1,4 +1,14 @@
 services:
+  routing:
+    build:
+      context: ./backend
+      dockerfile: data/routing/Dockerfile
+    healthcheck:
+      test: ["CMD", "bash", "/opt/mesto-healthcheck.sh"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
   db:
     image: postgis/postgis:16-3.4
     environment:
@@ -22,8 +32,11 @@ services:
       ORCA_API_KEY: ${ORCA_API_KEY:-}
       ORCA_BASE_URL: ${ORCA_BASE_URL:-https://api.orcarouter.ai/v1}
       ORCA_MODEL: ${ORCA_MODEL:-z-ai/glm-5.3-flash-free}
+      MESTO_CAR_ROUTING_URL: http://routing:5000
     depends_on:
       db:
+        condition: service_healthy
+      routing:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
