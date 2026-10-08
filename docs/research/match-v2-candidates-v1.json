@@ -1,0 +1,5658 @@
+{
+  "version": "match-v2-foundation-v1",
+  "gate": "B",
+  "read_only": true,
+  "performance": {
+    "infrastructure_only": {
+      "seconds": [
+        0.4718896499998664,
+        0.3170465590001186,
+        0.4070719229994211
+      ],
+      "median_seconds": 0.4070719229994211,
+      "sql_counts": [
+        7,
+        7,
+        7
+      ],
+      "routing_calls": [
+        0,
+        0,
+        0
+      ]
+    },
+    "one_car_destination": {
+      "seconds": [
+        0.8590806570000495,
+        0.5070930319998297,
+        0.32347645800018654
+      ],
+      "median_seconds": 0.5070930319998297,
+      "sql_counts": [
+        7,
+        7,
+        7
+      ],
+      "routing_calls": [
+        1,
+        1,
+        1
+      ]
+    },
+    "three_car_destinations": {
+      "seconds": [
+        0.3488323710007535,
+        0.5726002820001668,
+        0.3308031110000229
+      ],
+      "median_seconds": 0.3488323710007535,
+      "sql_counts": [
+        7,
+        7,
+        7
+      ],
+      "routing_calls": [
+        3,
+        3,
+        3
+      ]
+    }
+  },
+  "example": {
+    "version": "match-v2-foundation-v1",
+    "research_gate": "B",
+    "candidate": {
+      "latitude": 56.01,
+      "longitude": 92.85
+    },
+    "objective": {
+      "mesto_local": {
+        "version": "local-objective-v1",
+        "availability": "AVAILABLE",
+        "score": 86.10717230008244,
+        "location": {
+          "latitude": 56.01,
+          "longitude": 92.85
+        },
+        "components": {
+          "stop_availability": {
+            "key": "stop_availability",
+            "score": 92.959604286892,
+            "distance_m": 95.35876883,
+            "available": true,
+            "normalization_version": "stop-availability-krasnoyarsk-relative-v1",
+            "evidence_version": "stop-availability-evidence-v1",
+            "eligibility_version": "osm-highway-bus-stop-v1",
+            "reference_id": "research-krasnoyarsk-fresh-20261004T132116Z-territorial-grid250-center-cdf-v1",
+            "reference_checksum": "8a0ac0adfde9d4f1f3f33d630bb8bcab0a64d81cd9d7e1a5580343c441452cb5",
+            "distance_method": "postgis-geography-wgs84-spheroid-v1",
+            "unavailable_reason": null,
+            "nearest": {
+              "source_id": "osm",
+              "osm_type": "node",
+              "osm_id": 3707440180,
+              "name": "Горького",
+              "category": "bus_stop",
+              "distance_m": 95.35876883,
+              "coordinate_representation": null
+            },
+            "inside_geometry": null,
+            "limitations": [
+              "dataset_extent_limits_search",
+              "equal_area_territorial_not_population_or_residential_weighting",
+              "freshness_policy_not_defined",
+              "krasnoyarsk_relative_frozen_reference_not_universal",
+              "mean_relative_proximity_not_worst_tail_accessibility",
+              "no_routes_frequency_schedules_or_service_quality",
+              "no_semantic_stop_grouping",
+              "observed_osm_highway_bus_stop_only",
+              "real_world_completeness_unknown",
+              "reference_does_not_refit_on_source_refresh",
+              "source_and_real_world_completeness_unknown",
+              "source_completeness_unknown",
+              "spatially_dependent_samples_not_independent_population",
+              "straight_line_distance_not_walking_or_route_distance"
+            ],
+            "provenance": {
+              "snapshot": {
+                "source_id": "osm",
+                "dataset_key": "osm-poi",
+                "scope_id": "krasnoyarsk",
+                "snapshot_version": "fresh-20261004T132116Z",
+                "canonical_checksum": "c1ad85a1d071749c84e31541d104cdaee25d94881ac908ea0838433cbba306e7",
+                "query_version": "osm-poi-query-v1",
+                "query_hash": "5dd8b0b1555d83e35b3694375fbb595ef62074ff1545065f1779d5e8e6df0c09",
+                "foundation_eligibility_version": "osm-poi-eligibility-v1"
+              }
+            }
+          },
+          "school": {
+            "key": "school",
+            "score": 77.88953009068426,
+            "distance_m": 492.92745416,
+            "available": true,
+            "normalization_version": "school-krasnoyarsk-relative-v1",
+            "evidence_version": "school-evidence-v1",
+            "eligibility_version": "school-osm-eligibility-v1",
+            "reference_id": "school-krasnoyarsk-fresh-20261004T132116Z-territorial-grid250-center-cdf-v1",
+            "reference_checksum": "b39783e4e579a0c7b800ac838cd93a7777835ddf04181d8b57d0e35b2fd662dc",
+            "distance_method": "postgis-geography-wgs84-spheroid-v1",
+            "unavailable_reason": null,
+            "nearest": {
+              "source_id": "osm",
+              "osm_type": "way",
+              "osm_id": 689543658,
+              "name": "Средняя общеобразовательная школа №10 им. академика Ю. Овчинникова",
+              "category": "school",
+              "distance_m": 492.92745416,
+              "coordinate_representation": "overpass_center"
+            },
+            "inside_geometry": null,
+            "limitations": [
+              "amenity_school_taxonomy_includes_specialized_and_ambiguous_objects",
+              "canonical_node_or_overpass_center_not_entrance_or_boundary",
+              "canonical_observation_point_not_entrance_or_boundary",
+              "dataset_extent_limits_search",
+              "freshness_policy_not_defined",
+              "krasnoyarsk_relative_frozen_school_reference_not_universal",
+              "no_capacity_enrollment_grades_catchment_admission_or_school_quality",
+              "no_school_capacity_quality_catchment_or_admission_claim",
+              "no_semantic_campus_deduplication",
+              "no_semantic_school_campus_deduplication",
+              "observed_osm_amenity_school_only",
+              "real_world_completeness_unknown",
+              "source_and_real_world_completeness_and_freshness_unknown",
+              "source_completeness_unknown",
+              "straight_line_spheroidal_distance_not_walking_distance_or_travel_time",
+              "territorial_not_population_residential_or_child_weighted"
+            ],
+            "provenance": {
+              "snapshot": {
+                "source_id": "osm",
+                "dataset_key": "osm-poi",
+                "scope_id": "krasnoyarsk",
+                "snapshot_version": "fresh-20261004T132116Z",
+                "canonical_checksum": "c1ad85a1d071749c84e31541d104cdaee25d94881ac908ea0838433cbba306e7",
+                "query_version": "osm-poi-query-v1",
+                "query_hash": "5dd8b0b1555d83e35b3694375fbb595ef62074ff1545065f1779d5e8e6df0c09",
+                "foundation_eligibility_version": "osm-poi-eligibility-v1"
+              }
+            }
+          },
+          "kindergarten": {
+            "key": "kindergarten",
+            "score": 67.56801319043693,
+            "distance_m": 626.98645068,
+            "available": true,
+            "normalization_version": "kindergarten-krasnoyarsk-relative-v1",
+            "evidence_version": "kindergarten-evidence-v1",
+            "eligibility_version": "kindergarten-osm-eligibility-v1",
+            "reference_id": "kindergarten-krasnoyarsk-fresh-20261004T132116Z-territorial-grid250-center-cdf-v1",
+            "reference_checksum": "af8a70d0b048613ef83636d4938ddb9f4efc06e9351974683460b92c14845495",
+            "distance_method": "postgis-geography-wgs84-spheroid-v1",
+            "unavailable_reason": null,
+            "nearest": {
+              "source_id": "osm",
+              "osm_type": "way",
+              "osm_id": 689539251,
+              "name": "Детский сад №295",
+              "category": "kindergarten",
+              "distance_m": 626.98645068,
+              "coordinate_representation": "overpass_center"
+            },
+            "inside_geometry": null,
+            "limitations": [
+              "canonical_observation_point_not_entrance_or_boundary",
+              "dataset_extent_limits_search",
+              "freshness_policy_not_defined",
+              "krasnoyarsk_relative_frozen_reference_not_universal",
+              "no_capacity_places_public_private_cost_age_groups_or_kindergarten_quality",
+              "no_semantic_kindergarten_deduplication",
+              "observed_osm_amenity_kindergarten_only",
+              "real_world_completeness_unknown",
+              "source_and_real_world_completeness_and_freshness_unknown",
+              "source_completeness_unknown",
+              "straight_line_spheroidal_distance_not_walking_distance_or_travel_time",
+              "territorial_not_population_residential_or_child_weighted"
+            ],
+            "provenance": {
+              "snapshot": {
+                "source_id": "osm",
+                "dataset_key": "osm-poi",
+                "scope_id": "krasnoyarsk",
+                "snapshot_version": "fresh-20261004T132116Z",
+                "canonical_checksum": "c1ad85a1d071749c84e31541d104cdaee25d94881ac908ea0838433cbba306e7",
+                "query_version": "osm-poi-query-v1",
+                "query_hash": "5dd8b0b1555d83e35b3694375fbb595ef62074ff1545065f1779d5e8e6df0c09",
+                "foundation_eligibility_version": "osm-poi-eligibility-v1"
+              }
+            }
+          },
+          "healthcare": {
+            "key": "healthcare",
+            "score": 98.66446826051113,
+            "distance_m": 100.13524449,
+            "available": true,
+            "normalization_version": "healthcare-krasnoyarsk-relative-v1",
+            "evidence_version": "healthcare-evidence-v1",
+            "eligibility_version": "healthcare-osm-eligibility-v1",
+            "reference_id": "healthcare-krasnoyarsk-fresh-20261004T132116Z-territorial-grid250-center-cdf-v1",
+            "reference_checksum": "145349df460a5fa17455cffa534b1263033b7f65454bfd6bee3aa97d4cc9e0b6",
+            "distance_method": "postgis-geography-wgs84-spheroid-v1",
+            "unavailable_reason": null,
+            "nearest": {
+              "source_id": "osm",
+              "osm_type": "node",
+              "osm_id": 12294422262,
+              "name": "КГБУЗ \"Красноярский краевой госпиталь для ветеранов войн\"",
+              "category": "hospital",
+              "distance_m": 100.13524449,
+              "coordinate_representation": "node_coordinate"
+            },
+            "inside_geometry": null,
+            "limitations": [
+              "canonical_observation_point_not_entrance_or_boundary",
+              "clinic_hospital_union_destinations_not_equivalent_services_or_emergency_response",
+              "dataset_extent_limits_search",
+              "freshness_policy_not_defined",
+              "krasnoyarsk_relative_frozen_reference_not_universal",
+              "no_medical_quality_doctor_count_capacity_beds_specialization_booking_cost_or_public_private_access",
+              "no_semantic_healthcare_deduplication",
+              "observed_osm_amenity_clinic_or_hospital_only",
+              "real_world_completeness_unknown",
+              "source_and_real_world_completeness_and_freshness_unknown",
+              "source_completeness_unknown",
+              "straight_line_spheroidal_distance_not_walking_distance_or_travel_time",
+              "territorial_not_population_residential_or_child_weighted"
+            ],
+            "provenance": {
+              "snapshot": {
+                "source_id": "osm",
+                "dataset_key": "osm-poi",
+                "scope_id": "krasnoyarsk",
+                "snapshot_version": "fresh-20261004T132116Z",
+                "canonical_checksum": "c1ad85a1d071749c84e31541d104cdaee25d94881ac908ea0838433cbba306e7",
+                "query_version": "osm-poi-query-v1",
+                "query_hash": "5dd8b0b1555d83e35b3694375fbb595ef62074ff1545065f1779d5e8e6df0c09",
+                "foundation_eligibility_version": "osm-poi-eligibility-v1"
+              }
+            }
+          },
+          "parks": {
+            "key": "parks",
+            "score": 93.45424567188788,
+            "distance_m": 80.19793496,
+            "available": true,
+            "normalization_version": "parks-krasnoyarsk-relative-v1",
+            "evidence_version": "parks-evidence-v1",
+            "eligibility_version": "parks-osm-eligibility-v1",
+            "reference_id": "parks-krasnoyarsk-fresh-20261004T132116Z-territorial-grid250-geometry-cdf-v1",
+            "reference_checksum": "db3ba8ccedb1ff83c5c34fdca3346c48dd02c75260e6c448d155a39271a15fec",
+            "distance_method": "postgis-geography-wgs84-spheroid-v1",
+            "unavailable_reason": null,
+            "nearest": {
+              "source_id": "osm",
+              "osm_type": "relation",
+              "osm_id": 6501385,
+              "name": "Центральный парк",
+              "category": "park",
+              "distance_m": 80.19793496,
+              "coordinate_representation": "osm_multipolygon"
+            },
+            "inside_geometry": false,
+            "limitations": [
+              "baseline_identity_set_only_no_new_park_discovery",
+              "freshness_policy_not_defined",
+              "geometry_timestamp_20261005T134520Z_differs_from_baseline_20261004T131951Z",
+              "krasnoyarsk_relative_frozen_reference_not_universal",
+              "no_population_weighted_green_provision_or_semantic_deduplication",
+              "no_quality_safety_landscaping_entrance_access_routes_vegetation_or_green_area_per_capita",
+              "observed_osm_leisure_park_geometry_only",
+              "real_world_completeness_unknown",
+              "source_and_real_world_completeness_and_freshness_unknown",
+              "source_completeness_unknown",
+              "straight_line_spheroidal_distance_not_walking_distance_or_travel_time",
+              "territorial_not_population_weighted",
+              "way_31959413_leisure_park_and_landuse_cemetery_retained"
+            ],
+            "provenance": {
+              "snapshot": {
+                "source_id": "osm",
+                "dataset_key": "osm-poi",
+                "scope_id": "krasnoyarsk",
+                "snapshot_version": "fresh-20261004T132116Z",
+                "canonical_checksum": "c1ad85a1d071749c84e31541d104cdaee25d94881ac908ea0838433cbba306e7",
+                "query_version": "osm-poi-query-v1",
+                "query_hash": "5dd8b0b1555d83e35b3694375fbb595ef62074ff1545065f1779d5e8e6df0c09",
+                "foundation_eligibility_version": "osm-poi-eligibility-v1"
+              },
+              "geometry_snapshot": {
+                "dataset_id": "osm-park-geometry",
+                "geometry_version": "parks-geometry-v1",
+                "snapshot_version": "parks-geometry-20261005T134520Z",
+                "canonical_checksum": "85049095487da93bbfcad03507c8255d86133c9d9e5fd4ef1549316a49d29bc5",
+                "raw_checksum": "7c6d6ed63e117374e8133980f48c34b9215caf550e4f734a8ccc7a036d36714a",
+                "source_timestamp": "2026-10-05T13:45:20Z",
+                "baseline_version": "fresh-20261004T132116Z",
+                "baseline_checksum": "c1ad85a1d071749c84e31541d104cdaee25d94881ac908ea0838433cbba306e7"
+              }
+            }
+          }
+        },
+        "weights": {
+          "stop_availability": 0.2,
+          "school": 0.2,
+          "kindergarten": 0.2,
+          "healthcare": 0.2,
+          "parks": 0.2
+        },
+        "provenance": {
+          "snapshot": {
+            "source_id": "osm",
+            "dataset_key": "osm-poi",
+            "scope_id": "krasnoyarsk",
+            "snapshot_version": "fresh-20261004T132116Z",
+            "canonical_checksum": "c1ad85a1d071749c84e31541d104cdaee25d94881ac908ea0838433cbba306e7",
+            "query_version": "osm-poi-query-v1",
+            "query_hash": "5dd8b0b1555d83e35b3694375fbb595ef62074ff1545065f1779d5e8e6df0c09",
+            "foundation_eligibility_version": "osm-poi-eligibility-v1"
+          },
+          "scope_id": "krasnoyarsk",
+          "coverage_rule": "st_covers_validated_district_union_v1",
+          "computation_path": "canonical_point_services_frozen_references"
+        },
+        "limitations": [
+          "amenity_school_taxonomy_includes_specialized_and_ambiguous_objects",
+          "baseline_identity_set_only_no_new_park_discovery",
+          "canonical_node_or_overpass_center_not_entrance_or_boundary",
+          "canonical_observation_point_not_entrance_or_boundary",
+          "clinic_hospital_union_destinations_not_equivalent_services_or_emergency_response",
+          "dataset_extent_limits_search",
+          "equal_area_territorial_not_population_or_residential_weighting",
+          "freshness_policy_not_defined",
+          "geometry_timestamp_20261005T134520Z_differs_from_baseline_20261004T131951Z",
+          "krasnoyarsk_relative_frozen_reference_not_universal",
+          "krasnoyarsk_relative_frozen_school_reference_not_universal",
+          "mean_relative_proximity_not_worst_tail_accessibility",
+          "no_capacity_enrollment_grades_catchment_admission_or_school_quality",
+          "no_capacity_places_public_private_cost_age_groups_or_kindergarten_quality",
+          "no_medical_quality_doctor_count_capacity_beds_specialization_booking_cost_or_public_private_access",
+          "no_population_weighted_green_provision_or_semantic_deduplication",
+          "no_quality_safety_landscaping_entrance_access_routes_vegetation_or_green_area_per_capita",
+          "no_routes_frequency_schedules_or_service_quality",
+          "no_school_capacity_quality_catchment_or_admission_claim",
+          "no_semantic_campus_deduplication",
+          "no_semantic_healthcare_deduplication",
+          "no_semantic_kindergarten_deduplication",
+          "no_semantic_school_campus_deduplication",
+          "no_semantic_stop_grouping",
+          "no_service_quality_capacity_safety_affordability_market_or_growth",
+          "objective_spatial_characteristic_not_personal_match_or_housing_quality",
+          "observed_osm_amenity_clinic_or_hospital_only",
+          "observed_osm_amenity_kindergarten_only",
+          "observed_osm_amenity_school_only",
+          "observed_osm_highway_bus_stop_only",
+          "observed_osm_leisure_park_geometry_only",
+          "real_world_completeness_unknown",
+          "reference_does_not_refit_on_source_refresh",
+          "relative_to_frozen_krasnoyarsk_reference_not_universal",
+          "source_and_real_world_completeness_and_freshness_unknown",
+          "source_and_real_world_completeness_unknown",
+          "source_completeness_unknown",
+          "spatially_dependent_samples_not_independent_population",
+          "straight_line_distance_not_walking_accessibility_or_travel_time",
+          "straight_line_distance_not_walking_or_route_distance",
+          "straight_line_spheroidal_distance_not_walking_distance_or_travel_time",
+          "territorial_not_population_residential_or_child_weighted",
+          "territorial_not_population_weighted",
+          "way_31959413_leisure_park_and_landuse_cemetery_retained"
+        ],
+        "unavailable_reason": null
+      }
+    },
+    "personal_fit": {
+      "infrastructure": {
+        "version": "infrastructure-fit-experimental-v1",
+        "availability": "AVAILABLE",
+        "score": 83.05178745409577,
+        "contributions": [
+          {
+            "component": "stop_availability",
+            "utility": 92.959604286892,
+            "importance": 1,
+            "normalized_weight": 0.09090909090909091,
+            "contribution": 8.450873116990183,
+            "availability": "AVAILABLE",
+            "provenance": {
+              "snapshot": {
+                "source_id": "osm",
+                "dataset_key": "osm-poi",
+                "scope_id": "krasnoyarsk",
+                "snapshot_version": "fresh-20261004T132116Z",
+                "canonical_checksum": "c1ad85a1d071749c84e31541d104cdaee25d94881ac908ea0838433cbba306e7",
+                "query_version": "osm-poi-query-v1",
+                "query_hash": "5dd8b0b1555d83e35b3694375fbb595ef62074ff1545065f1779d5e8e6df0c09",
+                "foundation_eligibility_version": "osm-poi-eligibility-v1"
+              },
+              "normalization_version": "stop-availability-krasnoyarsk-relative-v1",
+              "reference_id": "research-krasnoyarsk-fresh-20261004T132116Z-territorial-grid250-center-cdf-v1",
+              "reference_checksum": "8a0ac0adfde9d4f1f3f33d630bb8bcab0a64d81cd9d7e1a5580343c441452cb5",
+              "evidence_version": "stop-availability-evidence-v1",
+              "eligibility_version": "osm-highway-bus-stop-v1",
+              "distance_method": "postgis-geography-wgs84-spheroid-v1",
+              "unavailable_reason": null
+            }
+          },
+          {
+            "component": "school",
+            "utility": 77.88953009068426,
+            "importance": 3,
+            "normalized_weight": 0.2727272727272727,
+            "contribution": 21.24259911564116,
+            "availability": "AVAILABLE",
+            "provenance": {
+              "snapshot": {
+                "source_id": "osm",
+                "dataset_key": "osm-poi",
+                "scope_id": "krasnoyarsk",
+                "snapshot_version": "fresh-20261004T132116Z",
+                "canonical_checksum": "c1ad85a1d071749c84e31541d104cdaee25d94881ac908ea0838433cbba306e7",
+                "query_version": "osm-poi-query-v1",
+                "query_hash": "5dd8b0b1555d83e35b3694375fbb595ef62074ff1545065f1779d5e8e6df0c09",
+                "foundation_eligibility_version": "osm-poi-eligibility-v1"
+              },
+              "normalization_version": "school-krasnoyarsk-relative-v1",
+              "reference_id": "school-krasnoyarsk-fresh-20261004T132116Z-territorial-grid250-center-cdf-v1",
+              "reference_checksum": "b39783e4e579a0c7b800ac838cd93a7777835ddf04181d8b57d0e35b2fd662dc",
+              "evidence_version": "school-evidence-v1",
+              "eligibility_version": "school-osm-eligibility-v1",
+              "distance_method": "postgis-geography-wgs84-spheroid-v1",
+              "unavailable_reason": null
+            }
+          },
+          {
+            "component": "kindergarten",
+            "utility": 67.56801319043693,
+            "importance": 3,
+            "normalized_weight": 0.2727272727272727,
+            "contribution": 18.42763996102825,
+            "availability": "AVAILABLE",
+            "provenance": {
+              "snapshot": {
+                "source_id": "osm",
+                "dataset_key": "osm-poi",
+                "scope_id": "krasnoyarsk",
+                "snapshot_version": "fresh-20261004T132116Z",
+                "canonical_checksum": "c1ad85a1d071749c84e31541d104cdaee25d94881ac908ea0838433cbba306e7",
+                "query_version": "osm-poi-query-v1",
+                "query_hash": "5dd8b0b1555d83e35b3694375fbb595ef62074ff1545065f1779d5e8e6df0c09",
+                "foundation_eligibility_version": "osm-poi-eligibility-v1"
+              },
+              "normalization_version": "kindergarten-krasnoyarsk-relative-v1",
+              "reference_id": "kindergarten-krasnoyarsk-fresh-20261004T132116Z-territorial-grid250-center-cdf-v1",
+              "reference_checksum": "af8a70d0b048613ef83636d4938ddb9f4efc06e9351974683460b92c14845495",
+              "evidence_version": "kindergarten-evidence-v1",
+              "eligibility_version": "kindergarten-osm-eligibility-v1",
+              "distance_method": "postgis-geography-wgs84-spheroid-v1",
+              "unavailable_reason": null
+            }
+          },
+          {
+            "component": "healthcare",
+            "utility": 98.66446826051113,
+            "importance": 2,
+            "normalized_weight": 0.18181818181818182,
+            "contribution": 17.93899422918384,
+            "availability": "AVAILABLE",
+            "provenance": {
+              "snapshot": {
+                "source_id": "osm",
+                "dataset_key": "osm-poi",
+                "scope_id": "krasnoyarsk",
+                "snapshot_version": "fresh-20261004T132116Z",
+                "canonical_checksum": "c1ad85a1d071749c84e31541d104cdaee25d94881ac908ea0838433cbba306e7",
+                "query_version": "osm-poi-query-v1",
+                "query_hash": "5dd8b0b1555d83e35b3694375fbb595ef62074ff1545065f1779d5e8e6df0c09",
+                "foundation_eligibility_version": "osm-poi-eligibility-v1"
+              },
+              "normalization_version": "healthcare-krasnoyarsk-relative-v1",
+              "reference_id": "healthcare-krasnoyarsk-fresh-20261004T132116Z-territorial-grid250-center-cdf-v1",
+              "reference_checksum": "145349df460a5fa17455cffa534b1263033b7f65454bfd6bee3aa97d4cc9e0b6",
+              "evidence_version": "healthcare-evidence-v1",
+              "eligibility_version": "healthcare-osm-eligibility-v1",
+              "distance_method": "postgis-geography-wgs84-spheroid-v1",
+              "unavailable_reason": null
+            }
+          },
+          {
+            "component": "parks",
+            "utility": 93.45424567188788,
+            "importance": 2,
+            "normalized_weight": 0.18181818181818182,
+            "contribution": 16.99168103125234,
+            "availability": "AVAILABLE",
+            "provenance": {
+              "snapshot": {
+                "source_id": "osm",
+                "dataset_key": "osm-poi",
+                "scope_id": "krasnoyarsk",
+                "snapshot_version": "fresh-20261004T132116Z",
+                "canonical_checksum": "c1ad85a1d071749c84e31541d104cdaee25d94881ac908ea0838433cbba306e7",
+                "query_version": "osm-poi-query-v1",
+                "query_hash": "5dd8b0b1555d83e35b3694375fbb595ef62074ff1545065f1779d5e8e6df0c09",
+                "foundation_eligibility_version": "osm-poi-eligibility-v1"
+              },
+              "geometry_snapshot": {
+                "dataset_id": "osm-park-geometry",
+                "geometry_version": "parks-geometry-v1",
+                "snapshot_version": "parks-geometry-20261005T134520Z",
+                "canonical_checksum": "85049095487da93bbfcad03507c8255d86133c9d9e5fd4ef1549316a49d29bc5",
+                "raw_checksum": "7c6d6ed63e117374e8133980f48c34b9215caf550e4f734a8ccc7a036d36714a",
+                "source_timestamp": "2026-10-05T13:45:20Z",
+                "baseline_version": "fresh-20261004T132116Z",
+                "baseline_checksum": "c1ad85a1d071749c84e31541d104cdaee25d94881ac908ea0838433cbba306e7"
+              },
+              "normalization_version": "parks-krasnoyarsk-relative-v1",
+              "reference_id": "parks-krasnoyarsk-fresh-20261004T132116Z-territorial-grid250-geometry-cdf-v1",
+              "reference_checksum": "db3ba8ccedb1ff83c5c34fdca3346c48dd02c75260e6c448d155a39271a15fec",
+              "evidence_version": "parks-evidence-v1",
+              "eligibility_version": "parks-osm-eligibility-v1",
+              "distance_method": "postgis-geography-wgs84-spheroid-v1",
+              "unavailable_reason": null
+            }
+          }
+        ],
+        "unavailable_reason": null,
+        "limitations": [
+          "Experimental importance scale; no validated housing recommendation claim.",
+          "Same Local utilities; never add Local and Fit as independent dimensions."
+        ]
+      },
+      "mobility": {
+        "availability": "AVAILABLE",
+        "destinations": [
+          {
+            "destination": {
+              "latitude": 55.985,
+              "longitude": 92.9,
+              "label": "work",
+              "kind": "work",
+              "importance": 2,
+              "max_acceptable_minutes": 25.0
+            },
+            "mode": "car",
+            "availability": "AVAILABLE",
+            "route": {
+              "availability": "AVAILABLE",
+              "duration_seconds": 634.5,
+              "distance_meters": 6354.7,
+              "provider": "osrm",
+              "provider_version": "osrm-5.27.1/car-v1",
+              "data_timestamp": "2026-10-06T20:21:06Z",
+              "dataset_id": "krasnoyarsk-car-v1",
+              "dataset_sha256": "b628177781f0161e63fce958672bd5c384f0119bccd420828425e17c985d642f",
+              "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                  [
+                    92.850404,
+                    56.010024
+                  ],
+                  [
+                    92.85024,
+                    56.01089
+                  ],
+                  [
+                    92.850242,
+                    56.010995
+                  ],
+                  [
+                    92.851007,
+                    56.011034
+                  ],
+                  [
+                    92.851198,
+                    56.011044
+                  ],
+                  [
+                    92.853692,
+                    56.011175
+                  ],
+                  [
+                    92.853962,
+                    56.011189
+                  ],
+                  [
+                    92.854556,
+                    56.01122
+                  ],
+                  [
+                    92.855056,
+                    56.011246
+                  ],
+                  [
+                    92.855495,
+                    56.011269
+                  ],
+                  [
+                    92.856123,
+                    56.011302
+                  ],
+                  [
+                    92.856573,
+                    56.011326
+                  ],
+                  [
+                    92.858435,
+                    56.011423
+                  ],
+                  [
+                    92.858689,
+                    56.011436
+                  ],
+                  [
+                    92.85893,
+                    56.011449
+                  ],
+                  [
+                    92.859749,
+                    56.011492
+                  ],
+                  [
+                    92.860641,
+                    56.011539
+                  ],
+                  [
+                    92.861923,
+                    56.011606
+                  ],
+                  [
+                    92.862067,
+                    56.011613
+                  ],
+                  [
+                    92.863438,
+                    56.011685
+                  ],
+                  [
+                    92.863686,
+                    56.011698
+                  ],
+                  [
+                    92.863861,
+                    56.011707
+                  ],
+                  [
+                    92.864407,
+                    56.011736
+                  ],
+                  [
+                    92.865475,
+                    56.011792
+                  ],
+                  [
+                    92.866641,
+                    56.011853
+                  ],
+                  [
+                    92.866826,
+                    56.011863
+                  ],
+                  [
+                    92.867025,
+                    56.011874
+                  ],
+                  [
+                    92.868085,
+                    56.01193
+                  ],
+                  [
+                    92.871298,
+                    56.012099
+                  ],
+                  [
+                    92.871324,
+                    56.011982
+                  ],
+                  [
+                    92.871355,
+                    56.01181
+                  ],
+                  [
+                    92.871433,
+                    56.011369
+                  ],
+                  [
+                    92.871441,
+                    56.011279
+                  ],
+                  [
+                    92.871466,
+                    56.011143
+                  ],
+                  [
+                    92.871529,
+                    56.010698
+                  ],
+                  [
+                    92.871553,
+                    56.010521
+                  ],
+                  [
+                    92.871498,
+                    56.010342
+                  ],
+                  [
+                    92.87153,
+                    56.009499
+                  ],
+                  [
+                    92.87155,
+                    56.009291
+                  ],
+                  [
+                    92.871553,
+                    56.009263
+                  ],
+                  [
+                    92.871559,
+                    56.009211
+                  ],
+                  [
+                    92.871583,
+                    56.009037
+                  ],
+                  [
+                    92.871629,
+                    56.008634
+                  ],
+                  [
+                    92.871774,
+                    56.007932
+                  ],
+                  [
+                    92.871826,
+                    56.007664
+                  ],
+                  [
+                    92.871943,
+                    56.00738
+                  ],
+                  [
+                    92.872073,
+                    56.007095
+                  ],
+                  [
+                    92.872427,
+                    56.006407
+                  ],
+                  [
+                    92.876273,
+                    56.000153
+                  ],
+                  [
+                    92.876456,
+                    55.999891
+                  ],
+                  [
+                    92.876929,
+                    55.999161
+                  ],
+                  [
+                    92.877162,
+                    55.998785
+                  ],
+                  [
+                    92.87754,
+                    55.998201
+                  ],
+                  [
+                    92.877856,
+                    55.997704
+                  ],
+                  [
+                    92.878189,
+                    55.997298
+                  ],
+                  [
+                    92.878534,
+                    55.996962
+                  ],
+                  [
+                    92.878813,
+                    55.99671
+                  ],
+                  [
+                    92.879018,
+                    55.996543
+                  ],
+                  [
+                    92.879441,
+                    55.996157
+                  ],
+                  [
+                    92.880175,
+                    55.995658
+                  ],
+                  [
+                    92.880861,
+                    55.995236
+                  ],
+                  [
+                    92.881159,
+                    55.995063
+                  ],
+                  [
+                    92.881782,
+                    55.994674
+                  ],
+                  [
+                    92.885668,
+                    55.992423
+                  ],
+                  [
+                    92.885754,
+                    55.992329
+                  ],
+                  [
+                    92.885788,
+                    55.992204
+                  ],
+                  [
+                    92.885818,
+                    55.992112
+                  ],
+                  [
+                    92.88578,
+                    55.99203
+                  ],
+                  [
+                    92.88576,
+                    55.991993
+                  ],
+                  [
+                    92.885752,
+                    55.991859
+                  ],
+                  [
+                    92.885772,
+                    55.991778
+                  ],
+                  [
+                    92.885814,
+                    55.9917
+                  ],
+                  [
+                    92.885877,
+                    55.991626
+                  ],
+                  [
+                    92.885988,
+                    55.991542
+                  ],
+                  [
+                    92.886055,
+                    55.991499
+                  ],
+                  [
+                    92.886107,
+                    55.991476
+                  ],
+                  [
+                    92.886166,
+                    55.991449
+                  ],
+                  [
+                    92.886299,
+                    55.991406
+                  ],
+                  [
+                    92.886457,
+                    55.991301
+                  ],
+                  [
+                    92.88651,
+                    55.991205
+                  ],
+                  [
+                    92.886539,
+                    55.991098
+                  ],
+                  [
+                    92.886542,
+                    55.991022
+                  ],
+                  [
+                    92.886596,
+                    55.990186
+                  ],
+                  [
+                    92.886624,
+                    55.989928
+                  ],
+                  [
+                    92.886719,
+                    55.989549
+                  ],
+                  [
+                    92.886891,
+                    55.987054
+                  ],
+                  [
+                    92.886918,
+                    55.986648
+                  ],
+                  [
+                    92.886964,
+                    55.985954
+                  ],
+                  [
+                    92.886978,
+                    55.985766
+                  ],
+                  [
+                    92.887007,
+                    55.985474
+                  ],
+                  [
+                    92.887134,
+                    55.98487
+                  ],
+                  [
+                    92.8873,
+                    55.984348
+                  ],
+                  [
+                    92.887476,
+                    55.983843
+                  ],
+                  [
+                    92.887617,
+                    55.983428
+                  ],
+                  [
+                    92.887743,
+                    55.983144
+                  ],
+                  [
+                    92.888041,
+                    55.982247
+                  ],
+                  [
+                    92.888195,
+                    55.981729
+                  ],
+                  [
+                    92.888352,
+                    55.981325
+                  ],
+                  [
+                    92.888491,
+                    55.981126
+                  ],
+                  [
+                    92.88864,
+                    55.981143
+                  ],
+                  [
+                    92.888735,
+                    55.981155
+                  ],
+                  [
+                    92.890101,
+                    55.981359
+                  ],
+                  [
+                    92.890188,
+                    55.981373
+                  ],
+                  [
+                    92.890784,
+                    55.981461
+                  ],
+                  [
+                    92.890951,
+                    55.981484
+                  ],
+                  [
+                    92.891075,
+                    55.981502
+                  ],
+                  [
+                    92.89123,
+                    55.981524
+                  ],
+                  [
+                    92.891603,
+                    55.981583
+                  ],
+                  [
+                    92.891916,
+                    55.981629
+                  ],
+                  [
+                    92.892661,
+                    55.981753
+                  ],
+                  [
+                    92.893739,
+                    55.98196
+                  ],
+                  [
+                    92.894826,
+                    55.982168
+                  ],
+                  [
+                    92.895985,
+                    55.98239
+                  ],
+                  [
+                    92.896863,
+                    55.982544
+                  ],
+                  [
+                    92.897399,
+                    55.982624
+                  ],
+                  [
+                    92.897881,
+                    55.982706
+                  ],
+                  [
+                    92.898529,
+                    55.982808
+                  ],
+                  [
+                    92.899435,
+                    55.982963
+                  ],
+                  [
+                    92.90023,
+                    55.983097
+                  ],
+                  [
+                    92.900871,
+                    55.983225
+                  ],
+                  [
+                    92.901884,
+                    55.983424
+                  ],
+                  [
+                    92.901315,
+                    55.983359
+                  ],
+                  [
+                    92.900334,
+                    55.983215
+                  ],
+                  [
+                    92.900168,
+                    55.983196
+                  ],
+                  [
+                    92.900182,
+                    55.983259
+                  ],
+                  [
+                    92.900171,
+                    55.983323
+                  ],
+                  [
+                    92.90023,
+                    55.983514
+                  ],
+                  [
+                    92.900647,
+                    55.984263
+                  ],
+                  [
+                    92.900718,
+                    55.984479
+                  ],
+                  [
+                    92.900649,
+                    55.984955
+                  ],
+                  [
+                    92.900519,
+                    55.9851
+                  ]
+                ]
+              },
+              "origin_snap": {
+                "location": {
+                  "latitude": 56.010024,
+                  "longitude": 92.850404
+                },
+                "distance_meters": 25.331744255
+              },
+              "destination_snap": {
+                "location": {
+                  "latitude": 55.9851,
+                  "longitude": 92.900519
+                },
+                "distance_meters": 34.262328279
+              },
+              "limitations": [
+                "Calculated road travel time; current traffic, weather and closures are not included.",
+                "Route starts/ends at snapped road locations (maximum 250 m); point access time is not included.",
+                "Frozen OSM road extract; map completeness and edge effects may affect routes."
+              ],
+              "unavailable_reason": null,
+              "version": "mobility-v1",
+              "mode": "car",
+              "origin": {
+                "latitude": 56.01,
+                "longitude": 92.85
+              },
+              "destination": {
+                "latitude": 55.985,
+                "longitude": 92.9,
+                "label": "work",
+                "kind": "work"
+              },
+              "departure_time": null,
+              "traffic": "not_included"
+            },
+            "within_threshold": true,
+            "delta_minutes": -14.425,
+            "unavailable_reason": null,
+            "limitations": [
+              "Calculated road travel time; current traffic, weather and closures are not included.",
+              "Route starts/ends at snapped road locations (maximum 250 m); point access time is not included.",
+              "Frozen OSM road extract; map completeness and edge effects may affect routes."
+            ]
+          },
+          {
+            "destination": {
+              "latitude": 56.06,
+              "longitude": 92.91,
+              "label": "university",
+              "kind": "university",
+              "importance": 2,
+              "max_acceptable_minutes": 25.0
+            },
+            "mode": "car",
+            "availability": "AVAILABLE",
+            "route": {
+              "availability": "AVAILABLE",
+              "duration_seconds": 758.4,
+              "distance_meters": 8492.4,
+              "provider": "osrm",
+              "provider_version": "osrm-5.27.1/car-v1",
+              "data_timestamp": "2026-10-06T20:21:06Z",
+              "dataset_id": "krasnoyarsk-car-v1",
+              "dataset_sha256": "b628177781f0161e63fce958672bd5c384f0119bccd420828425e17c985d642f",
+              "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                  [
+                    92.850404,
+                    56.010024
+                  ],
+                  [
+                    92.85024,
+                    56.01089
+                  ],
+                  [
+                    92.850242,
+                    56.010995
+                  ],
+                  [
+                    92.851007,
+                    56.011034
+                  ],
+                  [
+                    92.851198,
+                    56.011044
+                  ],
+                  [
+                    92.853692,
+                    56.011175
+                  ],
+                  [
+                    92.853962,
+                    56.011189
+                  ],
+                  [
+                    92.854556,
+                    56.01122
+                  ],
+                  [
+                    92.855056,
+                    56.011246
+                  ],
+                  [
+                    92.855495,
+                    56.011269
+                  ],
+                  [
+                    92.856123,
+                    56.011302
+                  ],
+                  [
+                    92.856573,
+                    56.011326
+                  ],
+                  [
+                    92.858435,
+                    56.011423
+                  ],
+                  [
+                    92.858689,
+                    56.011436
+                  ],
+                  [
+                    92.85893,
+                    56.011449
+                  ],
+                  [
+                    92.859749,
+                    56.011492
+                  ],
+                  [
+                    92.860641,
+                    56.011539
+                  ],
+                  [
+                    92.861923,
+                    56.011606
+                  ],
+                  [
+                    92.862067,
+                    56.011613
+                  ],
+                  [
+                    92.863438,
+                    56.011685
+                  ],
+                  [
+                    92.863686,
+                    56.011698
+                  ],
+                  [
+                    92.863861,
+                    56.011707
+                  ],
+                  [
+                    92.864407,
+                    56.011736
+                  ],
+                  [
+                    92.865475,
+                    56.011792
+                  ],
+                  [
+                    92.866641,
+                    56.011853
+                  ],
+                  [
+                    92.866826,
+                    56.011863
+                  ],
+                  [
+                    92.867025,
+                    56.011874
+                  ],
+                  [
+                    92.868085,
+                    56.01193
+                  ],
+                  [
+                    92.871298,
+                    56.012099
+                  ],
+                  [
+                    92.872129,
+                    56.012143
+                  ],
+                  [
+                    92.872268,
+                    56.012151
+                  ],
+                  [
+                    92.87301,
+                    56.01219
+                  ],
+                  [
+                    92.873535,
+                    56.012217
+                  ],
+                  [
+                    92.873617,
+                    56.012222
+                  ],
+                  [
+                    92.873847,
+                    56.012234
+                  ],
+                  [
+                    92.874629,
+                    56.012275
+                  ],
+                  [
+                    92.874769,
+                    56.012283
+                  ],
+                  [
+                    92.876028,
+                    56.012349
+                  ],
+                  [
+                    92.876279,
+                    56.012362
+                  ],
+                  [
+                    92.876262,
+                    56.012471
+                  ],
+                  [
+                    92.876183,
+                    56.012937
+                  ],
+                  [
+                    92.876148,
+                    56.013136
+                  ],
+                  [
+                    92.876078,
+                    56.013548
+                  ],
+                  [
+                    92.876033,
+                    56.013771
+                  ],
+                  [
+                    92.876024,
+                    56.013815
+                  ],
+                  [
+                    92.876008,
+                    56.013885
+                  ],
+                  [
+                    92.875987,
+                    56.014008
+                  ],
+                  [
+                    92.875907,
+                    56.014573
+                  ],
+                  [
+                    92.875877,
+                    56.014727
+                  ],
+                  [
+                    92.875868,
+                    56.014778
+                  ],
+                  [
+                    92.875757,
+                    56.015317
+                  ],
+                  [
+                    92.875737,
+                    56.01542
+                  ],
+                  [
+                    92.875712,
+                    56.015534
+                  ],
+                  [
+                    92.875544,
+                    56.016423
+                  ],
+                  [
+                    92.87553,
+                    56.016499
+                  ],
+                  [
+                    92.875481,
+                    56.016829
+                  ],
+                  [
+                    92.875465,
+                    56.017127
+                  ],
+                  [
+                    92.875458,
+                    56.017247
+                  ],
+                  [
+                    92.875474,
+                    56.017559
+                  ],
+                  [
+                    92.875508,
+                    56.01791
+                  ],
+                  [
+                    92.875589,
+                    56.018419
+                  ],
+                  [
+                    92.875743,
+                    56.018562
+                  ],
+                  [
+                    92.87585,
+                    56.018648
+                  ],
+                  [
+                    92.876004,
+                    56.018721
+                  ],
+                  [
+                    92.8762,
+                    56.018791
+                  ],
+                  [
+                    92.877507,
+                    56.019264
+                  ],
+                  [
+                    92.877969,
+                    56.019374
+                  ],
+                  [
+                    92.878453,
+                    56.019471
+                  ],
+                  [
+                    92.878846,
+                    56.01949
+                  ],
+                  [
+                    92.880494,
+                    56.019574
+                  ],
+                  [
+                    92.88301,
+                    56.019714
+                  ],
+                  [
+                    92.883442,
+                    56.019766
+                  ],
+                  [
+                    92.883766,
+                    56.019821
+                  ],
+                  [
+                    92.884024,
+                    56.019887
+                  ],
+                  [
+                    92.884257,
+                    56.019962
+                  ],
+                  [
+                    92.884511,
+                    56.020074
+                  ],
+                  [
+                    92.884774,
+                    56.02024
+                  ],
+                  [
+                    92.884892,
+                    56.020342
+                  ],
+                  [
+                    92.884997,
+                    56.020488
+                  ],
+                  [
+                    92.885095,
+                    56.02062
+                  ],
+                  [
+                    92.885181,
+                    56.02083
+                  ],
+                  [
+                    92.885231,
+                    56.021112
+                  ],
+                  [
+                    92.885241,
+                    56.021897
+                  ],
+                  [
+                    92.885233,
+                    56.022428
+                  ],
+                  [
+                    92.885245,
+                    56.02292
+                  ],
+                  [
+                    92.885257,
+                    56.023447
+                  ],
+                  [
+                    92.885285,
+                    56.023603
+                  ],
+                  [
+                    92.885352,
+                    56.023756
+                  ],
+                  [
+                    92.885487,
+                    56.023982
+                  ],
+                  [
+                    92.885554,
+                    56.024083
+                  ],
+                  [
+                    92.885792,
+                    56.024438
+                  ],
+                  [
+                    92.886155,
+                    56.024934
+                  ],
+                  [
+                    92.886459,
+                    56.025335
+                  ],
+                  [
+                    92.886838,
+                    56.025819
+                  ],
+                  [
+                    92.887128,
+                    56.026226
+                  ],
+                  [
+                    92.88766,
+                    56.026903
+                  ],
+                  [
+                    92.887959,
+                    56.027259
+                  ],
+                  [
+                    92.888003,
+                    56.027317
+                  ],
+                  [
+                    92.888287,
+                    56.027699
+                  ],
+                  [
+                    92.888443,
+                    56.027884
+                  ],
+                  [
+                    92.8889,
+                    56.028481
+                  ],
+                  [
+                    92.889433,
+                    56.029164
+                  ],
+                  [
+                    92.889681,
+                    56.029641
+                  ],
+                  [
+                    92.889935,
+                    56.030311
+                  ],
+                  [
+                    92.890062,
+                    56.030605
+                  ],
+                  [
+                    92.890182,
+                    56.030877
+                  ],
+                  [
+                    92.890234,
+                    56.031003
+                  ],
+                  [
+                    92.890358,
+                    56.031335
+                  ],
+                  [
+                    92.89052,
+                    56.031766
+                  ],
+                  [
+                    92.89083,
+                    56.032438
+                  ],
+                  [
+                    92.891091,
+                    56.032998
+                  ],
+                  [
+                    92.891264,
+                    56.033411
+                  ],
+                  [
+                    92.89132,
+                    56.033533
+                  ],
+                  [
+                    92.891432,
+                    56.033773
+                  ],
+                  [
+                    92.891693,
+                    56.03439
+                  ],
+                  [
+                    92.891783,
+                    56.034613
+                  ],
+                  [
+                    92.89207,
+                    56.035279
+                  ],
+                  [
+                    92.892101,
+                    56.035384
+                  ],
+                  [
+                    92.892102,
+                    56.035519
+                  ],
+                  [
+                    92.892139,
+                    56.0358
+                  ],
+                  [
+                    92.892271,
+                    56.036675
+                  ],
+                  [
+                    92.892305,
+                    56.03695
+                  ],
+                  [
+                    92.892314,
+                    56.037029
+                  ],
+                  [
+                    92.8924,
+                    56.03746
+                  ],
+                  [
+                    92.8925,
+                    56.038295
+                  ],
+                  [
+                    92.892619,
+                    56.039118
+                  ],
+                  [
+                    92.892639,
+                    56.039269
+                  ],
+                  [
+                    92.892665,
+                    56.03945
+                  ],
+                  [
+                    92.892812,
+                    56.040338
+                  ],
+                  [
+                    92.892891,
+                    56.040743
+                  ],
+                  [
+                    92.892939,
+                    56.041012
+                  ],
+                  [
+                    92.89299,
+                    56.041485
+                  ],
+                  [
+                    92.892981,
+                    56.041723
+                  ],
+                  [
+                    92.892912,
+                    56.041957
+                  ],
+                  [
+                    92.892747,
+                    56.042339
+                  ],
+                  [
+                    92.892573,
+                    56.042678
+                  ],
+                  [
+                    92.892212,
+                    56.043336
+                  ],
+                  [
+                    92.891864,
+                    56.043909
+                  ],
+                  [
+                    92.891656,
+                    56.044265
+                  ],
+                  [
+                    92.891405,
+                    56.044706
+                  ],
+                  [
+                    92.891246,
+                    56.044951
+                  ],
+                  [
+                    92.891537,
+                    56.045438
+                  ],
+                  [
+                    92.891802,
+                    56.045971
+                  ],
+                  [
+                    92.891956,
+                    56.046273
+                  ],
+                  [
+                    92.892293,
+                    56.046926
+                  ],
+                  [
+                    92.892566,
+                    56.047432
+                  ],
+                  [
+                    92.8927,
+                    56.047634
+                  ],
+                  [
+                    92.893014,
+                    56.047918
+                  ],
+                  [
+                    92.893698,
+                    56.048239
+                  ],
+                  [
+                    92.894659,
+                    56.048727
+                  ],
+                  [
+                    92.895306,
+                    56.049059
+                  ],
+                  [
+                    92.897146,
+                    56.049984
+                  ],
+                  [
+                    92.897905,
+                    56.050367
+                  ],
+                  [
+                    92.89844,
+                    56.050641
+                  ],
+                  [
+                    92.901361,
+                    56.052102
+                  ],
+                  [
+                    92.90168,
+                    56.052262
+                  ],
+                  [
+                    92.902539,
+                    56.052694
+                  ],
+                  [
+                    92.903398,
+                    56.053135
+                  ],
+                  [
+                    92.90423,
+                    56.053561
+                  ],
+                  [
+                    92.904513,
+                    56.053701
+                  ],
+                  [
+                    92.905615,
+                    56.054245
+                  ],
+                  [
+                    92.905939,
+                    56.054407
+                  ],
+                  [
+                    92.906822,
+                    56.054857
+                  ],
+                  [
+                    92.908271,
+                    56.055597
+                  ],
+                  [
+                    92.908582,
+                    56.055755
+                  ],
+                  [
+                    92.909049,
+                    56.055994
+                  ],
+                  [
+                    92.910911,
+                    56.056943
+                  ],
+                  [
+                    92.911127,
+                    56.057054
+                  ],
+                  [
+                    92.913171,
+                    56.058077
+                  ],
+                  [
+                    92.913624,
+                    56.058298
+                  ],
+                  [
+                    92.913844,
+                    56.058405
+                  ],
+                  [
+                    92.913603,
+                    56.058548
+                  ],
+                  [
+                    92.913353,
+                    56.058697
+                  ],
+                  [
+                    92.913028,
+                    56.058892
+                  ],
+                  [
+                    92.912379,
+                    56.059293
+                  ],
+                  [
+                    92.911833,
+                    56.05963
+                  ],
+                  [
+                    92.91167,
+                    56.059554
+                  ],
+                  [
+                    92.911517,
+                    56.059482
+                  ],
+                  [
+                    92.911183,
+                    56.059325
+                  ],
+                  [
+                    92.911116,
+                    56.059326
+                  ],
+                  [
+                    92.910774,
+                    56.059311
+                  ],
+                  [
+                    92.90989,
+                    56.058887
+                  ],
+                  [
+                    92.909416,
+                    56.059208
+                  ],
+                  [
+                    92.909346,
+                    56.059272
+                  ],
+                  [
+                    92.909079,
+                    56.059462
+                  ],
+                  [
+                    92.909066,
+                    56.059482
+                  ],
+                  [
+                    92.909082,
+                    56.059499
+                  ],
+                  [
+                    92.910042,
+                    56.059973
+                  ]
+                ]
+              },
+              "origin_snap": {
+                "location": {
+                  "latitude": 56.010024,
+                  "longitude": 92.850404
+                },
+                "distance_meters": 25.331744255
+              },
+              "destination_snap": {
+                "location": {
+                  "latitude": 56.059973,
+                  "longitude": 92.910042
+                },
+                "distance_meters": 3.984727644
+              },
+              "limitations": [
+                "Calculated road travel time; current traffic, weather and closures are not included.",
+                "Route starts/ends at snapped road locations (maximum 250 m); point access time is not included.",
+                "Frozen OSM road extract; map completeness and edge effects may affect routes."
+              ],
+              "unavailable_reason": null,
+              "version": "mobility-v1",
+              "mode": "car",
+              "origin": {
+                "latitude": 56.01,
+                "longitude": 92.85
+              },
+              "destination": {
+                "latitude": 56.06,
+                "longitude": 92.91,
+                "label": "university",
+                "kind": "university"
+              },
+              "departure_time": null,
+              "traffic": "not_included"
+            },
+            "within_threshold": true,
+            "delta_minutes": -12.360000000000001,
+            "unavailable_reason": null,
+            "limitations": [
+              "Calculated road travel time; current traffic, weather and closures are not included.",
+              "Route starts/ends at snapped road locations (maximum 250 m); point access time is not included.",
+              "Frozen OSM road extract; map completeness and edge effects may affect routes."
+            ]
+          },
+          {
+            "destination": {
+              "latitude": 56.012,
+              "longitude": 92.862,
+              "label": "relatives",
+              "kind": "relatives",
+              "importance": 2,
+              "max_acceptable_minutes": 25.0
+            },
+            "mode": "car",
+            "availability": "AVAILABLE",
+            "route": {
+              "availability": "AVAILABLE",
+              "duration_seconds": 219.3,
+              "distance_meters": 2214.8,
+              "provider": "osrm",
+              "provider_version": "osrm-5.27.1/car-v1",
+              "data_timestamp": "2026-10-06T20:21:06Z",
+              "dataset_id": "krasnoyarsk-car-v1",
+              "dataset_sha256": "b628177781f0161e63fce958672bd5c384f0119bccd420828425e17c985d642f",
+              "geometry": {
+                "type": "LineString",
+                "coordinates": [
+                  [
+                    92.850404,
+                    56.010024
+                  ],
+                  [
+                    92.85024,
+                    56.01089
+                  ],
+                  [
+                    92.850242,
+                    56.010995
+                  ],
+                  [
+                    92.851007,
+                    56.011034
+                  ],
+                  [
+                    92.851198,
+                    56.011044
+                  ],
+                  [
+                    92.853692,
+                    56.011175
+                  ],
+                  [
+                    92.853962,
+                    56.011189
+                  ],
+                  [
+                    92.854556,
+                    56.01122
+                  ],
+                  [
+                    92.855056,
+                    56.011246
+                  ],
+                  [
+                    92.855495,
+                    56.011269
+                  ],
+                  [
+                    92.856123,
+                    56.011302
+                  ],
+                  [
+                    92.856573,
+                    56.011326
+                  ],
+                  [
+                    92.858435,
+                    56.011423
+                  ],
+                  [
+                    92.858689,
+                    56.011436
+                  ],
+                  [
+                    92.858672,
+                    56.011561
+                  ],
+                  [
+                    92.858583,
+                    56.012166
+                  ],
+                  [
+                    92.858575,
+                    56.012236
+                  ],
+                  [
+                    92.858491,
+                    56.012745
+                  ],
+                  [
+                    92.858472,
+                    56.012865
+                  ],
+                  [
+                    92.858481,
+                    56.01297
+                  ],
+                  [
+                    92.858311,
+                    56.013928
+                  ],
+                  [
+                    92.858254,
+                    56.014307
+                  ],
+                  [
+                    92.85812,
+                    56.015047
+                  ],
+                  [
+                    92.8581,
+                    56.015173
+                  ],
+                  [
+                    92.858076,
+                    56.015316
+                  ],
+                  [
+                    92.858821,
+                    56.015365
+                  ],
+                  [
+                    92.859619,
+                    56.015419
+                  ],
+                  [
+                    92.860414,
+                    56.015472
+                  ],
+                  [
+                    92.860944,
+                    56.015507
+                  ],
+                  [
+                    92.861038,
+                    56.015514
+                  ],
+                  [
+                    92.861605,
+                    56.015559
+                  ],
+                  [
+                    92.861906,
+                    56.015581
+                  ],
+                  [
+                    92.862188,
+                    56.015603
+                  ],
+                  [
+                    92.862753,
+                    56.015638
+                  ],
+                  [
+                    92.862943,
+                    56.01565
+                  ],
+                  [
+                    92.864201,
+                    56.01573
+                  ],
+                  [
+                    92.865376,
+                    56.015819
+                  ],
+                  [
+                    92.865606,
+                    56.015831
+                  ],
+                  [
+                    92.865789,
+                    56.015759
+                  ],
+                  [
+                    92.865884,
+                    56.015721
+                  ],
+                  [
+                    92.866037,
+                    56.015635
+                  ],
+                  [
+                    92.866103,
+                    56.015554
+                  ],
+                  [
+                    92.866111,
+                    56.015517
+                  ],
+                  [
+                    92.866225,
+                    56.014877
+                  ],
+                  [
+                    92.866247,
+                    56.014798
+                  ],
+                  [
+                    92.866307,
+                    56.014482
+                  ],
+                  [
+                    92.866514,
+                    56.013421
+                  ],
+                  [
+                    92.866542,
+                    56.013287
+                  ],
+                  [
+                    92.864944,
+                    56.0132
+                  ],
+                  [
+                    92.864522,
+                    56.01318
+                  ],
+                  [
+                    92.863689,
+                    56.013141
+                  ],
+                  [
+                    92.86346,
+                    56.01313
+                  ],
+                  [
+                    92.863497,
+                    56.012991
+                  ],
+                  [
+                    92.863517,
+                    56.012822
+                  ],
+                  [
+                    92.863521,
+                    56.012796
+                  ],
+                  [
+                    92.86354,
+                    56.012653
+                  ],
+                  [
+                    92.86355,
+                    56.012587
+                  ],
+                  [
+                    92.863594,
+                    56.012296
+                  ],
+                  [
+                    92.863402,
+                    56.012299
+                  ],
+                  [
+                    92.862975,
+                    56.012279
+                  ],
+                  [
+                    92.86286,
+                    56.012081
+                  ],
+                  [
+                    92.862853,
+                    56.012029
+                  ],
+                  [
+                    92.862575,
+                    56.01199
+                  ]
+                ]
+              },
+              "origin_snap": {
+                "location": {
+                  "latitude": 56.010024,
+                  "longitude": 92.850404
+                },
+                "distance_meters": 25.331744255
+              },
+              "destination_snap": {
+                "location": {
+                  "latitude": 56.01199,
+                  "longitude": 92.862575
+                },
+                "distance_meters": 35.869966045
+              },
+              "limitations": [
+                "Calculated road travel time; current traffic, weather and closures are not included.",
+                "Route starts/ends at snapped road locations (maximum 250 m); point access time is not included.",
+                "Frozen OSM road extract; map completeness and edge effects may affect routes."
+              ],
+              "unavailable_reason": null,
+              "version": "mobility-v1",
+              "mode": "car",
+              "origin": {
+                "latitude": 56.01,
+                "longitude": 92.85
+              },
+              "destination": {
+                "latitude": 56.012,
+                "longitude": 92.862,
+                "label": "relatives",
+                "kind": "relatives"
+              },
+              "departure_time": null,
+              "traffic": "not_included"
+            },
+            "within_threshold": true,
+            "delta_minutes": -21.345,
+            "unavailable_reason": null,
+            "limitations": [
+              "Calculated road travel time; current traffic, weather and closures are not included.",
+              "Route starts/ends at snapped road locations (maximum 250 m); point access time is not included.",
+              "Frozen OSM road extract; map completeness and edge effects may affect routes."
+            ]
+          }
+        ],
+        "unavailable_reason": null
+      },
+      "affordability": {
+        "availability": "NOT_APPLICABLE",
+        "observed_price_from": null,
+        "purchase_budget": null,
+        "within_budget": null,
+        "budget_delta": null,
+        "source": null,
+        "source_version": null,
+        "fetched_at": null,
+        "observed_at": null,
+        "price_semantics": "observed_asking_starting_price_not_transaction",
+        "observed_affordability": null,
+        "unavailable_reason": "budget_missing",
+        "limitations": [
+          "Source map anchor, not verified building/entrance.",
+          "Record fetched_at is not a verified price observation date; current availability/price not guaranteed."
+        ]
+      },
+      "housing": {
+        "availability": "NOT_IMPLEMENTED",
+        "unavailable_reason": "waiting_for_eiszh_access"
+      }
+    },
+    "overall_match": null,
+    "limitations": [
+      "Experimental foundation, not a calibrated overall Match.",
+      "Independent domain availability; no missing-dimension renormalization.",
+      "No Housing Fit, public transit routing, traffic, mortgage or AI synthesis."
+    ]
+  },
+  "candidate_count": 108,
+  "car_routes_available": 108,
+  "candidate_scenarios": {
+    "Family": {
+      "weights": [
+        1,
+        3,
+        3,
+        2,
+        2
+      ],
+      "car_destination": {
+        "latitude": 55.985,
+        "longitude": 92.9,
+        "label": "work",
+        "kind": "work",
+        "importance": 2,
+        "max_acceptable_minutes": 25.0
+      },
+      "max_minutes": 25.0,
+      "purchase_budget": 8000000,
+      "objective_top10": [
+        {
+          "id": "zhk-kristall-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Кристалл»",
+          "score": 94.57873042044518
+        },
+        {
+          "id": "zhk-stolichnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Столичный»",
+          "score": 93.5267930750206
+        },
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 91.21516900247322
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 91.0997526793075
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 89.89282769991756
+        },
+        {
+          "id": "zhk-uyutnyy-dom-na-shumyackogo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Уютный Дом на Шумяцкого»",
+          "score": 89.45094806265459
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 88.86727122835944
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 88.7815333882935
+        },
+        {
+          "id": "zhk-tri-klena-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Три Клена жилые кварталы на Вавилова»",
+          "score": 88.15828524319869
+        },
+        {
+          "id": "zhk-runway-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «RUNWAY (РАНВЭЙ)»",
+          "score": 88.1121187139324
+        }
+      ],
+      "infrastructure_top10": [
+        {
+          "id": "zhk-kristall-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Кристалл»",
+          "score": 94.04331859401934
+        },
+        {
+          "id": "zhk-stolichnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Столичный»",
+          "score": 93.47373154463014
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 90.32901146668665
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 89.99925054335607
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 89.78340702990332
+        },
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 89.7039646256464
+        },
+        {
+          "id": "zhk-tri-klena-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Три Клена жилые кварталы на Вавилова»",
+          "score": 89.2018286742112
+        },
+        {
+          "id": "zhk-uyutnyy-dom-na-shumyackogo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Уютный Дом на Шумяцкого»",
+          "score": 88.9080416697894
+        },
+        {
+          "id": "zhk-aerocity-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «АЭРО»",
+          "score": 88.84059057183542
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 88.6232481450948
+        }
+      ],
+      "car_only_top10": [
+        {
+          "id": "zhk-kristall-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Кристалл»",
+          "score": 94.04331859401934
+        },
+        {
+          "id": "zhk-stolichnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Столичный»",
+          "score": 93.47373154463014
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 90.32901146668665
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 89.99925054335607
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 89.78340702990332
+        },
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 89.7039646256464
+        },
+        {
+          "id": "zhk-tri-klena-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Три Клена жилые кварталы на Вавилова»",
+          "score": 89.2018286742112
+        },
+        {
+          "id": "zhk-uyutnyy-dom-na-shumyackogo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Уютный Дом на Шумяцкого»",
+          "score": 88.9080416697894
+        },
+        {
+          "id": "zhk-aerocity-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «АЭРО»",
+          "score": 88.84059057183542
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 88.6232481450948
+        }
+      ],
+      "budget_only_top10": [
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 90.32901146668665
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 89.99925054335607
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 89.78340702990332
+        },
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 89.7039646256464
+        },
+        {
+          "id": "zhk-aerocity-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «АЭРО»",
+          "score": 88.84059057183542
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 88.6232481450948
+        },
+        {
+          "id": "zhk-po-ul-ulyanovskiy-prospekt-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Дом на Ульяновском»",
+          "score": 88.10012740762947
+        },
+        {
+          "id": "zhk-medeo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Медео»",
+          "score": 87.90077194034325
+        },
+        {
+          "id": "zhk-akademik-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Академик»",
+          "score": 87.5470284044068
+        },
+        {
+          "id": "zhk-runway-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «RUNWAY (РАНВЭЙ)»",
+          "score": 86.87251742486697
+        }
+      ],
+      "experimental_constrained_top10": [
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 90.32901146668665
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 89.99925054335607
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 89.78340702990332
+        },
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 89.7039646256464
+        },
+        {
+          "id": "zhk-aerocity-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «АЭРО»",
+          "score": 88.84059057183542
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 88.6232481450948
+        },
+        {
+          "id": "zhk-po-ul-ulyanovskiy-prospekt-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Дом на Ульяновском»",
+          "score": 88.10012740762947
+        },
+        {
+          "id": "zhk-medeo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Медео»",
+          "score": 87.90077194034325
+        },
+        {
+          "id": "zhk-akademik-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Академик»",
+          "score": 87.5470284044068
+        },
+        {
+          "id": "zhk-runway-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «RUNWAY (РАНВЭЙ)»",
+          "score": 86.87251742486697
+        }
+      ],
+      "eligible_count": 55,
+      "within_car_count": 88,
+      "within_budget_count": 72,
+      "excluded": {
+        "zhk-alleya-park-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-apartamenty-na-igarskoy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-aprelevka-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-arinskiy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-barbaris-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-belyy-kvartal-na-spandaryana-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-biznes-kvartal-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-bulvar-cvetov-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-divnye-dali-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-dom-po-ul-armeyskoy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-enisey-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-eniseyskaya-sloboda-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-familia-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-gorki-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-housepark-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-hvoya-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-izumrudnaya-dolina-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-kedr-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-kristall-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-maestro-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-metropolis-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-myata-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-nanzhul-solnechnyy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-nesterov-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-norma-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-novella-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-ostrov-na-norilskoy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-60-let-oktyabrya-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-po-ul-cheremuhovaya-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-kalinina-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-norilskaya-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-svetlova-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-ryabinovyy-dvorik-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-sammit-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-scandis-ozero-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-selfort-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-shkolnyy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-siti-kvartal-kechoveli-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-siti-kvartal-na-vzletnoy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-siti-kvartal-svetlogorskiy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-siti-rayon-yuzhnyy-bereg-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-skazochnyy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-snegiri-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-snegiri-krasnoyarsk-solnechniy-zhr-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-socvetie-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_unavailable"
+        ],
+        "zhk-solar-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-stolichnyy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-tri-klena-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-uyutnyy-dom-na-shumyackogo-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-vremena-goda-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-vysotnaya-plyus-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-yudinskiy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-zolotoe-sechenie-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ]
+      },
+      "fit_to_constrained_top10_overlap_count": 6
+    },
+    "Education": {
+      "weights": [
+        1,
+        3,
+        3,
+        0,
+        1
+      ],
+      "car_destination": {
+        "latitude": 55.985,
+        "longitude": 92.9,
+        "label": "work",
+        "kind": "work",
+        "importance": 2,
+        "max_acceptable_minutes": 25.0
+      },
+      "max_minutes": 25.0,
+      "purchase_budget": 8000000,
+      "objective_top10": [
+        {
+          "id": "zhk-kristall-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Кристалл»",
+          "score": 94.57873042044518
+        },
+        {
+          "id": "zhk-stolichnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Столичный»",
+          "score": 93.5267930750206
+        },
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 91.21516900247322
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 91.0997526793075
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 89.89282769991756
+        },
+        {
+          "id": "zhk-uyutnyy-dom-na-shumyackogo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Уютный Дом на Шумяцкого»",
+          "score": 89.45094806265459
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 88.86727122835944
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 88.7815333882935
+        },
+        {
+          "id": "zhk-tri-klena-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Три Клена жилые кварталы на Вавилова»",
+          "score": 88.15828524319869
+        },
+        {
+          "id": "zhk-runway-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «RUNWAY (РАНВЭЙ)»",
+          "score": 88.1121187139324
+        }
+      ],
+      "infrastructure_top10": [
+        {
+          "id": "zhk-kristall-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Кристалл»",
+          "score": 92.54328112118715
+        },
+        {
+          "id": "zhk-stolichnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Столичный»",
+          "score": 92.41343775762572
+        },
+        {
+          "id": "zhk-tihie-zori-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Тихие зори»",
+          "score": 92.32687551525144
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 91.17889530090685
+        },
+        {
+          "id": "zhk-tri-klena-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Три Клена жилые кварталы на Вавилова»",
+          "score": 90.92333058532563
+        },
+        {
+          "id": "zhk-nanzhul-solnechnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нанжуль-Солнечный»",
+          "score": 89.95465787304204
+        },
+        {
+          "id": "zhk-uyutnyy-dom-na-shumyackogo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Уютный Дом на Шумяцкого»",
+          "score": 89.78359439406431
+        },
+        {
+          "id": "zhk-aerocity-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «АЭРО»",
+          "score": 89.49299258037922
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 89.2085737840066
+        },
+        {
+          "id": "zhk-akademik-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Академик»",
+          "score": 88.99422918384171
+        }
+      ],
+      "car_only_top10": [
+        {
+          "id": "zhk-kristall-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Кристалл»",
+          "score": 92.54328112118715
+        },
+        {
+          "id": "zhk-stolichnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Столичный»",
+          "score": 92.41343775762572
+        },
+        {
+          "id": "zhk-tihie-zori-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Тихие зори»",
+          "score": 92.32687551525144
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 91.17889530090685
+        },
+        {
+          "id": "zhk-tri-klena-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Три Клена жилые кварталы на Вавилова»",
+          "score": 90.92333058532563
+        },
+        {
+          "id": "zhk-uyutnyy-dom-na-shumyackogo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Уютный Дом на Шумяцкого»",
+          "score": 89.78359439406431
+        },
+        {
+          "id": "zhk-aerocity-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «АЭРО»",
+          "score": 89.49299258037922
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 89.2085737840066
+        },
+        {
+          "id": "zhk-akademik-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Академик»",
+          "score": 88.99422918384171
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 88.92621599340478
+        }
+      ],
+      "budget_only_top10": [
+        {
+          "id": "zhk-tihie-zori-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Тихие зори»",
+          "score": 92.32687551525144
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 91.17889530090685
+        },
+        {
+          "id": "zhk-nanzhul-solnechnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нанжуль-Солнечный»",
+          "score": 89.95465787304204
+        },
+        {
+          "id": "zhk-aerocity-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «АЭРО»",
+          "score": 89.49299258037922
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 89.2085737840066
+        },
+        {
+          "id": "zhk-akademik-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Академик»",
+          "score": 88.99422918384171
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 88.92621599340478
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 88.70362737015664
+        },
+        {
+          "id": "zhk-snegiri-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Снегири»",
+          "score": 88.05234954657872
+        },
+        {
+          "id": "zhk-medeo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Медео»",
+          "score": 88.0358615004122
+        }
+      ],
+      "experimental_constrained_top10": [
+        {
+          "id": "zhk-tihie-zori-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Тихие зори»",
+          "score": 92.32687551525144
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 91.17889530090685
+        },
+        {
+          "id": "zhk-aerocity-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «АЭРО»",
+          "score": 89.49299258037922
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 89.2085737840066
+        },
+        {
+          "id": "zhk-akademik-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Академик»",
+          "score": 88.99422918384171
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 88.92621599340478
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 88.70362737015664
+        },
+        {
+          "id": "zhk-medeo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Медео»",
+          "score": 88.0358615004122
+        },
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 86.99917559769167
+        },
+        {
+          "id": "zhk-paraplan-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Параплан»",
+          "score": 86.89200329760924
+        }
+      ],
+      "eligible_count": 55,
+      "within_car_count": 88,
+      "within_budget_count": 72,
+      "excluded": {
+        "zhk-alleya-park-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-apartamenty-na-igarskoy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-aprelevka-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-arinskiy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-barbaris-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-belyy-kvartal-na-spandaryana-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-biznes-kvartal-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-bulvar-cvetov-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-divnye-dali-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-dom-po-ul-armeyskoy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-enisey-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-eniseyskaya-sloboda-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-familia-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-gorki-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-housepark-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-hvoya-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-izumrudnaya-dolina-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-kedr-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-kristall-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-maestro-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-metropolis-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-myata-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-nanzhul-solnechnyy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-nesterov-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-norma-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-novella-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-ostrov-na-norilskoy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-60-let-oktyabrya-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-po-ul-cheremuhovaya-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-kalinina-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-norilskaya-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-svetlova-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-ryabinovyy-dvorik-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-sammit-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-scandis-ozero-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-selfort-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-shkolnyy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-siti-kvartal-kechoveli-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-siti-kvartal-na-vzletnoy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-siti-kvartal-svetlogorskiy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-siti-rayon-yuzhnyy-bereg-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-skazochnyy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-snegiri-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-snegiri-krasnoyarsk-solnechniy-zhr-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-socvetie-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_unavailable"
+        ],
+        "zhk-solar-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-stolichnyy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-tri-klena-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-uyutnyy-dom-na-shumyackogo-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-vremena-goda-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-vysotnaya-plyus-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-yudinskiy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-zolotoe-sechenie-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ]
+      },
+      "fit_to_constrained_top10_overlap_count": 5
+    },
+    "Parks": {
+      "weights": [
+        1,
+        0,
+        0,
+        1,
+        3
+      ],
+      "car_destination": {
+        "latitude": 55.985,
+        "longitude": 92.9,
+        "label": "work",
+        "kind": "work",
+        "importance": 2,
+        "max_acceptable_minutes": 25.0
+      },
+      "max_minutes": 25.0,
+      "purchase_budget": 8000000,
+      "objective_top10": [
+        {
+          "id": "zhk-kristall-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Кристалл»",
+          "score": 94.57873042044518
+        },
+        {
+          "id": "zhk-stolichnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Столичный»",
+          "score": 93.5267930750206
+        },
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 91.21516900247322
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 91.0997526793075
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 89.89282769991756
+        },
+        {
+          "id": "zhk-uyutnyy-dom-na-shumyackogo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Уютный Дом на Шумяцкого»",
+          "score": 89.45094806265459
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 88.86727122835944
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 88.7815333882935
+        },
+        {
+          "id": "zhk-tri-klena-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Три Клена жилые кварталы на Вавилова»",
+          "score": 88.15828524319869
+        },
+        {
+          "id": "zhk-runway-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «RUNWAY (РАНВЭЙ)»",
+          "score": 88.1121187139324
+        }
+      ],
+      "infrastructure_top10": [
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 95.77906018136851
+        },
+        {
+          "id": "zhk-kristall-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Кристалл»",
+          "score": 95.4855729596043
+        },
+        {
+          "id": "zhk-stolichnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Столичный»",
+          "score": 93.4047815333883
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 92.85737840065951
+        },
+        {
+          "id": "zhk-apartamenty-na-igarskoy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Апартаменты на Игарской»",
+          "score": 92.15828524319868
+        },
+        {
+          "id": "zhk-bulvar-cvetov-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Бульвар цветов»",
+          "score": 91.35366859027205
+        },
+        {
+          "id": "zhk-po-ul-baumana-6-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «по ул. Баумана, 6»",
+          "score": 90.92168178070898
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 90.4732069249794
+        },
+        {
+          "id": "zhk-zolotoe-sechenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Золотое сечение»",
+          "score": 90.40395713107998
+        },
+        {
+          "id": "zhk-scandis-ozero-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «SCANDIS OZERO (Скандис Озеро)»",
+          "score": 90.3149216817807
+        }
+      ],
+      "car_only_top10": [
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 95.77906018136851
+        },
+        {
+          "id": "zhk-kristall-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Кристалл»",
+          "score": 95.4855729596043
+        },
+        {
+          "id": "zhk-stolichnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Столичный»",
+          "score": 93.4047815333883
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 92.85737840065951
+        },
+        {
+          "id": "zhk-apartamenty-na-igarskoy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Апартаменты на Игарской»",
+          "score": 92.15828524319868
+        },
+        {
+          "id": "zhk-bulvar-cvetov-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Бульвар цветов»",
+          "score": 91.35366859027205
+        },
+        {
+          "id": "zhk-po-ul-baumana-6-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «по ул. Баумана, 6»",
+          "score": 90.92168178070898
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 90.4732069249794
+        },
+        {
+          "id": "zhk-zolotoe-sechenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Золотое сечение»",
+          "score": 90.40395713107998
+        },
+        {
+          "id": "zhk-scandis-ozero-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «SCANDIS OZERO (Скандис Озеро)»",
+          "score": 90.3149216817807
+        }
+      ],
+      "budget_only_top10": [
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 95.77906018136851
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 92.85737840065951
+        },
+        {
+          "id": "zhk-po-ul-baumana-6-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «по ул. Баумана, 6»",
+          "score": 90.92168178070898
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 90.4732069249794
+        },
+        {
+          "id": "zhk-serebryanyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Серебряный»",
+          "score": 89.21022258862325
+        },
+        {
+          "id": "zhk-runway-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «RUNWAY (РАНВЭЙ)»",
+          "score": 88.26710634789777
+        },
+        {
+          "id": "zhk-paraplan-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Параплан»",
+          "score": 87.7164056059357
+        },
+        {
+          "id": "zhk-kvadro-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Квадро»",
+          "score": 87.64056059356966
+        },
+        {
+          "id": "zhk-po-ul-kurchatova-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «по ул. Курчатова»",
+          "score": 86.8128606760099
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 86.57543281121187
+        }
+      ],
+      "experimental_constrained_top10": [
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 95.77906018136851
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 92.85737840065951
+        },
+        {
+          "id": "zhk-po-ul-baumana-6-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «по ул. Баумана, 6»",
+          "score": 90.92168178070898
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 90.4732069249794
+        },
+        {
+          "id": "zhk-serebryanyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Серебряный»",
+          "score": 89.21022258862325
+        },
+        {
+          "id": "zhk-runway-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «RUNWAY (РАНВЭЙ)»",
+          "score": 88.26710634789777
+        },
+        {
+          "id": "zhk-paraplan-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Параплан»",
+          "score": 87.7164056059357
+        },
+        {
+          "id": "zhk-kvadro-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Квадро»",
+          "score": 87.64056059356966
+        },
+        {
+          "id": "zhk-po-ul-kurchatova-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «по ул. Курчатова»",
+          "score": 86.8128606760099
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 86.57543281121187
+        }
+      ],
+      "eligible_count": 55,
+      "within_car_count": 88,
+      "within_budget_count": 72,
+      "excluded": {
+        "zhk-alleya-park-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-apartamenty-na-igarskoy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-aprelevka-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-arinskiy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-barbaris-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-belyy-kvartal-na-spandaryana-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-biznes-kvartal-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-bulvar-cvetov-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-divnye-dali-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-dom-po-ul-armeyskoy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-enisey-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-eniseyskaya-sloboda-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-familia-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-gorki-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-housepark-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-hvoya-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-izumrudnaya-dolina-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-kedr-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-kristall-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-maestro-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-metropolis-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-myata-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-nanzhul-solnechnyy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-nesterov-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-norma-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-novella-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-ostrov-na-norilskoy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-60-let-oktyabrya-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-po-ul-cheremuhovaya-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-kalinina-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-norilskaya-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-svetlova-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-ryabinovyy-dvorik-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-sammit-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-scandis-ozero-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-selfort-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-shkolnyy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-siti-kvartal-kechoveli-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-siti-kvartal-na-vzletnoy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-siti-kvartal-svetlogorskiy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-siti-rayon-yuzhnyy-bereg-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-skazochnyy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-snegiri-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-snegiri-krasnoyarsk-solnechniy-zhr-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-socvetie-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_unavailable"
+        ],
+        "zhk-solar-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-stolichnyy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-tri-klena-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-uyutnyy-dom-na-shumyackogo-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-vremena-goda-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-vysotnaya-plyus-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-yudinskiy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-zolotoe-sechenie-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ]
+      },
+      "fit_to_constrained_top10_overlap_count": 4
+    },
+    "Healthcare": {
+      "weights": [
+        1,
+        0,
+        0,
+        3,
+        1
+      ],
+      "car_destination": {
+        "latitude": 55.985,
+        "longitude": 92.9,
+        "label": "work",
+        "kind": "work",
+        "importance": 2,
+        "max_acceptable_minutes": 25.0
+      },
+      "max_minutes": 25.0,
+      "purchase_budget": 8000000,
+      "objective_top10": [
+        {
+          "id": "zhk-kristall-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Кристалл»",
+          "score": 94.57873042044518
+        },
+        {
+          "id": "zhk-stolichnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Столичный»",
+          "score": 93.5267930750206
+        },
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 91.21516900247322
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 91.0997526793075
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 89.89282769991756
+        },
+        {
+          "id": "zhk-uyutnyy-dom-na-shumyackogo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Уютный Дом на Шумяцкого»",
+          "score": 89.45094806265459
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 88.86727122835944
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 88.7815333882935
+        },
+        {
+          "id": "zhk-tri-klena-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Три Клена жилые кварталы на Вавилова»",
+          "score": 88.15828524319869
+        },
+        {
+          "id": "zhk-runway-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «RUNWAY (РАНВЭЙ)»",
+          "score": 88.1121187139324
+        }
+      ],
+      "infrastructure_top10": [
+        {
+          "id": "zhk-kristall-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Кристалл»",
+          "score": 97.83347073371806
+        },
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 96.47155812036273
+        },
+        {
+          "id": "zhk-stolichnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Столичный»",
+          "score": 95.86479802143445
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 93.4179719703215
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 92.07584501236603
+        },
+        {
+          "id": "zhk-bulvar-cvetov-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Бульвар цветов»",
+          "score": 92.03297609233306
+        },
+        {
+          "id": "zhk-zolotoe-sechenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Золотое сечение»",
+          "score": 91.73619126133553
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 91.16570486397362
+        },
+        {
+          "id": "zhk-housepark-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «HOUSE PARK (Хаус парк)»",
+          "score": 90.27864798021434
+        },
+        {
+          "id": "zhk-runway-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «RUNWAY (РАНВЭЙ)»",
+          "score": 90.12036273701565
+        }
+      ],
+      "car_only_top10": [
+        {
+          "id": "zhk-kristall-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Кристалл»",
+          "score": 97.83347073371806
+        },
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 96.47155812036273
+        },
+        {
+          "id": "zhk-stolichnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Столичный»",
+          "score": 95.86479802143445
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 93.4179719703215
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 92.07584501236603
+        },
+        {
+          "id": "zhk-bulvar-cvetov-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Бульвар цветов»",
+          "score": 92.03297609233306
+        },
+        {
+          "id": "zhk-zolotoe-sechenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Золотое сечение»",
+          "score": 91.73619126133553
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 91.16570486397362
+        },
+        {
+          "id": "zhk-housepark-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «HOUSE PARK (Хаус парк)»",
+          "score": 90.27864798021434
+        },
+        {
+          "id": "zhk-runway-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «RUNWAY (РАНВЭЙ)»",
+          "score": 90.12036273701565
+        }
+      ],
+      "budget_only_top10": [
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 96.47155812036273
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 93.4179719703215
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 92.07584501236603
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 91.16570486397362
+        },
+        {
+          "id": "zhk-runway-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «RUNWAY (РАНВЭЙ)»",
+          "score": 90.12036273701565
+        },
+        {
+          "id": "zhk-serebryanyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Серебряный»",
+          "score": 90.00824402308325
+        },
+        {
+          "id": "zhk-solar-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Солар»",
+          "score": 89.39818631492167
+        },
+        {
+          "id": "zhk-medeo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Медео»",
+          "score": 89.12778235779061
+        },
+        {
+          "id": "zhk-simfoniya-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Симфония»",
+          "score": 87.31079967023908
+        },
+        {
+          "id": "zhk-po-ul-ulyanovskiy-prospekt-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Дом на Ульяновском»",
+          "score": 86.8194558944765
+        }
+      ],
+      "experimental_constrained_top10": [
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 96.47155812036273
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 93.4179719703215
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 92.07584501236603
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 91.16570486397362
+        },
+        {
+          "id": "zhk-runway-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «RUNWAY (РАНВЭЙ)»",
+          "score": 90.12036273701565
+        },
+        {
+          "id": "zhk-serebryanyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Серебряный»",
+          "score": 90.00824402308325
+        },
+        {
+          "id": "zhk-medeo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Медео»",
+          "score": 89.12778235779061
+        },
+        {
+          "id": "zhk-simfoniya-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Симфония»",
+          "score": 87.31079967023908
+        },
+        {
+          "id": "zhk-po-ul-ulyanovskiy-prospekt-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Дом на Ульяновском»",
+          "score": 86.8194558944765
+        },
+        {
+          "id": "zhk-po-ul-kurchatova-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «по ул. Курчатова»",
+          "score": 86.74690849134379
+        }
+      ],
+      "eligible_count": 55,
+      "within_car_count": 88,
+      "within_budget_count": 72,
+      "excluded": {
+        "zhk-alleya-park-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-apartamenty-na-igarskoy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-aprelevka-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-arinskiy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-barbaris-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-belyy-kvartal-na-spandaryana-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-biznes-kvartal-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-bulvar-cvetov-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-divnye-dali-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-dom-po-ul-armeyskoy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-enisey-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-eniseyskaya-sloboda-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-familia-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-gorki-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-housepark-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-hvoya-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-izumrudnaya-dolina-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-kedr-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-kristall-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-maestro-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-metropolis-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-myata-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-nanzhul-solnechnyy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-nesterov-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-norma-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-novella-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-ostrov-na-norilskoy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-60-let-oktyabrya-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-po-ul-cheremuhovaya-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-kalinina-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-norilskaya-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-svetlova-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-ryabinovyy-dvorik-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-sammit-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-scandis-ozero-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-selfort-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-shkolnyy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-siti-kvartal-kechoveli-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-siti-kvartal-na-vzletnoy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-siti-kvartal-svetlogorskiy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-siti-rayon-yuzhnyy-bereg-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-skazochnyy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-snegiri-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-snegiri-krasnoyarsk-solnechniy-zhr-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-socvetie-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_unavailable"
+        ],
+        "zhk-solar-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-stolichnyy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-tri-klena-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-uyutnyy-dom-na-shumyackogo-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-vremena-goda-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-vysotnaya-plyus-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-yudinskiy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-zolotoe-sechenie-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ]
+      },
+      "fit_to_constrained_top10_overlap_count": 5
+    },
+    "Balanced": {
+      "weights": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "car_destination": {
+        "latitude": 55.985,
+        "longitude": 92.9,
+        "label": "work",
+        "kind": "work",
+        "importance": 2,
+        "max_acceptable_minutes": 25.0
+      },
+      "max_minutes": 25.0,
+      "purchase_budget": 8000000,
+      "objective_top10": [
+        {
+          "id": "zhk-kristall-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Кристалл»",
+          "score": 94.57873042044518
+        },
+        {
+          "id": "zhk-stolichnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Столичный»",
+          "score": 93.5267930750206
+        },
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 91.21516900247322
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 91.0997526793075
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 89.89282769991756
+        },
+        {
+          "id": "zhk-uyutnyy-dom-na-shumyackogo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Уютный Дом на Шумяцкого»",
+          "score": 89.45094806265459
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 88.86727122835944
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 88.7815333882935
+        },
+        {
+          "id": "zhk-tri-klena-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Три Клена жилые кварталы на Вавилова»",
+          "score": 88.15828524319869
+        },
+        {
+          "id": "zhk-runway-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «RUNWAY (РАНВЭЙ)»",
+          "score": 88.1121187139324
+        }
+      ],
+      "infrastructure_top10": [
+        {
+          "id": "zhk-kristall-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Кристалл»",
+          "score": 94.57873042044518
+        },
+        {
+          "id": "zhk-stolichnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Столичный»",
+          "score": 93.5267930750206
+        },
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 91.21516900247322
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 91.0997526793075
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 89.89282769991756
+        },
+        {
+          "id": "zhk-uyutnyy-dom-na-shumyackogo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Уютный Дом на Шумяцкого»",
+          "score": 89.45094806265459
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 88.86727122835944
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 88.7815333882935
+        },
+        {
+          "id": "zhk-tri-klena-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Три Клена жилые кварталы на Вавилова»",
+          "score": 88.15828524319869
+        },
+        {
+          "id": "zhk-runway-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «RUNWAY (РАНВЭЙ)»",
+          "score": 88.1121187139324
+        }
+      ],
+      "car_only_top10": [
+        {
+          "id": "zhk-kristall-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Кристалл»",
+          "score": 94.57873042044518
+        },
+        {
+          "id": "zhk-stolichnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Столичный»",
+          "score": 93.5267930750206
+        },
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 91.21516900247322
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 91.0997526793075
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 89.89282769991756
+        },
+        {
+          "id": "zhk-uyutnyy-dom-na-shumyackogo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Уютный Дом на Шумяцкого»",
+          "score": 89.45094806265459
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 88.86727122835944
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 88.7815333882935
+        },
+        {
+          "id": "zhk-tri-klena-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Три Клена жилые кварталы на Вавилова»",
+          "score": 88.15828524319869
+        },
+        {
+          "id": "zhk-runway-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «RUNWAY (РАНВЭЙ)»",
+          "score": 88.1121187139324
+        }
+      ],
+      "budget_only_top10": [
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 91.21516900247322
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 91.0997526793075
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 89.89282769991756
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 88.86727122835944
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 88.7815333882935
+        },
+        {
+          "id": "zhk-runway-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «RUNWAY (РАНВЭЙ)»",
+          "score": 88.1121187139324
+        },
+        {
+          "id": "zhk-medeo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Медео»",
+          "score": 88.04286892003299
+        },
+        {
+          "id": "zhk-akademik-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Академик»",
+          "score": 86.86562242374279
+        },
+        {
+          "id": "zhk-aerocity-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «АЭРО»",
+          "score": 86.8161582852432
+        },
+        {
+          "id": "zhk-po-ul-baumana-6-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «по ул. Баумана, 6»",
+          "score": 86.4270403957131
+        }
+      ],
+      "experimental_constrained_top10": [
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 91.21516900247322
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 91.0997526793075
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 89.89282769991756
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 88.86727122835944
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 88.7815333882935
+        },
+        {
+          "id": "zhk-runway-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «RUNWAY (РАНВЭЙ)»",
+          "score": 88.1121187139324
+        },
+        {
+          "id": "zhk-medeo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Медео»",
+          "score": 88.04286892003299
+        },
+        {
+          "id": "zhk-akademik-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Академик»",
+          "score": 86.86562242374279
+        },
+        {
+          "id": "zhk-aerocity-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «АЭРО»",
+          "score": 86.8161582852432
+        },
+        {
+          "id": "zhk-po-ul-baumana-6-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «по ул. Баумана, 6»",
+          "score": 86.4270403957131
+        }
+      ],
+      "eligible_count": 55,
+      "within_car_count": 88,
+      "within_budget_count": 72,
+      "excluded": {
+        "zhk-alleya-park-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-apartamenty-na-igarskoy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-aprelevka-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-arinskiy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-barbaris-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-belyy-kvartal-na-spandaryana-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-biznes-kvartal-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-bulvar-cvetov-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-divnye-dali-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-dom-po-ul-armeyskoy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-enisey-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-eniseyskaya-sloboda-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-familia-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-gorki-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-housepark-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-hvoya-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-izumrudnaya-dolina-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-kedr-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-kristall-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-maestro-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-metropolis-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-myata-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-nanzhul-solnechnyy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-nesterov-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-norma-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-novella-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-ostrov-na-norilskoy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-60-let-oktyabrya-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-po-ul-cheremuhovaya-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-kalinina-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-norilskaya-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-svetlova-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-ryabinovyy-dvorik-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-sammit-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-scandis-ozero-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-selfort-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-shkolnyy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-siti-kvartal-kechoveli-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-siti-kvartal-na-vzletnoy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-siti-kvartal-svetlogorskiy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-siti-rayon-yuzhnyy-bereg-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-skazochnyy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-snegiri-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-snegiri-krasnoyarsk-solnechniy-zhr-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-socvetie-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_unavailable"
+        ],
+        "zhk-solar-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-stolichnyy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-tri-klena-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-uyutnyy-dom-na-shumyackogo-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-vremena-goda-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-vysotnaya-plyus-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-yudinskiy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-zolotoe-sechenie-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ]
+      },
+      "fit_to_constrained_top10_overlap_count": 6
+    },
+    "Car commuter": {
+      "weights": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "car_destination": {
+        "latitude": 55.985,
+        "longitude": 92.9,
+        "label": "work",
+        "kind": "work",
+        "importance": 2,
+        "max_acceptable_minutes": 25.0
+      },
+      "max_minutes": 15.0,
+      "purchase_budget": 8000000,
+      "objective_top10": [
+        {
+          "id": "zhk-kristall-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Кристалл»",
+          "score": 94.57873042044518
+        },
+        {
+          "id": "zhk-stolichnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Столичный»",
+          "score": 93.5267930750206
+        },
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 91.21516900247322
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 91.0997526793075
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 89.89282769991756
+        },
+        {
+          "id": "zhk-uyutnyy-dom-na-shumyackogo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Уютный Дом на Шумяцкого»",
+          "score": 89.45094806265459
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 88.86727122835944
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 88.7815333882935
+        },
+        {
+          "id": "zhk-tri-klena-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Три Клена жилые кварталы на Вавилова»",
+          "score": 88.15828524319869
+        },
+        {
+          "id": "zhk-runway-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «RUNWAY (РАНВЭЙ)»",
+          "score": 88.1121187139324
+        }
+      ],
+      "infrastructure_top10": [
+        {
+          "id": "zhk-kristall-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Кристалл»",
+          "score": 94.57873042044518
+        },
+        {
+          "id": "zhk-stolichnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Столичный»",
+          "score": 93.5267930750206
+        },
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 91.21516900247322
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 91.0997526793075
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 89.89282769991756
+        },
+        {
+          "id": "zhk-uyutnyy-dom-na-shumyackogo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Уютный Дом на Шумяцкого»",
+          "score": 89.45094806265459
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 88.86727122835944
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 88.7815333882935
+        },
+        {
+          "id": "zhk-tri-klena-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Три Клена жилые кварталы на Вавилова»",
+          "score": 88.15828524319869
+        },
+        {
+          "id": "zhk-runway-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «RUNWAY (РАНВЭЙ)»",
+          "score": 88.1121187139324
+        }
+      ],
+      "car_only_top10": [
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 91.21516900247322
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 89.89282769991756
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 88.86727122835944
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 88.7815333882935
+        },
+        {
+          "id": "zhk-tri-klena-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Три Клена жилые кварталы на Вавилова»",
+          "score": 88.15828524319869
+        },
+        {
+          "id": "zhk-medeo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Медео»",
+          "score": 88.04286892003299
+        },
+        {
+          "id": "zhk-apartamenty-na-igarskoy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Апартаменты на Игарской»",
+          "score": 87.8878812860676
+        },
+        {
+          "id": "zhk-akademik-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Академик»",
+          "score": 86.86562242374279
+        },
+        {
+          "id": "zhk-sammit-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Саммит»",
+          "score": 86.71063478977742
+        },
+        {
+          "id": "zhk-paraplan-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Параплан»",
+          "score": 84.7848309975268
+        }
+      ],
+      "budget_only_top10": [
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 91.21516900247322
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 91.0997526793075
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 89.89282769991756
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 88.86727122835944
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 88.7815333882935
+        },
+        {
+          "id": "zhk-runway-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «RUNWAY (РАНВЭЙ)»",
+          "score": 88.1121187139324
+        },
+        {
+          "id": "zhk-medeo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Медео»",
+          "score": 88.04286892003299
+        },
+        {
+          "id": "zhk-akademik-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Академик»",
+          "score": 86.86562242374279
+        },
+        {
+          "id": "zhk-aerocity-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «АЭРО»",
+          "score": 86.8161582852432
+        },
+        {
+          "id": "zhk-po-ul-baumana-6-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «по ул. Баумана, 6»",
+          "score": 86.4270403957131
+        }
+      ],
+      "experimental_constrained_top10": [
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 91.21516900247322
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 89.89282769991756
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 88.86727122835944
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 88.7815333882935
+        },
+        {
+          "id": "zhk-medeo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Медео»",
+          "score": 88.04286892003299
+        },
+        {
+          "id": "zhk-akademik-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Академик»",
+          "score": 86.86562242374279
+        },
+        {
+          "id": "zhk-paraplan-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Параплан»",
+          "score": 84.7848309975268
+        },
+        {
+          "id": "zhk-zvezdnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Звездный»",
+          "score": 83.9406430338005
+        },
+        {
+          "id": "zhk-tihie-zori-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Тихие зори»",
+          "score": 83.59109645507009
+        },
+        {
+          "id": "zhk-kosmos-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Космос»",
+          "score": 83.51525144270404
+        }
+      ],
+      "eligible_count": 28,
+      "within_car_count": 42,
+      "within_budget_count": 72,
+      "excluded": {
+        "zhk-aerocity-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-alleya-park-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-apartamenty-na-igarskoy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-aprelevka-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-arinskiy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-ayvazovsky-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-barbaris-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-belyy-kvartal-na-spandaryana-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-belyy-kvartal-na-svobodnom-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-biznes-kvartal-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-bulvar-cvetov-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_unavailable"
+        ],
+        "zhk-chizhi-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-dao-siti-kvartal-na-podzolkova-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-divnye-dali-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-dom-po-ul-armeyskoy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_unavailable"
+        ],
+        "zhk-enisey-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-eniseyskaya-sloboda-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-familia-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-gorki-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-housepark-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_unavailable"
+        ],
+        "zhk-hvoya-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-innokentevskiy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-izumrudnaya-dolina-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_unavailable"
+        ],
+        "zhk-kbs-klassika-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-kedr-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-kristall-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-kvadro-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-maestro-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-metropolis-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-mini-rayon-kalina-dolina-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-myata-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-nanzhul-solnechnyy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-nebo-nad-eniseem-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-nesterov-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-norma-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-novella-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-novye-soloncy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-ostrov-na-norilskoy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-plodovo-yagodnyy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-60-let-oktyabrya-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-po-ul-baumana-6-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-cheremuhovaya-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-kalinina-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-kalinina-krasnoyarsk-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-kurchatova-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-norilskaya-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-petra-podzolkova-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-svetlova-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-ulyanovskiy-prospekt-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-preobrazhenskiy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-runway-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-ryabinovyy-dvorik-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_unavailable"
+        ],
+        "zhk-sammit-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-scandis-ozero-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-selfort-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-serebryanyy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-shkolnyy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_unavailable"
+        ],
+        "zhk-simfoniya-krasnoyarsk-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-siti-kvartal-kechoveli-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-siti-kvartal-na-vzletnoy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-siti-kvartal-oktyabrskiy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-siti-kvartal-svetlogorskiy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-siti-rayon-akademgorodok-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-siti-rayon-yuzhnyy-bereg-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-skazochnyy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-snegiri-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-snegiri-krasnoyarsk-solnechniy-zhr-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-socvetie-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_unavailable"
+        ],
+        "zhk-solar-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-stolichnyy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_unavailable"
+        ],
+        "zhk-svetlogorskiy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-tri-klena-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-univers-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-uyutnyy-dom-na-shumyackogo-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_unavailable"
+        ],
+        "zhk-vita-park-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-vremena-goda-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-vysotnaya-plyus-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-yudinskiy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-zolotoe-sechenie-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-zvezda-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ]
+      },
+      "fit_to_constrained_top10_overlap_count": 4
+    },
+    "Budget constrained": {
+      "weights": [
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "car_destination": {
+        "latitude": 55.985,
+        "longitude": 92.9,
+        "label": "work",
+        "kind": "work",
+        "importance": 2,
+        "max_acceptable_minutes": 25.0
+      },
+      "max_minutes": 25.0,
+      "purchase_budget": 6000000,
+      "objective_top10": [
+        {
+          "id": "zhk-kristall-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Кристалл»",
+          "score": 94.57873042044518
+        },
+        {
+          "id": "zhk-stolichnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Столичный»",
+          "score": 93.5267930750206
+        },
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 91.21516900247322
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 91.0997526793075
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 89.89282769991756
+        },
+        {
+          "id": "zhk-uyutnyy-dom-na-shumyackogo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Уютный Дом на Шумяцкого»",
+          "score": 89.45094806265459
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 88.86727122835944
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 88.7815333882935
+        },
+        {
+          "id": "zhk-tri-klena-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Три Клена жилые кварталы на Вавилова»",
+          "score": 88.15828524319869
+        },
+        {
+          "id": "zhk-runway-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «RUNWAY (РАНВЭЙ)»",
+          "score": 88.1121187139324
+        }
+      ],
+      "infrastructure_top10": [
+        {
+          "id": "zhk-kristall-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Кристалл»",
+          "score": 94.57873042044518
+        },
+        {
+          "id": "zhk-stolichnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Столичный»",
+          "score": 93.5267930750206
+        },
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 91.21516900247322
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 91.0997526793075
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 89.89282769991756
+        },
+        {
+          "id": "zhk-uyutnyy-dom-na-shumyackogo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Уютный Дом на Шумяцкого»",
+          "score": 89.45094806265459
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 88.86727122835944
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 88.7815333882935
+        },
+        {
+          "id": "zhk-tri-klena-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Три Клена жилые кварталы на Вавилова»",
+          "score": 88.15828524319869
+        },
+        {
+          "id": "zhk-runway-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «RUNWAY (РАНВЭЙ)»",
+          "score": 88.1121187139324
+        }
+      ],
+      "car_only_top10": [
+        {
+          "id": "zhk-kristall-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Кристалл»",
+          "score": 94.57873042044518
+        },
+        {
+          "id": "zhk-stolichnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Столичный»",
+          "score": 93.5267930750206
+        },
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 91.21516900247322
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 91.0997526793075
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 89.89282769991756
+        },
+        {
+          "id": "zhk-uyutnyy-dom-na-shumyackogo-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Уютный Дом на Шумяцкого»",
+          "score": 89.45094806265459
+        },
+        {
+          "id": "zhk-metr-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «МЭТР»",
+          "score": 88.86727122835944
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 88.7815333882935
+        },
+        {
+          "id": "zhk-tri-klena-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Три Клена жилые кварталы на Вавилова»",
+          "score": 88.15828524319869
+        },
+        {
+          "id": "zhk-runway-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «RUNWAY (РАНВЭЙ)»",
+          "score": 88.1121187139324
+        }
+      ],
+      "budget_only_top10": [
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 91.21516900247322
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 91.0997526793075
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 89.89282769991756
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 88.7815333882935
+        },
+        {
+          "id": "zhk-akademik-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Академик»",
+          "score": 86.86562242374279
+        },
+        {
+          "id": "zhk-simfoniya-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Симфония»",
+          "score": 85.2333058532564
+        },
+        {
+          "id": "zhk-paraplan-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Параплан»",
+          "score": 84.7848309975268
+        },
+        {
+          "id": "zhk-po-ul-ulyanovskiy-prospekt-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Дом на Ульяновском»",
+          "score": 84.38252267106348
+        },
+        {
+          "id": "zhk-zvezdnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Звездный»",
+          "score": 83.9406430338005
+        },
+        {
+          "id": "zhk-tihie-zori-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Тихие зори»",
+          "score": 83.59109645507009
+        }
+      ],
+      "experimental_constrained_top10": [
+        {
+          "id": "zhk-olimp-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Олимп»",
+          "score": 91.21516900247322
+        },
+        {
+          "id": "zhk-univers-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «УНИВЕРС»",
+          "score": 91.0997526793075
+        },
+        {
+          "id": "zhk-dvizhenie-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Движение»",
+          "score": 89.89282769991756
+        },
+        {
+          "id": "zhk-noyland-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Нойланд»",
+          "score": 88.7815333882935
+        },
+        {
+          "id": "zhk-akademik-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Академик»",
+          "score": 86.86562242374279
+        },
+        {
+          "id": "zhk-simfoniya-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Симфония»",
+          "score": 85.2333058532564
+        },
+        {
+          "id": "zhk-paraplan-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Параплан»",
+          "score": 84.7848309975268
+        },
+        {
+          "id": "zhk-po-ul-ulyanovskiy-prospekt-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Дом на Ульяновском»",
+          "score": 84.38252267106348
+        },
+        {
+          "id": "zhk-zvezdnyy-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Звездный»",
+          "score": 83.9406430338005
+        },
+        {
+          "id": "zhk-tihie-zori-krasnoyarsk-krasnoyarsk-i.cian.ru",
+          "name": "ЖК «Тихие зори»",
+          "score": 83.59109645507009
+        }
+      ],
+      "eligible_count": 30,
+      "within_car_count": 88,
+      "within_budget_count": 47,
+      "excluded": {
+        "zhk-aerocity-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-alleya-park-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-apartamenty-na-igarskoy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-aprelevka-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-arinskiy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-ayvazovsky-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-barbaris-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-belyy-kvartal-na-spandaryana-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-belyy-kvartal-na-svobodnom-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-biznes-kvartal-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-bulvar-cvetov-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-chizhi-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-dao-siti-kvartal-na-podzolkova-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-divnye-dali-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-dom-po-ul-armeyskoy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-dubenskiy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-enisey-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-eniseyskaya-sloboda-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-familia-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-gorki-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-housepark-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-hvoya-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-innokentevskiy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-izumrudnaya-dolina-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-kedr-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-kosmos-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-kristall-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-maestro-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-medeo-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-metr-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-metropolis-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-myata-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-nanzhul-solnechnyy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-nebo-nad-eniseem-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-nesterov-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-nikolaevskie-kvartaly-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-norma-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-novella-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-novyy-portovyy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-ostrov-na-norilskoy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-plodovo-yagodnyy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-po-ul-60-let-oktyabrya-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-po-ul-baumana-6-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-po-ul-cheremuhovaya-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-kalinina-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-kalinina-krasnoyarsk-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-po-ul-kurchatova-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-po-ul-norilskaya-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-po-ul-petra-podzolkova-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-po-ul-semafornaya-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-po-ul-skladskaya-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-po-ul-svetlova-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-runway-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-ryabinovyy-dvorik-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-sammit-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-scandis-ozero-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-selfort-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-shkolnyy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-siti-kvartal-kechoveli-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-siti-kvartal-na-vzletnoy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-siti-kvartal-oktyabrskiy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-siti-kvartal-svetlogorskiy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-siti-rayon-akademgorodok-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-siti-rayon-yuzhnyy-bereg-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-skazochnyy-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-snegiri-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-snegiri-krasnoyarsk-solnechniy-zhr-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-socvetie-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_unavailable"
+        ],
+        "zhk-solar-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-stolichnyy-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-surikov-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-tri-klena-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-uyutnyy-dom-na-shumyackogo-krasnoyarsk-i.cian.ru": [
+          "price_unavailable"
+        ],
+        "zhk-vita-park-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-vremena-goda-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold",
+          "price_above_budget"
+        ],
+        "zhk-vysotnaya-plyus-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ],
+        "zhk-yudinskiy-krasnoyarsk-i.cian.ru": [
+          "commute_above_threshold"
+        ],
+        "zhk-zolotoe-sechenie-krasnoyarsk-i.cian.ru": [
+          "price_above_budget"
+        ]
+      },
+      "fit_to_constrained_top10_overlap_count": 4
+    }
+  },
+  "limitations": [
+    "Local Docker timings, not a production SLA.",
+    "Experimental constraints then Infrastructure ranking; no overall composition.",
+    "All CIAN coordinates are source/map anchors; not verified buildings or entrances.",
+    "Illustrative work destination, budgets and time thresholds; not population preferences."
+  ],
+  "task_base_sha": "5c17b437e2c11c40829023f4e207ea2ffea5cc0a",
+  "timing_scope": "MatchService.calculate; excludes HTTP, engine and service construction"
+}
