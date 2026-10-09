@@ -144,7 +144,7 @@ test('onboarding persists a profile and opens a recommended district and map', a
     level: 3, name: best.district_name, exact: true,
   }) });
   await expect(card).toHaveCount(1);
-  await expect(card.getByText(/Match Score · MESTO Score \d+\/100/)).toBeVisible();
+  await expect(card.getByText(/Прежний Match · MESTO Score \d+\/100/)).toBeVisible();
   const objective = page.getByRole('region', { name: 'Объективная оценка территории', exact: true });
   await expect(objective.getByLabel(`MESTO Score: ${Math.round(score.objective.score)} из 100`, { exact: true })).toBeVisible();
   for (const [key, label] of [['stop_availability', 'Остановки'], ['school', 'Школы'],
@@ -177,7 +177,7 @@ test('onboarding persists a profile and opens a recommended district and map', a
     level: 3, name: target.district.name, exact: true,
   }) });
   await expect(targetCard).toHaveCount(1);
-  await expect(targetCard.getByText('Match Score · MESTO Score 76/100', { exact: true })).toBeVisible();
+  await expect(targetCard.getByText('Прежний Match · MESTO Score 76/100', { exact: true })).toBeVisible();
   await targetCard.getByRole('button').click();
   const assertTarget = async () => {
     const region = page.getByRole('region', { name: 'Объективная оценка территории', exact: true });

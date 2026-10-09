@@ -15,6 +15,7 @@ from app.ai.api import router as ai_router
 from app.market.api import router as market_router
 from app.mobility.api import router as mobility_router
 from app.analytics.match_v2.api import router as match_v2_router
+from app.recommendations.v2_api import router as recommendations_v2_router
 
 app = FastAPI(title="МЕСТО API", version="0.1.0")
 app.include_router(router)
@@ -26,6 +27,7 @@ app.include_router(ai_router)
 app.include_router(market_router)
 app.include_router(mobility_router)
 app.include_router(match_v2_router)
+app.include_router(recommendations_v2_router)
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.add_middleware(
     CORSMiddleware,
