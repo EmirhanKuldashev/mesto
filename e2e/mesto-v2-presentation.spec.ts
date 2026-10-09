@@ -76,8 +76,8 @@ for (const viewport of [{ width: 1440, height: 1000 }, { width: 360, height: 800
       await expect(component.getByRole('meter')).toHaveAttribute('aria-valuenow', String(40.4 + i * 10));
     }
     await expect(objective.getByText('Инфраструктура', { exact: true })).toHaveCount(0);
-    await expect(page.getByText('Match Score · MESTO Score 60/100', { exact: true })).toBeVisible();
-    await expect(page.getByText('Ваш Match Score: 81%.', { exact: false })).toBeVisible();
+    await expect(page.getByText('Прежний Match · MESTO Score 60/100', { exact: true })).toBeVisible();
+    await expect(page.getByText('Прежний Match: 81/100.', { exact: false })).toBeVisible();
     await expect(page.getByText('Growth · развитие', { exact: true }).locator('..')).toContainText('35/100');
     await expect(page.getByText('Будущий сценарий', { exact: true }).first().locator('..')).toContainText('72/100');
     await expect(page.getByRole('heading', { name: 'Жильё в выбранном районе', exact: true })).toBeVisible();
@@ -107,7 +107,7 @@ for (const state of ['unavailable', 'null-score', 'missing-objective', 'null-obj
     await expect(objective.getByRole('status')).toContainText('Объективная оценка временно недоступна');
     await expect(objective.getByLabel(/^MESTO Score:/)).toHaveCount(0);
     await expect(objective.getByRole('article')).toHaveCount(5);
-    await expect(page.getByText('Match Score · MESTO Score —', { exact: true })).toBeVisible();
+    await expect(page.getByText('Прежний Match · MESTO Score —', { exact: true })).toBeVisible();
     await expect(page.getByText('private/backend', { exact: false })).toHaveCount(0);
     if (state === 'unavailable') await expect(objective.getByRole('article', { name: 'Парки', exact: true }).getByRole('meter')).toHaveCount(0);
   });

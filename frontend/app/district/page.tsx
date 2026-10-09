@@ -17,6 +17,7 @@ import { useOnboardingReady } from "@/lib/use-onboarding-ready";
 import { LocalPanel } from "@/components/local-panel";
 import { MobilityPanel } from "@/components/mobility-panel";
 import { MatchV2Panel } from "@/components/match-v2-panel";
+import { MatchRecommendations } from '@/components/match-recommendations';
 import type { LocalLocation } from "@/types/local";
 
 const layerOptions: { key: MapLayer; label: string }[] = [
@@ -30,6 +31,7 @@ const DistrictMap = dynamic(() => import("@/components/district-map"), { ssr: fa
   loading: () => <Skeleton className="h-[580px] w-full bg-[#dbeae5]" /> });
 
 export default function DistrictPage() {
+  const [newMatchActive,setNewMatchActive] = useState(false);
   const ready = useOnboardingReady();
   const draft = useOnboarding((state) => state.draft);
   const profileId = useOnboarding((state) => state.profileId);
@@ -74,7 +76,8 @@ export default function DistrictPage() {
     <section className="bg-[#f0f7f3] py-8 text-[#14333e] sm:py-12"><div className="content-shell grid gap-6 lg:grid-cols-[300px_1fr]">
       <aside className="space-y-5">
         <LocalPanel location={localLocation} onSelect={setLocalLocation} />
-        <MatchV2Panel location={localLocation} onSelect={setLocalLocation} complexes={complexes} />
+        <MatchRecommendations point={localLocation} onActiveChange={setNewMatchActive}/>
+        <div hidden={newMatchActive}><MatchV2Panel location={localLocation} onSelect={setLocalLocation} complexes={complexes} /></div>
         <MobilityPanel origin={localLocation} />
         {status === "needs_profile" && <div role="status" className="rounded-[22px] border border-[#eac998] bg-[#fff5e5] p-5 text-sm text-[#76562b]">Заполните анкету, чтобы получить MESTO Score и персональный Match. <Link href="/onboarding" className="font-semibold underline">Создать сценарий</Link></div>}
         {status === "error" && <div role="alert" className="rounded-[22px] border border-[#eac998] bg-[#fff5e5] p-5 text-sm text-[#76562b]">Не удалось получить оценку{analyticsError ? `: ${analyticsError}` : "."} <button type="button" onClick={() => void load(profileId, true)} className="mt-2 block font-semibold underline">Повторить запрос</button></div>}

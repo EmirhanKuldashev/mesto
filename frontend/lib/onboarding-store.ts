@@ -1,5 +1,7 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import type { MatchSettings } from '@/types/recommendations-v2';
+import { emptyMatchSettings } from './match-profile';
 
 export type Coordinates = { latitude: number; longitude: number };
 export type LifePoint = Coordinates & {
@@ -24,6 +26,7 @@ export const unansweredPreference = (): PreferenceValue => ({ value: null, is_an
 export const answeredPreference = (value: number, source: "user" | "partner"): PreferenceValue => ({ value, is_answered: true, source, confidence: 1 });
 
 export type OnboardingDraft = {
+  match_v2?: MatchSettings;
   name: string;
   household_type: "single" | "couple" | "family" | "family_with_relatives";
   adults_count: number;
@@ -49,6 +52,7 @@ export type OnboardingDraft = {
 const preferences = Object.fromEntries([...weightNames, "quiet_active", "green_urban", "center_calm", "price_vs_time", "today_vs_future", "car_dependency"].map((key) => [key, unansweredPreference()])) as Preferences;
 
 export const initialDraft: OnboardingDraft = {
+  match_v2: emptyMatchSettings(),
   name: "", household_type: "single", adults_count: 1, children: [], housing_goal: "compare",
   commute_minutes: null, purchase_budget: 0, initial_payment: 0, comfortable_monthly_payment: 0, rent_budget: 0,
   planning_horizon: "3_5_years", car_availability: false,
@@ -75,7 +79,7 @@ type State = {
 export const useOnboarding = create<State>()(persist((set) => ({
   step: 0, draft: initialDraft, profileId: null,
   setStep: (step) => set({ step: Math.max(0, Math.min(9, step)) }),
-  patch: (patch) => set((state) => ({ draft: { ...state.draft, ...patch }, profileId: null })),
+  patch: (patch) => set((state) => ({ draft: { ...state.draft, ...patch }, profileId: Object.keys(patch).every(k=>k==='match_v2') ? state.profileId : null })),
   setPreference: (name, value) => set((state) => ({ draft: { ...state.draft,
     preferences: { ...state.draft.preferences, [name]: value === null ? unansweredPreference() : answeredPreference(value, "user") } }, profileId: null })),
   upsertPoint: (point) => set((state) => ({ draft: { ...state.draft,
@@ -85,11 +89,12 @@ export const useOnboarding = create<State>()(persist((set) => ({
   setProfileId: (profileId) => set({ profileId }),
   reset: () => set({ draft: initialDraft, step: 0, profileId: null }),
 }), { name: "mesto-onboarding-v2", storage: createJSONStorage(() => localStorage),
-  version: 1,
+  version: 2,
   migrate: (persisted) => {
     const state = persisted as { step?: number; draft?: OnboardingDraft; profileId?: string | null };
     if (state.draft?.life_points?.some((point) => point.localId.startsWith("demo-")))
       return { step: 0, draft: initialDraft, profileId: null };
+    if (state.draft) state.draft = { ...state.draft, match_v2: emptyMatchSettings() };
     return persisted as State;
   },
   partialize: ({ step, draft, profileId }) => ({ step, draft, profileId }) }));
